@@ -1,0 +1,55 @@
+# Python related
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Flask related
+instance/
+.env
+
+# CSV files or any sensitive data
+data/measurements.csv
+
+# MacOS related
+.DS_Store
+
+# Pytest cache
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+.Python
+
+# Flask-WTF secret key (optional, if stored in a file)
+config.py
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs and other runtime files
+*.log
+*.sqlite3
+*.db
+*.bak
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+
+# Byte-compiled Python / Jupyter Notebook files
+*.ipynb_checkpoints
+
+# Cache
+*.cache
