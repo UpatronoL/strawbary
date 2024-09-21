@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Sensor Measurements{% endblock %}
+
+{% block content %}
+    <!-- Form for Date Range Selection -->
+    <form method="POST" action="/">
+        {{ form.hidden_tag() }}
+        <label for="start_date">{{ form.start_date.label }}</label>
+        {{ form.start_date }}
+        <label for="end_date">{{ form.end_date.label }}</label>
+        {{ form.end_date }}
+        {{ form.submit }}
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul class="flashes">
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Data Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temperature</th>
+                <th>Humidity</th>
+                <th>Light Intensity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in measurements %}
+            <tr>
+                <td>{{ row['Date'].strftime('%Y-%m-%d') }}</td>
+                <td>{{ row['Temperature'] }}</td>
+                <td>{{ row['Humidity'] }}</td>
+                <td>{{ row['Light Intensity'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
