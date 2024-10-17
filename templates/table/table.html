@@ -3,45 +3,47 @@
 {% block title %}Sensor Measurements{% endblock %}
 
 {% block content %}
-    <!-- Form for Date Range Selection -->
-    <form method="POST" action="/">
-        {{ form.hidden_tag() }}
-        <label for="start_date">{{ form.start_date.label }}</label>
-        {{ form.start_date }}
-        <label for="end_date">{{ form.end_date.label }}</label>
-        {{ form.end_date }}
-        {{ form.submit }}
-    </form>
+<div class="container">
+    <!-- Left side: Data Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Light Intensity</th>
+                    <th>Ground Temperature</th>
+                    <th>Ground Humidity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in measurements %}
+                <tr>
+                    <td>{{ row['Date'].strftime('%Y-%m-%d') }}</td>
+                    <td>{{ row['Date'].strftime('%H:%M') }}</td>
+                    <td>{{ row['Temperature'] }}</td>
+                    <td>{{ row['Humidity'] }}</td>
+                    <td>{{ row['Light Intensity'] }}</td>
+                    <td>{{ row['Ground Temperature'] }}</td>
+                    <td>{{ row['Ground Humidity'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <ul class="flashes">
-        {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-    {% endwith %}
-
-    <!-- Data Table -->
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temperature</th>
-                <th>Humidity</th>
-                <th>Light Intensity</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in measurements %}
-            <tr>
-                <td>{{ row['Date'].strftime('%Y-%m-%d') }}</td>
-                <td>{{ row['Temperature'] }}</td>
-                <td>{{ row['Humidity'] }}</td>
-                <td>{{ row['Light Intensity'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Right side: Sticky box with temperature summary -->
+    <div class="summary-container">
+        <h2>Temperature Summary</h2>
+        {% if max_temp is not none and min_temp is not none and mean_temp is not none %}
+        <p><strong>Max Temperature:</strong> {{ max_temp }} °C</p>
+        <p><strong>Min Temperature:</strong> {{ min_temp }} °C</p>
+        <p><strong>Mean Temperature:</strong> {{ "%.1f" | format(mean_temp) }} °C</p>
+        {% else %}
+        <p>No data available for today's temperatures.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
