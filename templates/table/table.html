@@ -37,10 +37,12 @@
     <!-- Right side: Sticky box with temperature summary -->
     <div class="summary-container">
         <h2>Temperature Summary</h2>
-        {% if max_temp is not none and min_temp is not none and mean_temp is not none %}
+        {% if max_temp is not none and min_temp is not none and mean_temp is not none and daytime_avg is not none%}
         <p><strong>Max Temperature:</strong> {{ max_temp }} °C</p>
         <p><strong>Min Temperature:</strong> {{ min_temp }} °C</p>
         <p><strong>Mean Temperature:</strong> {{ "%.1f" | format(mean_temp) }} °C</p>
+        <p><strong>Daytime Average:</strong> {{ "%.1f" | format(daytime_avg) }} °C</p>
+        <p><strong>Nighttime Average:</strong> {{ "%.1f" | format(nighttime_avg) }} °C</p>
         {% else %}
         <p>No data available for today's temperatures.</p>
         {% endif %}

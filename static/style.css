@@ -37,6 +37,7 @@ footer {
 .summary-container {
     width: 25%;
     margin-left: 60px;
+    margin_top: 100px;
     background-color: white; /* White background for the summary box */
     padding: 20px;
     border-radius: 8px;

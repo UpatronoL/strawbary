@@ -1,8 +1,8 @@
 from flask import (
-    Blueprint, flash, render_template, current_app
-)
+        Blueprint, flash, render_template, current_app
+        )
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 bp = Blueprint('table', __name__)
@@ -17,23 +17,34 @@ def table():
 
     df = pd.read_csv(csv_file)
 
-    # Filter for today's data
-    today = datetime.today().date()
+    # Filter for yesterday's data
+    yesterday = datetime.today().date() - timedelta(days=1)
     df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d')
-    today_data = df[df['Date'].dt.date == today]
+    yesterday_data = df[df['Date'].dt.date == yesterday]
 
-    # Check if there is any data for today
-    if today_data.empty:
-        flash("No data available for today's date.", "warning")
+    # Check if there is any data for yesterday
+    if yesterday_data.empty:
+        flash("No data available for yesterday's date.", "warning")
         return render_template('table/table.html', measurements=[], max_temp=None, min_temp=None, mean_temp=None)
 
     # Get temperature statistics
-    max_temp = today_data['Temperature'].max()
-    min_temp = today_data['Temperature'].min()
-    mean_temp = today_data['Temperature'].mean()
+    day_start = '06:00:00'
+    day_end = '18:00:00'
+    daytime = yesterday_data[(pd.to_datetime((yesterday_data['Time'])).dt.time >= pd.to_datetime(day_start).time()) &
+                             (pd.to_datetime((yesterday_data['Time'])).dt.time < pd.to_datetime(day_end).time())]
+    nighttime = yesterday_data[(pd.to_datetime((yesterday_data['Time'])).dt.time < pd.to_datetime(day_start).time()) |
+                               (pd.to_datetime((yesterday_data['Time'])).dt.time >= pd.to_datetime(day_end).time())]
+
+    max_temp = yesterday_data['Temperature'].max()
+    min_temp = yesterday_data['Temperature'].min()
+    mean_temp = yesterday_data['Temperature'].mean()
+    daytime_avg = daytime['Temperature'].mean()
+    nighttime_avg = nighttime['Temperature'].mean()
 
     # Convert to dict for table display
-    data = today_data.to_dict(orient='records')
+    data = yesterday_data.to_dict(orient='records')
 
-    return render_template('table/table.html', measurements=data, max_temp=max_temp, min_temp=min_temp, mean_temp=mean_temp)
-
+    return render_template('table/table.html', measurements=data,
+                           max_temp=max_temp, min_temp=min_temp,
+                           mean_temp=mean_temp, daytime_avg=daytime_avg,
+                           nighttime_avg=nighttime_avg)
