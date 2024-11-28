@@ -2,9 +2,12 @@
 
 {% block title %}Sensor Measurements{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="container">
-    <!-- Left side: Data Table -->
     <div class="table-container">
         <table>
             <thead>
@@ -22,7 +25,7 @@
                 {% for row in measurements %}
                 <tr>
                     <td>{{ row['Date'].strftime('%Y-%m-%d') }}</td>
-                    <td>{{ row['Date'].strftime('%H:%M') }}</td>
+                    <td>{{ row['Time']}}</td>
                     <td>{{ row['Temperature'] }}</td>
                     <td>{{ row['Humidity'] }}</td>
                     <td>{{ row['Light Intensity'] }}</td>
@@ -34,7 +37,6 @@
         </table>
     </div>
 
-    <!-- Right side: Sticky box with temperature summary -->
     <div class="summary-container">
         <h2>Temperature Summary</h2>
         {% if max_temp is not none and min_temp is not none and mean_temp is not none and daytime_avg is not none%}
@@ -49,3 +51,4 @@
     </div>
 </div>
 {% endblock %}
+

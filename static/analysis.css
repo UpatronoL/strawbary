@@ -1,0 +1,53 @@
+/* Main container for the analysis page */
+.analysis-container {
+    width: 100%;
+    margin: 0 auto; /* Center the content */
+    padding: 20px;
+    display: block; /* Ensure no inherited flexbox applies */
+}
+
+/* Title container */
+.title-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Title (h1) styling */
+.analysis-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+/* Graph row layout */
+.graph-row {
+    display: flex; /* Flexbox for side-by-side alignment */
+    justify-content: space-around; /* Evenly distribute graphs horizontally */
+    align-items: flex-start; /* Align graphs at the top */
+    gap: 10px; /* Add space between graph items */
+    margin-top: 20px;
+}
+
+/* Individual graph item container */
+.graph-item {
+    text-align: center;
+    width: 30%; /* Each graph takes up 30% of the container */
+}
+
+/* Graph images */
+.graph-item img {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Graph titles */
+.graph-item h2 {
+    color: #FF6F61; /* Strawberry red */
+    margin-bottom: 10px;
+    text-align: center;
+}
+

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Data Analysis{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='analysis.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="analysis-container">
+    <div class="title-container">
+        <h1 class="analysis-title">Environmental Data Analysis</h1>
+    </div>
+    <div class="graph-row">
+        <div class="graph-item">
+            <h2>Temperature</h2>
+            <img src="data:image/png;base64,{{ graphs['temperature'] }}" alt="Temperature Graph">
+        </div>
+        <div class="graph-item">
+            <h2>Humidity</h2>
+            <img src="data:image/png;base64,{{ graphs['humidity'] }}" alt="Humidity Graph">
+        </div>
+        <div class="graph-item">
+            <h2>Light Intensity</h2>
+            <img src="data:image/png;base64,{{ graphs['lux'] }}" alt="Light Intensity Graph">
+        </div>
+    </div>
+</div>
+{% endblock %}
+

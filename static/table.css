@@ -1,0 +1,49 @@
+/* Container layout for the table and summary box */
+.container {
+    display: flex; /* Flexbox layout for side-by-side alignment */
+    align-items: flex-start; /* Align items at the top of the container */
+    justify-content: space-between; /* Space out items evenly */
+    flex-wrap: nowrap; /* Prevent wrapping of items */
+    padding: 20px;
+    gap: 20px; /* Add spacing between the table and the summary box */
+}
+
+/* Table container styles */
+.table-container {
+    width: 70%; /* Make the table take up 70% of the container width */
+    margin-right: 20px; /* Add space between the table and the summary box */
+}
+
+/* Summary container styles */
+.summary-container {
+    width: 25%; /* Make the summary box take up 25% of the container width */
+    background-color: white; /* White background for the summary box */
+    padding: 20px;
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+    color: #333; /* Text color */
+    text-align: left; /* Left-align text */
+    position: sticky; /* Make it sticky within the viewport */
+    top: 20px; /* Stick it 20px below the top of the viewport */
+}
+
+/* Summary container header styles */
+.summary-container h2 {
+    color: #FF6F61; /* Strawberry red for the header */
+    margin-bottom: 15px; /* Space below the header */
+}
+
+/* Button Styles (Optional for table interactions) */
+input[type="submit"] {
+    background-color: #4CAF50; /* Leaf green button */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #388E3C; /* Darker leaf green */
+}
+

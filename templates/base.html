@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Sensor Data{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    {% block styles %}{% endblock %}
 </head>
 <body>
-    <header>
-        <h1>Sensor Data Dashboard</h1>
+    <header class="header-container">
+        <h1 class="header-title">Sensor Data Dashboard</h1>
+        <div class="header-buttons">
+            <nav>
+                <ul class="navbar">
+                    <li><a href="{{ url_for('table.table') }}">Sensor Measurements</a></li>
+                    <li><a href="{{ url_for('analysis.analysis') }}">Data Analysis</a></li>
+                </ul>
+            </nav>
+            <div class="download-container">
+                <a href="{{ url_for('table.download_csv') }}" class="download-button">Download Data</a>
+            </div>
+        </div>
     </header>
 
-    <div class="container">
+    <main>
         {% block content %}{% endblock %}
-    </div>
+    </main>
 
     <footer>
-        <p>&copy; 2024 Sensor Data</p>
+        <p>Footer content</p>
     </footer>
 </body>
 </html>

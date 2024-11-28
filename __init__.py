@@ -15,4 +15,7 @@ def create_app(test_config=None):
     from . import table
     app.register_blueprint(table.bp)
 
+    from . import analysis
+    app.register_blueprint(analysis.bp)
+
     return app

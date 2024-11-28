@@ -1,0 +1,116 @@
+/* Global Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #fff9f9; /* Light strawberry background */
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+/* Header Container */
+.header-container {
+    display: flex; /* Flexbox layout for horizontal alignment */
+    align-items: center; /* Vertically align items */
+    justify-content: space-between; /* Spread title and buttons */
+    background-color: #FF6F61; /* Strawberry red */
+    color: white;
+    padding: 20px;
+}
+
+/* Title Styling */
+.header-title {
+    margin: 0;
+    font-size: 36px; /* Increase the title size */
+    font-weight: bold;
+}
+
+/* Buttons Container (Nav + Download Button) */
+.header-buttons {
+    display: flex; /* Align navigation and download button horizontally */
+    align-items: center; /* Vertically align items */
+    gap: 20px; /* Space between navigation and download button */
+}
+
+/* Navigation Bar */
+.navbar {
+    list-style-type: none; /* Remove bullet points */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Align links horizontally */
+    gap: 15px; /* Add spacing between navigation links */
+}
+
+.navbar li {
+    display: inline;
+}
+
+.navbar a {
+    color: white; /* White text for links */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease; /* Add hover transition */
+}
+
+.navbar a:hover {
+    background-color: #D44A3A; /* Darker strawberry red on hover */
+}
+
+/* Download Button */
+.download-container {
+    margin-left: auto; /* Push the download button to the far right */
+}
+
+.download-button {
+    display: inline-block;
+    background-color: #4CAF50; /* Green button */
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.download-button:hover {
+    background-color: #388E3C; /* Darker green on hover */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #FF6F61; /* Strawberry red for footer */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
+    bottom: 0;
+    width: 100%;
+}
+
+/* General Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: #fff;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #FF6F61; /* Strawberry red for the header */
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light gray background for even rows */
+}

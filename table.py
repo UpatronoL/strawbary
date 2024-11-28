@@ -1,5 +1,5 @@
 from flask import (
-        Blueprint, flash, render_template, current_app
+        Blueprint, flash, render_template, current_app, send_from_directory
         )
 import pandas as pd
 from datetime import datetime, timedelta
@@ -18,7 +18,7 @@ def table():
     df = pd.read_csv(csv_file)
 
     # Filter for yesterday's data
-    yesterday = datetime.today().date() - timedelta(days=1)
+    yesterday = datetime.today().date()
     df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d')
     yesterday_data = df[df['Date'].dt.date == yesterday]
 
@@ -48,3 +48,16 @@ def table():
                            max_temp=max_temp, min_temp=min_temp,
                            mean_temp=mean_temp, daytime_avg=daytime_avg,
                            nighttime_avg=nighttime_avg)
+
+
+@bp.route('/download', methods=['GET'])
+def download_csv():
+    csv_file = os.path.join(current_app.root_path, 'data', 'measurements.csv')
+    return send_from_directory(
+        directory=os.path.dirname(csv_file),
+        path=os.path.basename(csv_file),
+        as_attachment=True,
+        mimetype='text/csv',
+        download_name='measurements.csv'
+    )
+
