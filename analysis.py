@@ -24,31 +24,38 @@ def analysis():
 
     # Read and process the data
     data = pd.read_csv(csv_file)
-    data['datetime'] = pd.to_datetime(data['Date'] + ' ' + data['Time'], format='%Y-%m-%d %H:%M')
-    data.set_index('datetime', inplace=True)
 
     # Ensure numeric columns are properly converted
-    for col in ['Temperature', 'Humidity', 'Light Intensity', 'Ground Temperature', 'Ground Humidity']:
-        data[col] = pd.to_numeric(data[col], errors='coerce')
+    numeric_cols = ['Temperature', 'Humidity', 'Light Intensity', 'Ground Temperature', 'Ground Humidity']
+    for col in numeric_cols:
+        data[col] = pd.to_numeric(data[col], errors='coerce')  # Convert to numeric, set invalid values to NaN
 
-    # Drop rows with missing values
-    data = data.dropna()
+    # Drop rows with missing values in numeric columns
+    data = data.dropna(subset=numeric_cols)
 
     # Filter data for today only
     today = datetime.today().date()
+    data['datetime'] = pd.to_datetime(data['Date'] + ' ' + data['Time'], format='%Y-%m-%d %H:%M')
+    data = data.set_index('datetime')
     data = data[data.index.date == today]
 
     # If no data for today, display an error
     if data.empty:
         return render_template('analysis/analysis.html', error="No data available for today.", graphs=graphs)
 
+    # Extract the hour from the Time column
+    data['Hour'] = data.index.hour
+
+    # Group by the Hour and calculate averages
+    hourly_data = data.groupby('Hour')[numeric_cols].mean()
+
     # Generate temperature graph (includes ground temperature)
     plt.figure(figsize=(6, 4))
-    plt.plot(data.index, data['Temperature'], label='Air Temperature (°C)', color='red')
-    plt.plot(data.index, data['Ground Temperature'], label='Ground Temperature (°C)', color='orange')
-    plt.xlabel('Time')
+    plt.plot(hourly_data.index, hourly_data['Temperature'], label='Air Temperature (°C)', color='red')
+    plt.plot(hourly_data.index, hourly_data['Ground Temperature'], label='Ground Temperature (°C)', color='orange')
+    plt.xlabel('Hour')
     plt.ylabel('Temperature (°C)')
-    plt.title('Temperature Throughout the Day')
+    plt.title('Hourly Average Temperature')
     plt.legend()
     plt.grid(True)
     temp_buffer = io.BytesIO()
@@ -58,11 +65,11 @@ def analysis():
 
     # Generate humidity graph (includes ground humidity)
     plt.figure(figsize=(6, 4))
-    plt.plot(data.index, data['Humidity'], label='Air Humidity (%)', color='blue')
-    plt.plot(data.index, data['Ground Humidity'], label='Ground Humidity (%)', color='green')
-    plt.xlabel('Time')
+    plt.plot(hourly_data.index, hourly_data['Humidity'], label='Air Humidity (%)', color='blue')
+    plt.plot(hourly_data.index, hourly_data['Ground Humidity'], label='Ground Humidity (%)', color='green')
+    plt.xlabel('Hour')
     plt.ylabel('Humidity (%)')
-    plt.title('Humidity Throughout the Day')
+    plt.title('Hourly Average Humidity')
     plt.legend()
     plt.grid(True)
     hum_buffer = io.BytesIO()
@@ -72,10 +79,10 @@ def analysis():
 
     # Generate light intensity graph
     plt.figure(figsize=(6, 4))
-    plt.plot(data.index, data['Light Intensity'], label='Light Intensity (Lux)', color='purple')
-    plt.xlabel('Time')
+    plt.plot(hourly_data.index, hourly_data['Light Intensity'], label='Light Intensity (Lux)', color='purple')
+    plt.xlabel('Hour')
     plt.ylabel('Light Intensity (Lux)')
-    plt.title('Light Intensity Throughout the Day')
+    plt.title('Hourly Average Light Intensity')
     plt.legend()
     plt.grid(True)
     lux_buffer = io.BytesIO()

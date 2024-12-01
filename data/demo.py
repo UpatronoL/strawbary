@@ -15,8 +15,8 @@ num_readings = 10000
 # Interval of 5 minutes
 interval_minutes = 5
 
-# Start date and time (current date at midnight in JST)
-start_datetime = datetime.now(jst).replace(hour=0, minute=0, second=0, microsecond=0)
+# Start date and time (tomorrow at midnight in JST)
+start_datetime = (datetime.now(jst) + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
 
 # Generate CSV
 with open(csv_filename, mode='w', newline='') as file:
