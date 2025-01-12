@@ -2,7 +2,7 @@
 .analysis-container {
     width: 100%;
     margin: 0 auto; /* Center the content */
-    padding: 20px;
+    padding: 20px 0.5px;
     display: block; /* Ensure no inherited flexbox applies */
 }
 
@@ -24,16 +24,20 @@
 /* Graph row layout */
 .graph-row {
     display: flex; /* Flexbox for side-by-side alignment */
-    justify-content: space-around; /* Evenly distribute graphs horizontally */
+    justify-content: center; /* Center the graphs within the container */
     align-items: flex-start; /* Align graphs at the top */
-    gap: 10px; /* Add space between graph items */
+    gap: 20px; /* Increase space between graph items for better layout */
     margin-top: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Allow wrapping if space is limited */
 }
 
 /* Individual graph item container */
 .graph-item {
     text-align: center;
-    width: 30%; /* Each graph takes up 30% of the container */
+    flex: 1 1 300px; /* Allow each graph to take up at least 300px, flexible layout */
+    max-width: 30%; /* Maximum width for each graph */
+    min-width: 280px; /* Minimum width for smaller screens */
 }
 
 /* Graph images */
@@ -49,5 +53,49 @@
     color: #FF6F61; /* Strawberry red */
     margin-bottom: 10px;
     text-align: center;
+}
+
+/* Modal background */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* Ensure it appears above other content */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Transparent gray background */
+    display: flex; /* Flexbox for centering */
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    overflow: hidden; /* Prevent overflow */
+}
+
+/* Modal content (enlarged image) */
+.modal-content {
+    max-width: 90%; /* Allow the image to take up more width */
+    max-height: 90%; /* Allow the image to take up more height */
+    width: auto; /* Maintain aspect ratio */
+    height: auto; /* Maintain aspect ratio */
+    border: 5px solid white; /* Optional border for better visual appearance */
+    border-radius: 10px; /* Smooth corners */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/* Close button */
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #ff6f61; /* Strawberry theme color */
 }
 

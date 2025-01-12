@@ -1,0 +1,106 @@
+/* Wrapper to make the table scrollable */
+.table-wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+    max-height: 80vh;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* Table layout and styling */
+table {
+    border-collapse: collapse;
+    width: max-content;
+    font-family: Arial, sans-serif;
+}
+
+#category-cell {
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    background-color: #ffe6e0;
+    color: black;
+    font-weight: bold;
+    padding: 10px;
+    text-align: left;
+    border-right: 1px solid #ddd;
+}
+
+/* Sticky Metric header cell */
+#metric-header {
+    position: sticky;
+    left: 187px; /* Same value as the metric cells */
+    z-index: 2;
+    color: black;
+    background-color: #f9f9f9;
+    outline: 1px solid #ddd; /* Match the blue border for Metric cells */
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    border-right: 1px solid #ddd; /* Optional for separation */
+}
+
+/* Sticky Category column */
+#category {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    background-color: #ffe6e0;
+    color: black;
+    font-weight: bold;
+    padding: 10px;
+    text-align: left;
+    border-right: 1px solid #ddd;
+}
+
+/* Sticky Metric column */
+#metric-max,
+#metric-min,
+#metric-daily-avg,
+#metric-daytime-avg,
+#metric-nighttime-avg {
+    position: sticky;
+    left: 187px;
+    z-index: 1;
+    background-color: #f9f9f9;
+    text-align: center;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+/* Sticky Header Row */
+th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #FF6F61;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Zebra striping for table rows */
+tr:nth-child(odd) {
+    background-color: #fdf4f2;
+}
+
+tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* Hover effect for rows */
+tr:hover {
+    background-color: #ffe6e0;
+}
+
+/* General cell styling */
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+

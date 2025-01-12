@@ -14,6 +14,7 @@
             <nav>
                 <ul class="navbar">
                     <li><a href="{{ url_for('table.table') }}">Sensor Measurements</a></li>
+                    <li><a href="{{ url_for('summary.summary_table') }}">Summary Page</a></li>
                     <li><a href="{{ url_for('analysis.analysis') }}">Data Analysis</a></li>
                 </ul>
             </nav>
@@ -30,6 +31,9 @@
     <footer>
         <p>Footer content</p>
     </footer>
+    {% block scripts %}
+    <script src="{{ url_for('static', filename='analysis.js') }}"></script>
+    {% endblock %}
 </body>
 </html>
 

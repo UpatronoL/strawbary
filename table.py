@@ -60,4 +60,3 @@ def download_csv():
         mimetype='text/csv',
         download_name='measurements.csv'
     )
-
