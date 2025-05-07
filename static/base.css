@@ -18,11 +18,12 @@ body, html {
     padding: 20px;
 }
 
-/* Title Styling */
+/* Header Title */
 .header-title {
     margin: 0;
     font-size: 36px; /* Increase the title size */
     font-weight: bold;
+    display: inline; /* Ensure the title is inline with the logo */
 }
 
 /* Buttons Container (Nav + Download Button) */
@@ -114,3 +115,10 @@ th {
 tr:nth-child(even) {
     background-color: #f2f2f2; /* Light gray background for even rows */
 }
+
+/* Logo Styling */
+.logo {
+    height: 50px; /* Adjust the size of the logo */
+    margin-right: 20px; /* Add spacing between the logo and the title */
+}
+

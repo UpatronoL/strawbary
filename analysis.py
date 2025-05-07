@@ -107,8 +107,6 @@ def analysis():
 
     # ----------- Daytime average measurement graphs ----------- #
 
-    # After the last graph generation in your file (approximately line 126, where `lux_all_buffer` is saved)
-    # Add the code for the new graph
     plt.figure(figsize=(6, 4))
     plt.plot(last_week_avg.index, last_week_avg['Temperature'], label='Air Temperature (°C)', color='red', marker='o')
     plt.plot(last_week_avg.index, last_week_avg['Ground Temperature'], label='Ground Temperature (°C)', color='orange', marker='o')
@@ -117,14 +115,13 @@ def analysis():
     plt.title('Daily Average Temperature for the Past Week')
     plt.legend()
     plt.grid(True)
-    plt.xticks(rotation=45)  # Rotate date labels for better visibility
+    plt.xticks(rotation=45)
     plt.tight_layout()
     day_avg_buffer = io.BytesIO()
     plt.savefig(day_avg_buffer, format='png')
     day_avg_buffer.seek(0)
     graphs['daily_avg_temperature'] = base64.b64encode(day_avg_buffer.getvalue()).decode()
 
-    # Plot daily average humidity for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(last_week_avg.index, last_week_avg['Humidity'], label='Air Humidity (%)', color='blue', marker='o')
     plt.plot(last_week_avg.index, last_week_avg['Ground Humidity'], label='Ground Humidity (%)', color='green', marker='o')
@@ -133,14 +130,13 @@ def analysis():
     plt.title('Daily Average Humidity for the Past Week')
     plt.legend()
     plt.grid(True)
-    plt.xticks(rotation=45)  # Rotate date labels for better visibility
+    plt.xticks(rotation=45)
     plt.tight_layout()
     humidity_avg_buffer = io.BytesIO()
     plt.savefig(humidity_avg_buffer, format='png')
     humidity_avg_buffer.seek(0)
     graphs['daily_avg_humidity'] = base64.b64encode(humidity_avg_buffer.getvalue()).decode()
 
-    # Plot daily average light intensity for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(last_week_avg.index, last_week_avg['Light Intensity'], label='Light Intensity (Lux)', color='purple', marker='o')
     plt.xlabel('Date')
@@ -148,7 +144,7 @@ def analysis():
     plt.title('Daily Average Light Intensity for the Past Week')
     plt.legend()
     plt.grid(True)
-    plt.xticks(rotation=45)  # Rotate date labels for better visibility
+    plt.xticks(rotation=45)
     plt.tight_layout()
     light_intensity_avg_buffer = io.BytesIO()
     plt.savefig(light_intensity_avg_buffer, format='png')
@@ -157,7 +153,6 @@ def analysis():
 
     # ----------- Nighttime average measurement graphs ----------- #
 
-    # Plot nighttime average temperatures for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(last_week_night_avg.index, last_week_night_avg['Temperature'], label='Air Temperature (°C)', color='red', marker='o')
     plt.plot(last_week_night_avg.index, last_week_night_avg['Ground Temperature'], label='Ground Temperature (°C)', color='orange', marker='o')
@@ -166,15 +161,13 @@ def analysis():
     plt.title('Nighttime Average Temperature for the Past Week')
     plt.legend()
     plt.grid(True)
-    plt.xticks(rotation=45)  # Rotate date labels for better visibility
+    plt.xticks(rotation=45)
     plt.tight_layout()
-    # Save the graph as a base64-encoded image
     night_temp_avg_buffer = io.BytesIO()
     plt.savefig(night_temp_avg_buffer, format='png')
     night_temp_avg_buffer.seek(0)
     graphs['night_avg_temperature'] = base64.b64encode(night_temp_avg_buffer.getvalue()).decode()
 
-    # Plot nighttime average humidity for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(last_week_night_avg.index, last_week_night_avg['Humidity'], label='Air Humidity (%)', color='blue', marker='o')
     plt.plot(last_week_night_avg.index, last_week_night_avg['Ground Humidity'], label='Ground Humidity (%)', color='green', marker='o')
@@ -183,15 +176,13 @@ def analysis():
     plt.title('Nighttime Average Humidity for the Past Week')
     plt.legend()
     plt.grid(True)
-    plt.xticks(rotation=45)  # Rotate date labels for better visibility
+    plt.xticks(rotation=45)
     plt.tight_layout()
-    # Save the graph as a base64-encoded image
     night_humidity_avg_buffer = io.BytesIO()
     plt.savefig(night_humidity_avg_buffer, format='png')
     night_humidity_avg_buffer.seek(0)
     graphs['night_avg_humidity'] = base64.b64encode(night_humidity_avg_buffer.getvalue()).decode()
 
-    # Plot nighttime average light intensity for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(last_week_night_avg.index, last_week_night_avg['Light Intensity'], label='Light Intensity (Lux)', color='purple', marker='o')
     plt.xlabel('Date')
@@ -199,9 +190,8 @@ def analysis():
     plt.title('Nighttime Average Light Intensity for the Past Week')
     plt.legend()
     plt.grid(True)
-    plt.xticks(rotation=45)  # Rotate date labels for better visibility
+    plt.xticks(rotation=45)
     plt.tight_layout()
-    # Save the graph as a base64-encoded image
     night_light_intensity_avg_buffer = io.BytesIO()
     plt.savefig(night_light_intensity_avg_buffer, format='png')
     night_light_intensity_avg_buffer.seek(0)
@@ -209,7 +199,6 @@ def analysis():
 
     # ----------- Allday average measurement graphs ----------- #
 
-    # Plot whole-day average temperatures for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(whole_day_avg.index, whole_day_avg['Temperature'], label='Air Temperature (°C)', color='red', marker='o')
     plt.plot(whole_day_avg.index, whole_day_avg['Ground Temperature'], label='Ground Temperature (°C)', color='orange', marker='o')
@@ -225,7 +214,6 @@ def analysis():
     whole_temp_avg_buffer.seek(0)
     graphs['whole_avg_temperature'] = base64.b64encode(whole_temp_avg_buffer.getvalue()).decode()
 
-    # Plot whole-day average humidity for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(whole_day_avg.index, whole_day_avg['Humidity'], label='Air Humidity (%)', color='blue', marker='o')
     plt.plot(whole_day_avg.index, whole_day_avg['Ground Humidity'], label='Ground Humidity (%)', color='green', marker='o')
@@ -241,7 +229,6 @@ def analysis():
     whole_humidity_avg_buffer.seek(0)
     graphs['whole_avg_humidity'] = base64.b64encode(whole_humidity_avg_buffer.getvalue()).decode()
 
-    # Plot whole-day average light intensity for the last week
     plt.figure(figsize=(6, 4))
     plt.plot(whole_day_avg.index, whole_day_avg['Light Intensity'], label='Light Intensity (Lux)', color='purple', marker='o')
     plt.xlabel('Date')
@@ -257,3 +244,4 @@ def analysis():
     graphs['whole_avg_light_intensity'] = base64.b64encode(whole_light_avg_buffer.getvalue()).decode()
 
     return render_template('analysis/analysis.html', graphs=graphs)
+
