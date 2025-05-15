@@ -1,22 +1,24 @@
 import csv
 from random import uniform, randint
 from datetime import datetime, timedelta
-import pytz  # For time zone handling
+import pytz  
+import os  
 
 # Time zone: Japan Standard Time (UTC+9)
 jst = pytz.timezone('Asia/Tokyo')
 
-# CSV file name
-csv_filename = "measurements.csv"
+data_dir = "data"
+os.makedirs(data_dir, exist_ok=True)
+
+
+csv_filename = os.path.join(data_dir, "measurements.csv")
 
 # Number of readings for 8 days
-num_readings = 20 * 24 * 12  # 8 days * 24 hours * 12 readings per hour (every 5 minutes)
+num_readings = 7 * 24 * 12  
 
-# Interval of 5 minutes
 interval_minutes = 5
 
-# Start date and time (tomorrow at midnight in JST)
-start_datetime = (datetime.now(jst) + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+start_datetime = (datetime.now(jst) - timedelta(days=6)).replace(hour=0, minute=0, second=0, microsecond=0)
 
 # Generate CSV
 with open(csv_filename, mode='w', newline='') as file:
@@ -28,7 +30,7 @@ with open(csv_filename, mode='w', newline='') as file:
     # Generate data for each interval
     for i in range(num_readings):
         # Current timestamp (subtract intervals from the start time)
-        current_datetime = start_datetime - timedelta(minutes=i * interval_minutes)
+        current_datetime = start_datetime + timedelta(minutes=i * interval_minutes)
 
         # Generate random data
         temperature = round(uniform(20.0, 30.0), 1)  # Air temperature in °C

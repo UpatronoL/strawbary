@@ -1,106 +1,72 @@
-/* Wrapper to make the table scrollable */
+/* summary-table.css */
+.container {
+    width: 95%;
+    margin: 20px auto;
+    font-family: var(--font-main, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
 .table-wrapper {
     overflow-x: auto;
-    white-space: nowrap;
-    max-height: 80vh;
-    border: 1px solid #ccc;
     border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: white;
 }
 
-/* Table layout and styling */
 table {
+    width: 100%;
     border-collapse: collapse;
-    width: max-content;
-    font-family: Arial, sans-serif;
+    white-space: nowrap;
 }
 
-#category-cell {
-    position: sticky;
-    left: 0;
-    z-index: 4;
-    background-color: #ffe6e0;
-    color: black;
-    font-weight: bold;
-    padding: 10px;
-    text-align: left;
-    border-right: 1px solid #ddd;
-}
-
-/* Sticky Metric header cell */
-#metric-header {
-    position: sticky;
-    left: 187px; /* Same value as the metric cells */
-    z-index: 2;
-    color: black;
-    background-color: #f9f9f9;
-    outline: 1px solid #ddd; /* Match the blue border for Metric cells */
-    text-align: center;
-    font-weight: bold;
-    padding: 10px;
-    border-right: 1px solid #ddd; /* Optional for separation */
-}
-
-/* Sticky Category column */
-#category {
-    position: sticky;
-    left: 0;
-    z-index: 3;
-    background-color: #ffe6e0;
-    color: black;
-    font-weight: bold;
-    padding: 10px;
-    text-align: left;
-    border-right: 1px solid #ddd;
-}
-
-/* Sticky Metric column */
-#metric-max,
-#metric-min,
-#metric-daily-avg,
-#metric-daytime-avg,
-#metric-nighttime-avg {
-    position: sticky;
-    left: 187px;
-    z-index: 1;
-    background-color: #f9f9f9;
-    text-align: center;
-    padding: 10px;
-    border-right: 1px solid #ddd;
-}
-
-/* Sticky Header Row */
-th {
+thead {
+    background-color: #FF6F61;
+    color: white;
     position: sticky;
     top: 0;
     z-index: 1;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+#category-cell, #metric-header {
     background-color: #FF6F61;
     color: white;
-    font-size: 14px;
     font-weight: bold;
-    padding: 10px;
-    text-transform: uppercase;
-    border-bottom: 2px solid #ddd;
+    position: sticky;
+    left: 0;
+    z-index: 2;
 }
 
-/* Zebra striping for table rows */
-tr:nth-child(odd) {
-    background-color: #fdf4f2;
+#metric-header {
+    left: 150px;
+    z-index: 2;
 }
 
-tr:nth-child(even) {
-    background-color: #fff;
+#category {
+    background-color: #f2f2f2;
+    color: #333;
+    position: sticky;
+    left: 0;
+    font-weight: bold;
+    text-align: left;
 }
 
-/* Hover effect for rows */
-tr:hover {
-    background-color: #ffe6e0;
+[id^="metric-"] {
+    background-color: #f9f9f9;
+    position: sticky;
+    left: 150px;
+    text-align: left;
+    color: #444;
 }
 
-/* General cell styling */
-td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-    font-size: 14px;
-}
+/* Styling for different metric types */
+#metric-max { color: #e74c3c; }
+#metric-min { color: #3498db; }
+#metric-daily-avg { color: #2c3e50; }
+#metric-daytime-avg { color: #f39c12; }
+#metric-nighttime-avg { color: #8e44ad; }
 

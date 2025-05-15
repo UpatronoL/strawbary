@@ -1,0 +1,375 @@
+/* ────────────────────────────────────────
+   DARK THEME CSS - STRAWBERRY PROJECT
+   ────────────────────────────────────────
+   A complete dark theme solution for all pages 
+*/
+
+:root {
+  /* Dark theme color palette */
+  --dark-bg-primary: #1a1a1a;
+  --dark-bg-secondary: #2a2a2a;
+  --dark-bg-tertiary: #333333;
+  --dark-text-primary: #f0f0f0;
+  --dark-text-secondary: #cccccc;
+  --dark-text-muted: #999999;
+  --dark-border: #444444;
+  --dark-primary: #ff7f6e;        /* Lighter strawberry */
+  --dark-primary-dark: #e74c3c;   /* Original strawberry */
+  --dark-accent: #2ecc71;         /* Original accent green */
+  --dark-accent-dark: #27ae60;    /* Darker accent green */
+  --dark-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --dark-highlight: #3d3d3d;
+}
+
+/* GLOBAL STYLES */
+body[data-theme="dark"] {
+  background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%);
+  color: var(--dark-text-primary);
+}
+
+body[data-theme="dark"] * {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* ── HEADER & NAVIGATION ── */
+body[data-theme="dark"] header,
+body[data-theme="dark"] .header-container {
+  background-color: var(--dark-bg-secondary);
+  color: var(--dark-text-primary);
+  border-bottom: 3px solid var(--dark-accent-dark);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo styling in dark mode */
+body[data-theme="dark"] .logo {
+  filter: brightness(1.2) contrast(1.1);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+body[data-theme="dark"] .logo:hover {
+  transform: scale(1.05);
+}
+
+/* Theme toggle button styling */
+body[data-theme="dark"] #theme-toggle {
+  background-color: var(--dark-bg-tertiary);
+  color: #FFD700; /* Golden color for the moon emoji */
+  border: 1px solid var(--dark-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-left: 15px;
+}
+
+body[data-theme="dark"] #theme-toggle:hover {
+  background-color: var(--dark-highlight);
+  transform: translateY(-3px) rotate(15deg);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+}
+
+/* Style for the theme icon */
+body[data-theme="dark"] #theme-toggle i {
+  color: #FFD700;
+}
+
+body[data-theme="dark"] .navbar a {
+  color: var(--dark-text-primary);
+}
+
+body[data-theme="dark"] .navbar a:hover {
+  color: var(--dark-primary);
+}
+
+body[data-theme="dark"] header h1,
+body[data-theme="dark"] header h2,
+body[data-theme="dark"] .header-icon {
+  color: var(--dark-text-primary);
+}
+
+/* ── HERO SECTION ── */
+body[data-theme="dark"] .header-hero {
+  background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('/static/strawberry-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* ── MAIN CONTENT ── */
+body[data-theme="dark"] .main-content {
+  background-color: var(--dark-bg-tertiary);
+  box-shadow: var(--dark-shadow);
+}
+
+body[data-theme="dark"] .content-section:nth-child(even) {
+  background-color: var(--dark-bg-secondary);
+}
+
+/* ── CARDS & CONTAINERS ── */
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .container,
+body[data-theme="dark"] .next-step-item,
+body[data-theme="dark"] .table-container,
+body[data-theme="dark"] .sticky-sidebar,
+body[data-theme="dark"] .summary-container,
+body[data-theme="dark"] .download-container,
+body[data-theme="dark"] .analysis-container,
+body[data-theme="dark"] .graph-item {
+  background-color: var(--dark-bg-secondary);
+  color: var(--dark-text-primary);
+  border-color: var(--dark-border);
+  box-shadow: var(--dark-shadow);
+}
+
+body[data-theme="dark"] .prototype-container {
+  background-color: transparent;
+}
+
+body[data-theme="dark"] .card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ── TABLES ── */
+body[data-theme="dark"] table {
+  background-color: var(--dark-bg-secondary);
+  border-color: var(--dark-border);
+}
+
+body[data-theme="dark"] .filter-bar {
+  background-color: rgba(231, 235, 238, 0.05);
+}
+
+body[data-theme="dark"] .date-filter label {
+  font-weight: 500;
+  color: #fff; /*filter by date*/
+}
+
+body[data-theme="dark"] .date-filter input[type="date"] {
+  border: 1px solid black;
+}
+
+
+
+body[data-theme="dark"] th {
+  background: linear-gradient(135deg, var(--dark-primary-dark), var(--dark-primary));
+  color: #000;  /* Keep dark text on colored headers for contrast */
+  border-bottom: 2px solid var(--dark-primary-dark);
+}
+
+body[data-theme="dark"] td {
+  color: var(--dark-text-primary);
+  border: 1px solid var(--dark-border);
+}
+
+body[data-theme="dark"] tbody tr:nth-child(even) {
+  background-color: var(--dark-bg-tertiary);
+}
+
+body[data-theme="dark"] tbody tr:nth-child(odd) {
+  background-color: var(--dark-bg-secondary);
+}
+
+body[data-theme="dark"] tbody tr:hover {
+  background-color: var(--dark-highlight);
+}
+
+body[data-theme="dark"] #category-cell,
+body[data-theme="dark"] #category {
+  background-color: rgba(255, 111, 97, 0.2);  /* Translucent strawberry color */
+  color: var(--dark-text-primary);
+}
+
+body[data-theme="dark"] #metric-header,
+body[data-theme="dark"] #metric-max,
+body[data-theme="dark"] #metric-min,
+body[data-theme="dark"] #metric-daily-avg,
+body[data-theme="dark"] #metric-daytime-avg,
+body[data-theme="dark"] #metric-nighttime-avg {
+  background-color: var(--dark-bg-tertiary);
+  color: var(--dark-text-primary);
+}
+
+/* Table sorting highlight */
+body[data-theme="dark"] tbody td.sorting_1 {
+  background-color: rgba(231, 76, 60, 0.2) !important;
+}
+
+/* ── SUMMARY & STATISTICS ── */
+body[data-theme="dark"] .summary-container h2,
+body[data-theme="dark"] .download-container h2 {
+  color: var(--dark-text-primary);
+  border-bottom: 1px solid var(--dark-border);
+}
+
+body[data-theme="dark"] .summary-container p {
+  color: var(--dark-text-secondary);
+}
+
+body[data-theme="dark"] .summary-container p strong {
+  color: var(--dark-text-primary);
+}
+
+/* Colored temperature readings in summary */
+body[data-theme="dark"] .summary-container p:nth-child(2),
+body[data-theme="dark"] .summary-container p:nth-child(3),
+body[data-theme="dark"] .summary-container p:nth-child(4),
+body[data-theme="dark"] .summary-container p:nth-child(5),
+body[data-theme="dark"] .summary-container p:nth-child(6) {
+  color: var(--dark-primary);
+}
+
+/* ── BUTTONS & FORM ELEMENTS ── */
+body[data-theme="dark"] .download-button {
+  background: linear-gradient(135deg, var(--dark-accent-dark) 0%, var(--dark-accent) 100%);
+  color: #fff;
+  border: none;
+}
+
+body[data-theme="dark"] .download-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.3);
+}
+
+body[data-theme="dark"] .datatable-filter {
+  background-color: black;
+}
+
+
+body[data-theme="dark"] #filter-column {
+  background-color: #ff7f6e;
+  color: var(--dark-text-primary);
+}
+
+/* DataTables specific styling */
+body[data-theme="dark"] .dataTables_wrapper .dataTables_filter input {
+  background-color: var(--dark-bg-tertiary);
+  color: var(--dark-text-primary);
+  border: 1px solid var(--dark-border);
+}
+
+body[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button {
+  background-color: var(--dark-bg-secondary);
+  color: var(--dark-text-primary) !important;
+  border: 1px solid var(--dark-border);
+}
+
+body[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: var(--dark-primary);
+  color: #fff !important;
+}
+
+body[data-theme="dark"] .dataTables_wrapper .dataTables_info {
+  color: var(--dark-text-secondary);
+}
+
+/* ── HIGHLIGHT BOX ── */
+body[data-theme="dark"] .highlight-box {
+  background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+  color: #fff;
+}
+
+/* ── PROTOTYPE IMAGE & TEXT ── */
+body[data-theme="dark"] .prototype-image {
+  border: 2px solid var(--dark-border);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  filter: brightness(0.9) contrast(1.1);
+}
+
+body[data-theme="dark"] .prototype-text h2 {
+  color: var(--dark-primary);
+}
+
+body[data-theme="dark"] .prototype-text p {
+  color: var(--dark-text-secondary);
+}
+
+/* ── GRAPHS & ANALYSIS ── */
+body[data-theme="dark"] .graph-item img {
+  border: 1px solid var(--dark-border);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  filter: brightness(0.9) contrast(1.1); 
+}
+
+body[data-theme="dark"] .graph-item h2 {
+  color: var(--dark-primary);
+}
+
+/* Modal for enlarged graphs */
+body[data-theme="dark"] .modal {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+body[data-theme="dark"] .modal-content {
+  border: 5px solid var(--dark-bg-secondary);
+  filter: brightness(1.1);
+}
+
+body[data-theme="dark"] .close-button {
+  color: var(--dark-text-primary);
+}
+
+body[data-theme="dark"] .close-button:hover,
+body[data-theme="dark"] .close-button:focus {
+  color: var(--dark-primary);
+}
+
+/* ── LINKS & ICONS ── */
+body[data-theme="dark"] a {
+  color: var(--dark-primary);
+}
+
+body[data-theme="dark"] .fa-download,
+body[data-theme="dark"] .fa-home,
+body[data-theme="dark"] .fa-table,
+body[data-theme="dark"] .fa-chart-bar,
+body[data-theme="dark"] .fa-chart-line {
+  color: var(--dark-text-primary);
+}
+
+/* ── SECTION TITLES & HEADINGS ── */
+body[data-theme="dark"] .section-title {
+  color: var(--dark-primary);
+}
+
+body[data-theme="dark"] .section-title:after {
+  background: var(--dark-primary-dark);
+}
+
+/* Home page headings */
+body[data-theme="dark"] .content-section h2 {
+  color: var(--dark-primary);
+}
+
+body[data-theme="dark"] .content-section h3,
+body[data-theme="dark"] .card h3,
+body[data-theme="dark"] .next-step-item h3 {
+  color: var(--dark-text-primary);
+}
+
+/* Analysis page headings */
+body[data-theme="dark"] .analysis-title {
+  color: var(--dark-text-primary);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body[data-theme="dark"] .title-container h1 {
+  color: var(--dark-primary);
+}
+
+body[data-theme="dark"] .analysis-container h2, 
+body[data-theme="dark"] .graph-item h2 {
+  color: var(--dark-primary);
+}
+
+/* ── FOOTER ── */
+body[data-theme="dark"] footer {
+  background-color: #121212;
+  color: var(--dark-text-muted);
+}

@@ -1,49 +1,530 @@
-/* Container layout for the table and summary box */
+:root {
+    /* Modern, professional color palette */
+    --primary: #3498db;
+    --primary-light: #5dade2;
+    --primary-dark: #2980b9;
+    --secondary: #34495e;
+    --accent: #2ecc71;
+    --accent-light: #7ed6a5;
+    --text: #333333;
+    --text-light: #7f8c8d;
+    --background: #f5f7fa;
+    --white: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #e0e0e0;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --strawberry-red: #FF6F61; /* Added strawberry red variable */
+    
+    /* Typography */
+    --font-main: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-size-base: 0.95rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+}
+
+/* Base styles */
+body {
+    font-family: var(--font-main);
+    background-color: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container */
 .container {
-    display: flex; /* Flexbox layout for side-by-side alignment */
-    align-items: flex-start; /* Align items at the top of the container */
-    justify-content: space-between; /* Space out items evenly */
-    flex-wrap: nowrap; /* Prevent wrapping of items */
-    padding: 20px;
-    gap: 20px; /* Add spacing between the table and the summary box */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    gap: 30px;
+    max-width: 1440px;
+    margin: 50px auto;
+    padding: 0 20px;
+    grid-template-areas: 
+        "table summary"
+        "table download";
 }
 
-/* Table container styles */
-.table-container {
-    width: 70%; /* Make the table take up 70% of the container width */
-    margin-right: 20px; /* Add space between the table and the summary box */
-}
-
-/* Summary container styles */
 .summary-container {
-    width: 25%; /* Make the summary box take up 25% of the container width */
-    background-color: white; /* White background for the summary box */
+    grid-area: summary;
+}
+
+.download-container {
+    grid-area: download;
+    margin-top: 25px; 
+}
+
+/* Table container styling */
+.table-container {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    position: relative;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    grid-area: table;
+}
+
+.table-container:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+/* Date filter styling */
+.filter-bar {
     padding: 20px;
-    border-radius: 8px; /* Add rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
-    color: #333; /* Text color */
-    text-align: left; /* Left-align text */
-    position: sticky; /* Make it sticky within the viewport */
-    top: 20px; /* Stick it 20px below the top of the viewport */
+    background-color: rgba(231, 235, 238, 0.05);
+    border-bottom: 1px solid var(--border-color);
 }
 
-/* Summary container header styles */
-.summary-container h2 {
-    color: #FF6F61; /* Strawberry red for the header */
-    margin-bottom: 15px; /* Space below the header */
+.date-filter {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
-/* Button Styles (Optional for table interactions) */
-input[type="submit"] {
-    background-color: #4CAF50; /* Leaf green button */
-    color: white;
+.date-filter label {
+    font-weight: 500;
+    color: var(--secondary);
+}
+
+.date-filter input[type="date"] {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    font-family: var(--font-main);
+    transition: var(--transition);
+}
+
+.date-filter input[type="date"]:focus {
+    border-color: var(--strawberry-red);
+    box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.2);
+    outline: none;
+}
+
+.filter-button, 
+.reset-button {
     padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: var(--transition);
     cursor: pointer;
+    text-decoration: none;
+    text-align: center;
 }
 
-input[type="submit"]:hover {
-    background-color: #388E3C; /* Darker leaf green */
+.filter-button {
+    background-color: var(--strawberry-red);
+    color: var(--white);
+    border: none;
 }
 
+.filter-button:hover {
+    background-color: #e56358; /* Slightly darker shade of strawberry red */
+}
+
+.reset-button {
+    background-color: var(--white);
+    color: var(--secondary);
+    border: 1px solid var(--border-color);
+}
+
+.reset-button:hover {
+    background-color: var(--background);
+    border-color: var(--secondary);
+}
+
+/* DataTable filter styling */
+.datatable-filter {
+    display: flex;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--white);
+    flex-wrap: wrap;
+}
+
+/* Original filter controls styling */
+.filter-controls {
+    display: flex;
+    padding: 16px;
+    background-color: rgba(52, 152, 219, 0.05);
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+}
+
+#filter-column, #table-filter {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    outline: none;
+    font-family: var(--font-main);
+    transition: var(--transition);
+}
+  
+#filter-column {
+    background-color: var(--strawberry-red); 
+    color: var(--white);
+    font-weight: 500;
+    margin-right: 12px;
+    min-width: 150px;
+}
+
+#filter-column:hover, #filter-column:focus {
+    background-color: var(--strawberry-red);
+}
+  
+#table-filter {
+    flex-grow: 1;
+    width: 250px;
+    max-width: 400px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#table-filter:focus {
+    border-color: var(--strawberry-red);
+    box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.2);
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--font-size-base);
+    background-color: var(--white);
+}
+
+thead {
+    background: linear-gradient(135deg, var(--strawberry-red), var(--strawberry-red));
+    color: var(--white);
+}
+
+th {
+    padding: 16px 15px;
+    font-weight: 600;
+    border-bottom: 2px solid var(--strawberry-red);
+    text-align: left;
+    letter-spacing: 0.03em;
+    position: relative;
+}
+
+th:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+tbody td {
+    padding: 15px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgba(245, 247, 250, 0.5);
+}
+
+tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+tbody td.sorting_1 {
+    background-color: rgba(52, 152, 219, 0.1) !important;
+}
+
+/* Sidebar styling */
+.sticky-sidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.summary-container, .download-container {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.summary-container:hover, .download-container:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.summary-container {
+    border-top: 4px solid var(--accent);
+}
+
+.download-container {
+    border-top: 4px solid var(--accent);
+}
+
+.summary-container h2,
+.download-container h2 {
+    font-size: var(--font-size-xl);
+    color: var(--secondary);
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+}
+
+.summary-container p {
+    margin: 0 0 15px;
+    font-size: var(--font-size-base);
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.summary-container p:last-child {
+    margin-bottom: 0;
+}
+
+.summary-container p strong {
+    color: var(--secondary);
+    font-weight: 600;
+}
+
+/* Temperature indicators with subtle colors */
+.summary-container p:nth-child(2) { color: #e74c3c; } /* Max temp */
+.summary-container p:nth-child(3) { color: #3498db; } /* Min temp */
+.summary-container p:nth-child(4) { color: #2c3e50; } /* Mean temp */
+.summary-container p:nth-child(5) { color: #f39c12; } /* Daytime avg */
+.summary-container p:nth-child(6) { color: #8e44ad; } /* Nighttime avg */
+
+/* Download container styling */
+.download-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.download-button {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    color: var(--white);
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+    transition: var(--transition);
+    margin-top: 10px;
+}
+
+.download-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+.download-button i {
+    font-size: var(--font-size-base);
+}
+
+/* DataTables custom styling */
+.dataTables_wrapper .dataTables_filter {
+    display: none; /* Hide the default search since we're using our own */
+    margin-bottom: 20px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 10px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    width: 250px;
+    transition: var(--transition);
+    font-family: var(--font-main);
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: var(--strawberry-red);
+    box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.2);
+    outline: none;
+}
+
+/* Make sure the DataTables info and pagination are properly spaced */
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    padding: 15px 0;
+    margin-top: 5px;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: var(--white);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    color: var(--text);
+    margin: 0 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: var(--strawberry-red);
+    color: var(--white);
+    border-color: var(--strawberry-red);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background-color: var(--strawberry-red);
+    color: var(--white);
+    border-color: var(--strawberry-red);
+    font-weight: 600;
+}
+
+.dataTables_wrapper .dataTables_info {
+    margin-top: 15px;
+    color: var(--text-light);
+    font-size: var(--font-size-sm);
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .container {
+        grid-template-columns: 1fr 280px;
+        gap: 25px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "table"
+            "summary"
+            "download";
+    }
+    
+    .summary-container,
+    .download-container {
+        position: relative;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
+    
+    .summary-container {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .container {
+        padding: 0 15px;
+        margin: 30px auto;
+    }
+    
+    .filter-controls,
+    .date-filter,
+    .datatable-filter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .date-filter label,
+    .date-filter input[type="date"],
+    .filter-button,
+    .reset-button,
+    #filter-column {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    #filter-column,
+    #table-filter {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .dataTables_wrapper .dataTables_filter input {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-top: 5px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+tbody tr {
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: calc(var(--row-index) * 0.05s);
+    opacity: 0;
+}
+
+/* Loading state animation */
+.table-container.loading:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.table-container.loading:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(52, 152, 219, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
+    z-index: 11;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}

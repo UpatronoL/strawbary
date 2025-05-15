@@ -1,124 +1,178 @@
-/* Global Reset */
+:root {
+    --primary: #e74c3c;
+    --primary-dark: #c0392b;
+    --secondary: #2c3e50;
+    --accent: #27ae60;
+    --text: #2d3436;
+    --text-light: #636e72;
+    --background: #f9f9f9;
+    --white: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
 body, html {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #fff9f9; /* Light strawberry background */
-    color: #333;
-    font-family: Arial, sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
 }
 
-/* Header Container */
+/* Fixed Header */
 .header-container {
-    display: flex; /* Flexbox layout for horizontal alignment */
-    align-items: center; /* Vertically align items */
-    justify-content: space-between; /* Spread title and buttons */
-    background-color: #FF6F61; /* Strawberry red */
-    color: white;
-    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--white);
+    box-shadow: var(--shadow);
+    padding: 15px 5%;
+    z-index: 1000;
+    transition: var(--transition);
+    border-bottom: 3px solid var(--accent);
 }
 
-/* Header Title */
-.header-title {
-    margin: 0;
-    font-size: 36px; /* Increase the title size */
-    font-weight: bold;
-    display: inline; /* Ensure the title is inline with the logo */
+/* Logo Styling with Circle */
+.logo {
+    height: 50px;
+    width: 100px;
+    border-radius: 50%;
+    object-fit:cover;
+    border: 3px solid var(--accent);
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    padding: 5px;
+    background-color: var(--white);
 }
 
-/* Buttons Container (Nav + Download Button) */
-.header-buttons {
-    display: flex; /* Align navigation and download button horizontally */
-    align-items: center; /* Vertically align items */
-    gap: 20px; /* Space between navigation and download button */
+.logo:hover {
+    transform: scale(1.05);
 }
 
 /* Navigation Bar */
 .navbar {
-    list-style-type: none; /* Remove bullet points */
+    display: flex;
+    list-style: none;
     margin: 0;
     padding: 0;
-    display: flex; /* Align links horizontally */
-    gap: 15px; /* Add spacing between navigation links */
+    gap: 25px;
+    align-items: center;
 }
 
 .navbar li {
-    display: inline;
+    position: relative;
 }
 
 .navbar a {
-    color: white; /* White text for links */
-    text-decoration: none; /* Remove underline */
-    font-weight: bold;
-    padding: 5px 15px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease; /* Add hover transition */
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .navbar a:hover {
-    background-color: #D44A3A; /* Darker strawberry red on hover */
+    color: var(--primary);
+    transform: translateY(-2px);
 }
 
-/* Download Button */
-.download-container {
-    margin-left: auto; /* Push the download button to the far right */
+.navbar a i {
+    font-size: 0.9rem;
 }
 
-.download-button {
-    display: inline-block;
-    background-color: #4CAF50; /* Green button */
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+/* Active Link Indicator */
+.navbar li::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: var(--transition);
 }
 
-.download-button:hover {
-    background-color: #388E3C; /* Darker green on hover */
+.navbar li:hover::after {
+    width: 100%;
+}
+
+/* Theme Toggle Button */
+#theme-toggle {
+    background-color: var(--secondary);
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    margin-left: 15px;
+}
+
+#theme-toggle:hover {
+    transform: rotate(45deg);
+    background-color: var(--primary);
+}
+
+main {
+    padding: 50px;
+    margin-top: 80px;
+    min-height: calc(100vh - 160px);
 }
 
 /* Footer Styles */
 footer {
-    background-color: #FF6F61; /* Strawberry red for footer */
-    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--white);
+    padding: 30px 5%;
     text-align: center;
-    padding: 10px 0;
-    margin-top: 20px;
-    bottom: 0;
-    width: 100%;
 }
 
-/* General Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    background-color: #fff;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-container {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .navbar {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .download-button {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    main {
+        padding-top: 80px;
+        min-height: calc(100vh - 160px);
+        margin-top: 120px;
+    }
+    
+    #theme-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
 }
-
-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #FF6F61; /* Strawberry red for the header */
-    color: white;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2; /* Light gray background for even rows */
-}
-
-/* Logo Styling */
-.logo {
-    height: 50px; /* Adjust the size of the logo */
-    margin-right: 20px; /* Add spacing between the logo and the title */
-}
-

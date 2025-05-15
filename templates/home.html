@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="header-hero">
+        <h1>Strawberry Farm Innovation</h1>
+        <p>Revolutionizing premium strawberry cultivation through smart environmental sensing technology</p>
+    </section>
+
+    <section class="content-section">
+        <h2 class="section-title">About the Project</h2>
+        <p class="lead-text">MIGAKI-ICHIGO represents the pinnacle of strawberry cultivation, and our project aims to push the boundaries further with cutting-edge monitoring technology.</p>
+        
+        <div class="card-grid">
+            <div class="card">
+                <h3>The Challenge</h3>
+                <p>Nursery greenhouses lack adequate monitoring systems, creating blind spots in the cultivation process that affect yield and quality.</p>
+            </div>
+            <div class="card">
+                <h3>Our Solution</h3>
+                <p>Compact, wireless environmental sensors that provide real-time data on critical growth factors without disrupting operations.</p>
+            </div>
+            <div class="card">
+                <h3>The Impact</h3>
+                <p>Increased yields, improved quality, and data-driven decision making for strawberry farmers.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2 class="section-title">Technical Challenges</h2>
+        
+        <div class="card-grid">
+            <div class="card">
+                <i class="fas fa-wifi fa-3x" style="color: #3498db;"></i>
+                <h3>Wireless Communication</h3>
+                <p>Overcoming steel structure interference to maintain reliable data transmission up to 2km.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-tint fa-3x" style="color: #3498db;"></i>
+                <h3>Durability</h3>
+                <p>Creating waterproof housings that withstand harsh greenhouse conditions.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-database fa-3x" style="color: #3498db;"></i>
+                <h3>Data Integrity</h3>
+                <p>Ensuring continuous monitoring with offline data retention capabilities.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="prototype-container">
+            <img src="{{ url_for('static', filename='project-pic.png') }}" alt="Strawberry Sensor Prototype" class="prototype-image">
+            <div class="prototype-text">
+                <h2 class="section-title">Our Prototype</h2>
+                <p>The current iteration of our environmental sensing device blends seamlessly into strawberry seedling trays while collecting critical growth data.</p>
+                <ul class="feature-list">
+                    <li>Compact, unobtrusive design</li>
+                    <li>Multi-sensor array</li>
+                    <li>Long-range communication</li>
+                    <li>Weather-resistant housing</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="highlight-box">
+            <h2>Expected Achievements</h2>
+            <p>By implementing our solution, we aim to increase strawberry yields by 20-30% while improving quality consistency and reducing resource waste.</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2 class="section-title">Next Steps</h2>
+        <div class="next-steps">
+            <div class="next-step-item">
+                <h3>Field Testing</h3>
+                <p>Real-world validation in nursery environments</p>
+            </div>
+            <div class="next-step-item">
+                <h3>Algorithm Refinement</h3>
+                <p>Enhancing data analysis for actionable insights</p>
+            </div>
+            <div class="next-step-item">
+                <h3>Farmer Interface</h3>
+                <p>Developing intuitive dashboards</p>
+            </div>
+            <div class="next-step-item">
+                <h3>Communication Reliability</h3>
+                <p>Ensuring robust long-distance transmission</p>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

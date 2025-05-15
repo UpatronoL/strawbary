@@ -6,22 +6,29 @@
     <title>{% block title %}My Website{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     {% block styles %}{% endblock %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
-<body>
+<body data-theme="dark">
     <header class="header-container">
-        <img src="{{ url_for('static', filename='GRAnewlogocopy_main.png') }}" alt="Logo" class="logo">
-        <h1 class="header-title">Sensor Data Dashboard</h1>
+        <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='GRAnewlogocopy_main.png') }}" alt="Logo" class="logo">
+        </a>
         <div class="header-buttons">
             <nav>
                 <ul class="navbar">
-                    <li><a href="{{ url_for('table.table') }}">Sensor Measurements</a></li>
-                    <li><a href="{{ url_for('summary.summary_table') }}">Summary Page</a></li>
-                    <li><a href="{{ url_for('analysis.analysis') }}">Data Analysis</a></li>
+                    <li><a href="{{ url_for('home.home') }}"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="{{ url_for('table.table') }}"><i class="fas fa-table"></i> Measurements</a></li>
+                    <li><a href="{{ url_for('summary.summary_table') }}"><i class="fas fa-chart-bar"></i> Summary</a></li>
+                    <li><a href="{{ url_for('analysis.analysis') }}"><i class="fas fa-chart-line"></i> Analysis</a></li>
+                    <button id="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
                 </ul>
             </nav>
-            <div class="download-container">
-                <a href="{{ url_for('table.download_csv') }}" class="download-button">Download Data</a>
-            </div>
         </div>
     </header>
 
@@ -32,9 +39,10 @@
     <footer>
         <p>Footer content</p>
     </footer>
-    {% block scripts %}
-    <script src="{{ url_for('static', filename='analysis.js') }}"></script>
-    {% endblock %}
+{% block scripts %}
+  <script src="{{ url_for('static', filename='theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='analysis.js') }}"></script>
+ {% endblock %}
+
 </body>
 </html>
-

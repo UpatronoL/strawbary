@@ -96,7 +96,20 @@
         <span class="close-button" onclick="closeModal()">×</span>
         <img id="modal-img" class="modal-content">
     </div>
-
 </div>
-{% endblock %}
 
+<script>
+function enlargeGraph(id) {
+    const modal = document.getElementById('graph-modal');
+    const modalImg = document.getElementById('modal-img');
+    const img = document.getElementById(id);
+    
+    modal.style.display = 'block';
+    modalImg.src = img.src;
+}
+
+function closeModal() {
+    document.getElementById('graph-modal').style.display = 'none';
+}
+</script>
+{% endblock %}
