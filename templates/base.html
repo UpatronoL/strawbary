@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Website{% endblock %}</title>
+    <title data-i18n="title">My Website</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     {% block styles %}{% endblock %}
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='language_switcher.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
-
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 </head>
 <body data-theme="dark">
     <header class="header-container">
@@ -22,10 +20,36 @@
         <div class="header-buttons">
             <nav>
                 <ul class="navbar">
-                    <li><a href="{{ url_for('home.home') }}"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="{{ url_for('table.table') }}"><i class="fas fa-table"></i> Measurements</a></li>
-                    <li><a href="{{ url_for('summary.summary_table') }}"><i class="fas fa-chart-bar"></i> Summary</a></li>
-                    <li><a href="{{ url_for('analysis.analysis') }}"><i class="fas fa-chart-line"></i> Analysis</a></li>
+                    <li>
+                        <a href="{{ url_for('home.home') }}">
+                            <i class="fas fa-home"></i> 
+                            <span data-i18n="nav-home">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('table.table') }}">
+                            <i class="fas fa-table"></i> 
+                            <span data-i18n="nav-measurements">Measurements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('summary.summary_table') }}">
+                            <i class="fas fa-chart-bar"></i> 
+                            <span data-i18n="nav-summary">Summary</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analysis.analysis') }}">
+                            <i class="fas fa-chart-line"></i> 
+                            <span data-i18n="nav-analysis">Analysis</span>
+                        </a>
+                    </li>
+                    <div class="language-selector">
+                        <select id="language-select">
+                            <option value="en">English</option>
+                            <option value="ja">日本語</option>
+                        </select>
+                    </div>
                     <button id="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
                 </ul>
             </nav>
@@ -37,12 +61,13 @@
     </main>
 
     <footer>
-        <p>Footer content</p>
+        <p data-i18n="footer">Footer content</p>
     </footer>
-{% block scripts %}
-  <script src="{{ url_for('static', filename='theme.js') }}"></script>
-  <script src="{{ url_for('static', filename='analysis.js') }}"></script>
- {% endblock %}
 
+    {% block scripts %}
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='analysis.js') }}"></script>
+    <script src="{{ url_for('static', filename='language_switcher.js') }}" defer></script>
+    {% endblock %}
 </body>
 </html>

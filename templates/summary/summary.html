@@ -1,173 +1,175 @@
 {% extends 'base.html' %}
-
-{% block title %}Summary Measurements{% endblock %}
-
+ 
+{% block title %}
+  <span data-i18n="title">Summary Measurements</span>
+{% endblock %}
+ 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='summary-table.css') }}">
 {% endblock %}
-
+ 
 {% block content %}
 <div class="container">
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th id="category-cell">Category</th>
-                    <th id="metric-header">Metric</th>
-                    {% for day in summary %}
-                    <th>{{ day['Date'] }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Temperature -->
-                <tr>
-                    <td id="category" rowspan="5">Temperature (°C)</td>
-                    <td id="metric-max">Max</td>
-                    {% for day in summary %}
-                    <td>{{ day['Max Temp'] if day['Max Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-min">Min</td>
-                    {% for day in summary %}
-                    <td>{{ day['Min Temp'] if day['Min Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daily-avg">Daily Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daily Avg Temp']) if day['Daily Avg Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daytime-avg">Daytime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daytime Avg Temp']) if day['Daytime Avg Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-nighttime-avg">Nighttime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Nighttime Avg Temp']) if day['Nighttime Avg Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-
-                <!-- Humidity -->
-                <tr>
-                    <td id="category" rowspan="5">Humidity (%)</td>
-                    <td id="metric-max">Max</td>
-                    {% for day in summary %}
-                    <td>{{ day['Max Humidity'] if day['Max Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-min">Min</td>
-                    {% for day in summary %}
-                    <td>{{ day['Min Humidity'] if day['Min Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daily-avg">Daily Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daily Avg Humidity']) if day['Daily Avg Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daytime-avg">Daytime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daytime Avg Humidity']) if day['Daytime Avg Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-nighttime-avg">Nighttime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Nighttime Avg Humidity']) if day['Nighttime Avg Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-
-                <!-- Light Intensity -->
-                <tr>
-                    <td id="category" rowspan="2">Light Intensity</td>
-                    <td id="metric-max">Max</td>
-                    {% for day in summary %}
-                    <td>{{ day['Max Light Intensity'] if day['Max Light Intensity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daily-avg">Daily Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daily Avg Light Intensity']) if day['Daily Avg Light Intensity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-
-                <!-- Ground Temperature -->
-                <tr>
-                    <td id="category" rowspan="5">Ground Temperature (°C)</td>
-                    <td id="metric-max">Max</td>
-                    {% for day in summary %}
-                    <td>{{ day['Max Ground Temp'] if day['Max Ground Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-min">Min</td>
-                    {% for day in summary %}
-                    <td>{{ day['Min Ground Temp'] if day['Min Ground Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daily-avg">Daily Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daily Avg Ground Temp']) if day['Daily Avg Ground Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daytime-avg">Daytime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daytime Avg Ground Temp']) if day['Daytime Avg Ground Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-nighttime-avg">Nighttime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Nighttime Avg Ground Temp']) if day['Nighttime Avg Ground Temp'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-
-                <!-- Ground Humidity -->
-                <tr>
-                    <td id="category" rowspan="5">Ground Humidity (%)</td>
-                    <td id="metric-max">Max</td>
-                    {% for day in summary %}
-                    <td>{{ day['Max Ground Humidity'] if day['Max Ground Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-min">Min</td>
-                    {% for day in summary %}
-                    <td>{{ day['Min Ground Humidity'] if day['Min Ground Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daily-avg">Daily Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daily Avg Ground Humidity']) if day['Daily Avg Ground Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-daytime-avg">Daytime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Daytime Avg Ground Humidity']) if day['Daytime Avg Ground Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td id="metric-nighttime-avg">Nighttime Avg</td>
-                    {% for day in summary %}
-                    <td>{{ "%.1f"|format(day['Nighttime Avg Ground Humidity']) if day['Nighttime Avg Ground Humidity'] is not none else "N/A" }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="category">Category</th>
+          <th data-i18n="metric">Metric</th>
+          {% for day in summary %}
+            <th>{{ day['Date'] }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Temperature -->
+        <tr>
+          <td data-i18n="categories.temperature" rowspan="5">Temperature (°C)</td>
+          <td data-i18n="metrics.max">Max</td>
+          {% for day in summary %}
+            <td>{{ day['Max Temp'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.min">Min</td>
+          {% for day in summary %}
+            <td>{{ day['Min Temp'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.dailyAvg">Daily Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daily Avg Temp'] is not none and "%.1f"|format(day['Daily Avg Temp']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.daytimeAvg">Daytime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daytime Avg Temp'] is not none and "%.1f"|format(day['Daytime Avg Temp']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.nighttimeAvg">Nighttime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Nighttime Avg Temp'] is not none and "%.1f"|format(day['Nighttime Avg Temp']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+ 
+        <!-- Humidity -->
+        <tr>
+          <td data-i18n="categories.humidity" rowspan="5">Humidity (%)</td>
+          <td data-i18n="metrics.max">Max</td>
+          {% for day in summary %}
+            <td>{{ day['Max Humidity'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.min">Min</td>
+          {% for day in summary %}
+            <td>{{ day['Min Humidity'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.dailyAvg">Daily Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daily Avg Humidity'] is not none and "%.1f"|format(day['Daily Avg Humidity']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.daytimeAvg">Daytime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daytime Avg Humidity'] is not none and "%.1f"|format(day['Daytime Avg Humidity']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.nighttimeAvg">Nighttime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Nighttime Avg Humidity'] is not none and "%.1f"|format(day['Nighttime Avg Humidity']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+ 
+        <!-- Light Intensity -->
+        <tr>
+          <td data-i18n="categories.light" rowspan="2">Light Intensity</td>
+          <td data-i18n="metrics.max">Max</td>
+          {% for day in summary %}
+            <td>{{ day['Max Light Intensity'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.dailyAvg">Daily Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daily Avg Light Intensity'] is not none and "%.1f"|format(day['Daily Avg Light Intensity']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+ 
+        <!-- Ground Temperature -->
+        <tr>
+          <td data-i18n="categories.groundTemp" rowspan="5">Ground Temperature (°C)</td>
+          <td data-i18n="metrics.max">Max</td>
+          {% for day in summary %}
+            <td>{{ day['Max Ground Temp'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.min">Min</td>
+          {% for day in summary %}
+            <td>{{ day['Min Ground Temp'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.dailyAvg">Daily Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daily Avg Ground Temp'] is not none and "%.1f"|format(day['Daily Avg Ground Temp']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.daytimeAvg">Daytime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daytime Avg Ground Temp'] is not none and "%.1f"|format(day['Daytime Avg Ground Temp']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.nighttimeAvg">Nighttime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Nighttime Avg Ground Temp'] is not none and "%.1f"|format(day['Nighttime Avg Ground Temp']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+ 
+        <!-- Ground Humidity -->
+        <tr>
+          <td data-i18n="categories.groundHumidity" rowspan="5">Ground Humidity (%)</td>
+          <td data-i18n="metrics.max">Max</td>
+          {% for day in summary %}
+            <td>{{ day['Max Ground Humidity'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.min">Min</td>
+          {% for day in summary %}
+            <td>{{ day['Min Ground Humidity'] or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.dailyAvg">Daily Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daily Avg Ground Humidity'] is not none and "%.1f"|format(day['Daily Avg Ground Humidity']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.daytimeAvg">Daytime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Daytime Avg Ground Humidity'] is not none and "%.1f"|format(day['Daytime Avg Ground Humidity']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td data-i18n="metrics.nighttimeAvg">Nighttime Avg</td>
+          {% for day in summary %}
+            <td>{{ day['Nighttime Avg Ground Humidity'] is not none and "%.1f"|format(day['Nighttime Avg Ground Humidity']) or "N/A" }}</td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

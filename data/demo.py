@@ -24,22 +24,20 @@ start_datetime = (datetime.now(jst) - timedelta(days=6)).replace(hour=0, minute=
 with open(csv_filename, mode='w', newline='') as file:
     writer = csv.writer(file)
 
-    # Write header
+    
     writer.writerow(["Date", "Time", "Temperature", "Humidity", "Light Intensity", "Ground Temperature", "Ground Humidity"])
 
-    # Generate data for each interval
     for i in range(num_readings):
-        # Current timestamp (subtract intervals from the start time)
         current_datetime = start_datetime + timedelta(minutes=i * interval_minutes)
 
-        # Generate random data
+        # Generate data
         temperature = round(uniform(20.0, 30.0), 1)  # Air temperature in °C
         humidity = round(uniform(40.0, 70.0), 1)     # Air humidity in %
         light_intensity = randint(200, 800)          # Light intensity in lux
         ground_temperature = round(uniform(0.0, 20.0), 1)  # Ground temperature in °C
         ground_humidity = round(uniform(20.0, 60.0), 1)     # Ground humidity in %
 
-        # Write the row to the CSV
+        #  row to the CSV
         writer.writerow([current_datetime.strftime('%Y-%m-%d'),
                          current_datetime.strftime('%H:%M'),
                          temperature, humidity, light_intensity, ground_temperature, ground_humidity])

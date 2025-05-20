@@ -6,39 +6,39 @@ import io
 import base64
 from datetime import datetime
 import matplotlib
-matplotlib.use('Agg')  # Use a non-interactive backend for Flask
+matplotlib.use('Agg')  
 
 bp = Blueprint('analysis', __name__, url_prefix='/analysis')
 
 
 @bp.route('/', methods=['GET'])
 def analysis():
-    # Load CSV file
+ 
     csv_file = os.path.join(current_app.root_path, 'data', 'measurements.csv')
     graphs = {}
     if not os.path.exists(csv_file):
         return render_template('analysis/analysis.html', error="Data file not found.", graphs=graphs)
     data = pd.read_csv(csv_file)
 
-    # Ensure numeric columns are properly converted
+   
     numeric_cols = ['Temperature', 'Humidity', 'Light Intensity', 'Ground Temperature', 'Ground Humidity']
     data[numeric_cols] = data[numeric_cols].apply(pd.to_numeric, errors='coerce')
 
-    # Drop rows with missing values in numeric columns
+    
     data = data.dropna(subset=numeric_cols)
 
-    # Combine 'Date' and 'Time' into a datetime column
+   
     data['datetime'] = pd.to_datetime(data['Date'] + ' ' + data['Time'], format='%Y-%m-%d %H:%M')
     data = data.set_index('datetime')
 
-    # Add 'Date' column for grouping
+    
     data['Date'] = data.index.date
 
-    # Filter daytime and nighttime data
+   
     daytime_data = data.between_time('07:00', '19:00').copy()
     nighttime_data = data.between_time('19:00', '07:00').copy()
 
-    # Group data by 'Date' and calculate averages
+  
     last_week_avg = (
         daytime_data.groupby('Date')[numeric_cols]
         .mean()
@@ -52,19 +52,18 @@ def analysis():
     whole_day_avg = (
         data.groupby('Date')[numeric_cols]
         .mean()
-        .tail(7)  # Get the last 7 days
+        .tail(7)  
     )
 
-    # Ensure there is data for the day
+   
     if data.empty:
         return render_template('analysis/analysis.html', error="No data available for today.", graphs=graphs)
-    # Extract the hour from the index and calculate hourly averages
+    
     data['Hour'] = data.index.hour
     hourly_data = data.groupby('Hour')[numeric_cols].mean()
 
-    # ----------- Hourly measurement graphs ----------- #
+  
 
-    # Generate temperature graph (includes ground temperature)
     plt.figure(figsize=(6, 4))
     plt.plot(hourly_data.index, hourly_data['Temperature'], label='Air Temperature (°C)', color='red')
     plt.plot(hourly_data.index, hourly_data['Ground Temperature'], label='Ground Temperature (°C)', color='orange')

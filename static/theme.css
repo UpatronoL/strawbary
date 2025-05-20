@@ -1,11 +1,5 @@
-/* ────────────────────────────────────────
-   DARK THEME CSS - STRAWBERRY PROJECT
-   ────────────────────────────────────────
-   A complete dark theme solution for all pages 
-*/
 
 :root {
-  /* Dark theme color palette */
   --dark-bg-primary: #1a1a1a;
   --dark-bg-secondary: #2a2a2a;
   --dark-bg-tertiary: #333333;
@@ -21,7 +15,6 @@
   --dark-highlight: #3d3d3d;
 }
 
-/* GLOBAL STYLES */
 body[data-theme="dark"] {
   background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%);
   color: var(--dark-text-primary);
@@ -31,7 +24,6 @@ body[data-theme="dark"] * {
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-/* ── HEADER & NAVIGATION ── */
 body[data-theme="dark"] header,
 body[data-theme="dark"] .header-container {
   background-color: var(--dark-bg-secondary);
@@ -40,7 +32,7 @@ body[data-theme="dark"] .header-container {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Logo styling in dark mode */
+
 body[data-theme="dark"] .logo {
   filter: brightness(1.2) contrast(1.1);
   transition: filter 0.3s ease, transform 0.3s ease;
@@ -159,7 +151,7 @@ body[data-theme="dark"] .date-filter input[type="date"] {
 
 body[data-theme="dark"] th {
   background: linear-gradient(135deg, var(--dark-primary-dark), var(--dark-primary));
-  color: #000;  /* Keep dark text on colored headers for contrast */
+  color: #000;  
   border-bottom: 2px solid var(--dark-primary-dark);
 }
 
@@ -182,7 +174,7 @@ body[data-theme="dark"] tbody tr:hover {
 
 body[data-theme="dark"] #category-cell,
 body[data-theme="dark"] #category {
-  background-color: rgba(255, 111, 97, 0.2);  /* Translucent strawberry color */
+  background-color: rgba(255, 111, 97, 0.2);  
   color: var(--dark-text-primary);
 }
 

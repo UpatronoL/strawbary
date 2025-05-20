@@ -1,5 +1,4 @@
 :root {
-    /* Modern, professional color palette */
     --primary: #3498db;
     --primary-light: #5dade2;
     --primary-dark: #2980b9;
@@ -15,9 +14,8 @@
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    --strawberry-red: #FF6F61; /* Added strawberry red variable */
+    --strawberry-red: #FF6F61; 
     
-    /* Typography */
     --font-main: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     --font-size-base: 0.95rem;
     --font-size-sm: 0.875rem;
@@ -25,7 +23,7 @@
     --font-size-xl: 1.25rem;
 }
 
-/* Base styles */
+
 body {
     font-family: var(--font-main);
     background-color: var(--background);
@@ -35,7 +33,6 @@ body {
     padding: 0;
 }
 
-/* Main container */
 .container {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 250px;
@@ -57,7 +54,7 @@ body {
     margin-top: 25px; 
 }
 
-/* Table container styling */
+
 .table-container {
     background: var(--white);
     border-radius: 12px;
@@ -73,7 +70,7 @@ body {
     box-shadow: var(--shadow-hover);
 }
 
-/* Date filter styling */
+
 .filter-bar {
     padding: 20px;
     background-color: rgba(231, 235, 238, 0.05);
@@ -124,7 +121,7 @@ body {
 }
 
 .filter-button:hover {
-    background-color: #e56358; /* Slightly darker shade of strawberry red */
+    background-color: #e56358; 
 }
 
 .reset-button {
@@ -138,7 +135,7 @@ body {
     border-color: var(--secondary);
 }
 
-/* DataTable filter styling */
+
 .datatable-filter {
     display: flex;
     gap: 15px;
@@ -148,7 +145,6 @@ body {
     flex-wrap: wrap;
 }
 
-/* Original filter controls styling */
 .filter-controls {
     display: flex;
     padding: 16px;
@@ -192,7 +188,7 @@ body {
     box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.2);
 }
 
-/* Table styling */
+
 table {
     width: 100%;
     border-collapse: separate;
@@ -248,7 +244,7 @@ tbody td.sorting_1 {
     background-color: rgba(52, 152, 219, 0.1) !important;
 }
 
-/* Sidebar styling */
+
 .sticky-sidebar {
     position: sticky;
     top: 100px;
@@ -306,14 +302,13 @@ tbody td.sorting_1 {
     font-weight: 600;
 }
 
-/* Temperature indicators with subtle colors */
 .summary-container p:nth-child(2) { color: #e74c3c; } /* Max temp */
 .summary-container p:nth-child(3) { color: #3498db; } /* Min temp */
 .summary-container p:nth-child(4) { color: #2c3e50; } /* Mean temp */
 .summary-container p:nth-child(5) { color: #f39c12; } /* Daytime avg */
 .summary-container p:nth-child(6) { color: #8e44ad; } /* Nighttime avg */
 
-/* Download container styling */
+
 .download-container {
     display: flex;
     flex-direction: column;
@@ -347,9 +342,9 @@ tbody td.sorting_1 {
     font-size: var(--font-size-base);
 }
 
-/* DataTables custom styling */
+
 .dataTables_wrapper .dataTables_filter {
-    display: none; /* Hide the default search since we're using our own */
+    display: none; 
     margin-bottom: 20px;
 }
 
@@ -369,7 +364,6 @@ tbody td.sorting_1 {
     outline: none;
 }
 
-/* Make sure the DataTables info and pagination are properly spaced */
 .dataTables_wrapper .dataTables_info,
 .dataTables_wrapper .dataTables_paginate {
     padding: 15px 0;
