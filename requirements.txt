@@ -97,7 +97,6 @@ pyasn1==0.5.0
 pyasn1-modules==0.3.0
 pycparser==2.22
 Pygments==2.16.1
-pyobjc-core==10.3.2
 pyobjc-framework-Cocoa==10.3.2
 pyobjc-framework-CoreBluetooth==10.3.2
 pyobjc-framework-libdispatch==10.3.2
