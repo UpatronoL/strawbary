@@ -43,3 +43,4 @@ with open(csv_filename, mode='w', newline='') as file:
                          temperature, humidity, light_intensity, ground_temperature, ground_humidity])
 
 print(f"CSV file '{csv_filename}' created with {num_readings} readings every {interval_minutes} minutes.")
+
