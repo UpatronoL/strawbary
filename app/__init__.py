@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, make_response
 from flask.cli import with_appcontext
 import os
 
@@ -10,19 +10,24 @@ def create_app(test_config=None):
     )
 
     if test_config is None:
-    
         app.config.from_pyfile('config.py', silent=True)
     else:
-       
         app.config.from_mapping(test_config)
 
-    
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
     
+    @app.after_request
+    def after_request(response):
+    
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
+
     from . import table
     app.register_blueprint(table.bp)
 
@@ -35,13 +40,11 @@ def create_app(test_config=None):
     from . import analysis
     app.register_blueprint(analysis.bp)
 
-    
     try:
         os.makedirs(os.path.join(app.root_path, 'data'))
     except OSError:
         pass
 
-   
     @app.route('/')
     def index():
         from flask import redirect, url_for

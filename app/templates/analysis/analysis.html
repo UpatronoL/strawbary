@@ -1,184 +1,131 @@
 {% extends 'base.html' %}
- 
-{% block title %}Data Analysis{% endblock %}
- 
+
+{% block title %}Environmental Data Analysis{% endblock %}
+
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='analysis.css') }}">
-
 {% endblock %}
- 
+
 {% block content %}
 <div class="analysis-container">
-<div class="title-container">
-<h1 data-i18n="analysis-daily-title" class="analysis-title">
+    <!-- Daily Analysis -->
+    <div class="title-container">
+        <h1 data-i18n="analysis-daily-title" class="analysis-title">
+            Daily Environmental Data Analysis
+        </h1>
+    </div>
 
-      Daily Environmental Data Analysis
-</h1>
-</div>
- 
-  <div class="graph-row">
-<div class="graph-item" onclick="enlargeGraph('temperature')">
-<h2 data-i18n="analysis-temp">Temperature</h2>
-<img
+    <div class="graph-row">
+        <div class="graph-item" onclick="enlargeGraph('temperature')">
+            <h2 data-i18n="analysis-temp">Temperature Patterns</h2>
+            <img id="temperature" src="data:image/png;base64,{{ graphs['temperature'] }}" alt="Temperature Analysis">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('humidity')">
+            <h2 data-i18n="analysis-humidity">Humidity Patterns</h2>
+            <img id="humidity" src="data:image/png;base64,{{ graphs['humidity'] }}" alt="Humidity Analysis">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('lux')">
+            <h2 data-i18n="analysis-light">Light Intensity Patterns</h2>
+            <img id="lux" src="data:image/png;base64,{{ graphs['lux'] }}" alt="Light Intensity Analysis">
+        </div>
+    </div>
 
-        id="temperature"
-        data-i18n-alt="analysis-temp"
-        src="data:image/png;base64,{{ graphs['temperature'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('humidity')">
-<h2 data-i18n="analysis-humidity">Humidity</h2>
-<img
+    <!-- Weekly Analysis -->
+    <div class="title-container">
+        <h1 data-i18n="analysis-weekly-title" class="analysis-title">
+            Weekly Environmental Data Analysis
+        </h1>
+    </div>
 
-        id="humidity"
-        data-i18n-alt="analysis-humidity"
-        src="data:image/png;base64,{{ graphs['humidity'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('lux')">
-<h2 data-i18n="analysis-light">Light Intensity</h2>
-<img
+    <!-- Daytime Averages -->
+    <div class="graph-row">
+        <div class="graph-item" onclick="enlargeGraph('daily_avg_temperature')">
+            <h2 data-i18n="analysis-day-avg-temp">Daytime Temperature</h2>
+            <img id="daily_avg_temperature" src="data:image/png;base64,{{ graphs['daily_avg_temperature'] }}" alt="Daytime Temperature">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('daily_avg_humidity')">
+            <h2 data-i18n="analysis-day-avg-humidity">Daytime Humidity</h2>
+            <img id="daily_avg_humidity" src="data:image/png;base64,{{ graphs['daily_avg_humidity'] }}" alt="Daytime Humidity">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('daily_avg_light_intensity')">
+            <h2 data-i18n="analysis-day-avg-light">Daytime Light Intensity</h2>
+            <img id="daily_avg_light_intensity" src="data:image/png;base64,{{ graphs['daily_avg_light_intensity'] }}" alt="Daytime Light Intensity">
+        </div>
+    </div>
 
-        id="lux"
-        data-i18n-alt="analysis-light"
-        src="data:image/png;base64,{{ graphs['lux'] }}"
-        alt=""
->
-</div>
-</div>
- 
-  <div class="title-container">
-<h1 data-i18n="analysis-weekly-title" class="analysis-title">
+    <!-- Nighttime Averages -->
+    <div class="graph-row">
+        <div class="graph-item" onclick="enlargeGraph('night_avg_temperature')">
+            <h2 data-i18n="analysis-night-avg-temp">Nighttime Temperature</h2>
+            <img id="night_avg_temperature" src="data:image/png;base64,{{ graphs['night_avg_temperature'] }}" alt="Nighttime Temperature">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('night_avg_humidity')">
+            <h2 data-i18n="analysis-night-avg-humidity">Nighttime Humidity</h2>
+            <img id="night_avg_humidity" src="data:image/png;base64,{{ graphs['night_avg_humidity'] }}" alt="Nighttime Humidity">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('night_avg_light_intensity')">
+            <h2 data-i18n="analysis-night-avg-light">Nighttime Light Intensity</h2>
+            <img id="night_avg_light_intensity" src="data:image/png;base64,{{ graphs['night_avg_light_intensity'] }}" alt="Nighttime Light Intensity">
+        </div>
+    </div>
 
-      Weekly Environmental Data Analysis
-</h1>
-</div>
- 
-  <!-- Daytime Averages -->
-<div class="graph-row">
-<div class="graph-item" onclick="enlargeGraph('daily_avg_temperature')">
-<h2 data-i18n="analysis-day-avg-temp">Daytime Average Temperature</h2>
-<img
+    <!-- Whole-day Averages -->
+    <div class="graph-row">
+        <div class="graph-item" onclick="enlargeGraph('whole_avg_temperature')">
+            <h2 data-i18n="analysis-whole-avg-temp">24-Hour Temperature</h2>
+            <img id="whole_avg_temperature" src="data:image/png;base64,{{ graphs['whole_avg_temperature'] }}" alt="24-Hour Temperature">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('whole_avg_humidity')">
+            <h2 data-i18n="analysis-whole-avg-humidity">24-Hour Humidity</h2>
+            <img id="whole_avg_humidity" src="data:image/png;base64,{{ graphs['whole_avg_humidity'] }}" alt="24-Hour Humidity">
+        </div>
+        <div class="graph-item" onclick="enlargeGraph('whole_avg_light_intensity')">
+            <h2 data-i18n="analysis-whole-avg-light">24-Hour Light Intensity</h2>
+            <img id="whole_avg_light_intensity" src="data:image/png;base64,{{ graphs['whole_avg_light_intensity'] }}" alt="24-Hour Light Intensity">
+        </div>
+    </div>
 
-        id="daily_avg_temperature"
-        data-i18n-alt="analysis-day-avg-temp"
-        src="data:image/png;base64,{{ graphs['daily_avg_temperature'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('daily_avg_humidity')">
-<h2 data-i18n="analysis-day-avg-humidity">Daytime Average Humidity</h2>
-<img
-        id="daily_avg_humidity"
-        data-i18n-alt="analysis-day-avg-humidity"
-        src="data:image/png;base64,{{ graphs['daily_avg_humidity'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('daily_avg_light_intensity')">
-<h2 data-i18n="analysis-day-avg-light">Daytime Average Light Intensity</h2>
-<img
-
-        id="daily_avg_light_intensity"
-        data-i18n-alt="analysis-day-avg-light"
-        src="data:image/png;base64,{{ graphs['daily_avg_light_intensity'] }}"
-        alt=""
->
-</div>
-</div>
- 
-  <!-- Nighttime Averages -->
-<div class="graph-row">
-<div class="graph-item" onclick="enlargeGraph('night_avg_temperature')">
-<h2 data-i18n="analysis-night-avg-temp">Nighttime Average Temperature</h2>
-<img
-
-        id="night_avg_temperature"
-        data-i18n-alt="analysis-night-avg-temp"
-        src="data:image/png;base64,{{ graphs['night_avg_temperature'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('night_avg_humidity')">
-<h2 data-i18n="analysis-night-avg-humidity">Nighttime Average Humidity</h2>
-<img
-
-        id="night_avg_humidity"
-        data-i18n-alt="analysis-night-avg-humidity"
-        src="data:image/png;base64,{{ graphs['night_avg_humidity'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('night_avg_light_intensity')">
-<h2 data-i18n="analysis-night-avg-light">Nighttime Average Light Intensity</h2>
-<img
-
-        id="night_avg_light_intensity"
-        data-i18n-alt="analysis-night-avg-light"
-        src="data:image/png;base64,{{ graphs['night_avg_light_intensity'] }}"
-        alt=""
->
-</div>
-</div>
- 
-  <!-- Whole-day Averages -->
-<div class="graph-row">
-<div class="graph-item" onclick="enlargeGraph('whole_avg_temperature')">
-<h2 data-i18n="analysis-whole-avg-temp">Whole-Day Average Temperature</h2>
-<img
-
-        id="whole_avg_temperature"
-        data-i18n-alt="analysis-whole-avg-temp"
-        src="data:image/png;base64,{{ graphs['whole_avg_temperature'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('whole_avg_humidity')">
-<h2 data-i18n="analysis-whole-avg-humidity">Whole-Day Average Humidity</h2>
-<img
-
-        id="whole_avg_humidity"
-        data-i18n-alt="analysis-whole-avg-humidity"
-        src="data:image/png;base64,{{ graphs['whole_avg_humidity'] }}"
-        alt=""
->
-</div>
-<div class="graph-item" onclick="enlargeGraph('whole_avg_light_intensity')">
-<h2 data-i18n="analysis-whole-avg-light">Whole-Day Average Light Intensity</h2>
-<img
-        id="whole_avg_light_intensity"
-        data-i18n-alt="analysis-whole-avg-light"
-        src="data:image/png;base64,{{ graphs['whole_avg_light_intensity'] }}"
-        alt=""
->
-</div>
-</div>
-  <!-- Modal -->
-<div id="graph-modal" class="modal" onclick="closeModal()">
-<span
-      class="close-button"
-      data-i18n="modal-close"
-      onclick="closeModal()"
->×</span>
-<img id="modal-img" class="modal-content">
-</div>
+    <!-- Modal -->
+    <div id="graph-modal" class="modal" onclick="closeModal()">
+        <span class="close-button" onclick="closeModal()">×</span>
+        <img id="modal-img" class="modal-content">
+    </div>
 </div>
 
 <script>
-  function enlargeGraph(id) {
-    const modal   = document.getElementById('graph-modal');
-    const modalImg= document.getElementById('modal-img');
-    const img     = document.getElementById(id);
-    modal.style.display = 'block';
-    modalImg.src        = img.src;
-  }
-  function closeModal() {
-    document.getElementById('graph-modal').style.display = 'none';
-  }
+    function enlargeGraph(id) {
+        const modal = document.getElementById('graph-modal');
+        const modalImg = document.getElementById('modal-img');
+        const img = document.getElementById(id);
+        
+        if (modal && modalImg && img) {
+            modal.classList.add('show');
+            modalImg.src = img.src;
+            modalImg.alt = img.alt;
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    function closeModal() {
+        const modal = document.getElementById('graph-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
+    // Close modal when clicking outside the image
+    document.getElementById('graph-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
 </script>
-
 {% endblock %}
-
- 

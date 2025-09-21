@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
  
-{% block title %}Sensor Measurements{% endblock %}
+{% block title %}
+  <span data-i18n="title">Sensor Measurements</span>
+{% endblock %}
  
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
@@ -13,18 +15,30 @@
 {% block content %}
 <div class="container">
   <div class="table-container">
+    <!-- Header with current date info -->
+    <div class="header-section">
+      {% if selected_date %}
+        <h2 class="table-title">
+          <span data-i18n="measurementsFor">Measurements for</span> 
+          {{ selected_date.strftime('%B %d, %Y') }}
+        </h2>
+      {% else %}
+        <h2 class="table-title" data-i18n="todayMeasurements">Today's Measurements</h2>
+      {% endif %}
+    </div>
+
     <!-- Date filter -->
     <div class="filter-bar">
       <form id="date-filter-form" method="get" action="{{ url_for('table.table') }}">
         <div class="date-filter">
-          <label for="date-select" data-i18n="filterByDate">Filter by date:</label>
-          <input type="date" id="date-select" name="date">
+          <label for="date-select" data-i18n="selectDate">Select Date:</label>
+          <input type="date" id="date-select" name="date" value="{{ selected_date or '' }}">
           <button type="submit" class="filter-button" data-i18n="apply">Apply</button>
           <a href="{{ url_for('table.table') }}" 
              class="reset-button" 
-             id="show-all-button" 
-             data-i18n="showAll">
-            Show All
+             id="show-today-button" 
+             data-i18n="showToday">
+            Show Today
           </a>
         </div>
       </form>
@@ -48,16 +62,16 @@
     </div>
  
     <!-- Data Table -->
-    <table id="measurements-table" data-i18n-table>
+    <table id="measurements-table" class="display">
       <thead>
         <tr>
           <th data-i18n="headerDate">Date</th>
           <th data-i18n="headerTime">Time</th>
-          <th data-i18n="headerTemperature">Temperature</th>
-          <th data-i18n="headerHumidity">Humidity</th>
-          <th data-i18n="headerLightIntensity">Light Intensity</th>
-          <th data-i18n="headerGroundTemperature">Ground Temperature</th>
-          <th data-i18n="headerGroundHumidity">Ground Humidity</th>
+          <th data-i18n="headerTemperature">Temperature (°C)</th>
+          <th data-i18n="headerHumidity">Humidity (%)</th>
+          <th data-i18n="headerLightIntensity">Light Intensity (Lux)</th>
+          <th data-i18n="headerGroundTemperature">Ground Temperature (°C)</th>
+          <th data-i18n="headerGroundHumidity">Ground Humidity (%)</th>
         </tr>
       </thead>
       <tbody>
@@ -65,11 +79,11 @@
         <tr>
           <td>{{ row['Date'] or '' }}</td>
           <td>{{ row['Time'] or '' }}</td>
-          <td>{{ row['Temperature'] or '' }}</td>
-          <td>{{ row['Humidity'] or '' }}</td>
-          <td>{{ row['Light Intensity'] or '' }}</td>
-          <td>{{ row['Ground Temperature'] or '' }}</td>
-          <td>{{ row['Ground Humidity'] or '' }}</td>
+          <td class="temperature-cell">{{ "%.1f"|format(row['Temperature']) if row['Temperature'] is not none else 'N/A' }}</td>
+          <td class="humidity-cell">{{ "%.1f"|format(row['Humidity']) if row['Humidity'] is not none else 'N/A' }}</td>
+          <td class="light-cell">{{ "%.0f"|format(row['Light Intensity']) if row['Light Intensity'] is not none else 'N/A' }}</td>
+          <td class="ground-temp-cell">{{ "%.1f"|format(row['Ground Temperature']) if row['Ground Temperature'] is not none else 'N/A' }}</td>
+          <td class="ground-humidity-cell">{{ "%.1f"|format(row['Ground Humidity']) if row['Ground Humidity'] is not none else 'N/A' }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -77,64 +91,59 @@
   </div>
  
   <div class="sticky-sidebar">
-    <div class="summary-container">
-      <h2 data-i18n="summaryTitle">Temperature Summary</h2>
- 
-      {% if max_temp is not none and min_temp is not none and mean_temp is not none %}
-        <p>
-          <strong data-i18n="maxTemp">Max Temperature:</strong>
-          {{ max_temp }} °C
-        </p>
-        <p>
-          <strong data-i18n="minTemp">Min Temperature:</strong>
-          {{ min_temp }} °C
-        </p>
-        <p>
-          <strong data-i18n="meanTemp">Mean Temperature:</strong>
-          {{ "%.1f"|format(mean_temp) }} °C
-        </p>
-        {% if daytime_avg is not none %}
-        <p>
-          <strong data-i18n="daytimeAvg">Daytime Average:</strong>
-          {{ "%.1f"|format(daytime_avg) }} °C
-        </p>
-        {% endif %}
-        {% if nighttime_avg is not none %}
-        <p>
-          <strong data-i18n="nighttimeAvg">Nighttime Average:</strong>
-          {{ "%.1f"|format(nighttime_avg) }} °C
-        </p>
-        {% endif %}
-      {% else %}
-        <p data-i18n="noData">No temperature data available.</p>
-      {% endif %}
-    </div>
- 
     <div class="download-container">
-      <h2 data-i18n="downloadTitle">Click here 👇</h2>
+      <h2 data-i18n="downloadTitle">Export Data</h2>
       <a href="{{ url_for('table.download_csv') }}"
          class="download-button"
          data-i18n="downloadBtn">
-        <i class="fas fa-download"></i> Download Data
+        <i class="fas fa-download"></i> Download CSV
       </a>
+    </div>
+
+    <div class="quick-stats">
+      <h3 data-i18n="quickStats">Quick Stats</h3>
+      <div class="stat-item">
+        <span class="stat-label" data-i18n="totalRecords">Total Records:</span>
+        <span class="stat-value">{{ measurements|length }}</span>
+      </div>
+      {% if measurements %}
+      <div class="stat-item">
+        <span class="stat-label" data-i18n="timeRange">Time Range:</span>
+        <span class="stat-value">
+          {{ measurements[0]['Time'] }} - {{ measurements[-1]['Time'] }}
+        </span>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
  
-<!-- DataTables initialization (unchanged) -->
+<!-- DataTables initialization -->
 <script>
   $(document).ready(function() {
     $('#measurements-table').DataTable({
       paging: true,
-      pageLength: 10,
-      lengthMenu: [[10,25,50,-1],[10,25,50,"All"]],
+      pageLength: 25,
+      lengthMenu: [[10,25,50,100,-1],[10,25,50,100,"All"]],
       searching: true,
       autoWidth: false,
       responsive: true,
-      order: [[0,'desc'],[1,'desc']],
-      dom: '<"top"lf>rt<"bottom"ip><"clear">'
+      order: [[1,'desc']], // Sort by time descending
+      dom: '<"top"lf>rt<"bottom"ip><"clear">',
+      columnDefs: [
+        { targets: [2,3,4,5,6], className: "text-center" },
+        { targets: [0,1], className: "text-left" }
+      ]
     });
-    // … your existing column-filter & date logic …
+
+    // Custom filter functionality
+    $('#filter-column, #table-filter').on('keyup change', function() {
+      var table = $('#measurements-table').DataTable();
+      var columnIndex = $('#filter-column').val();
+      var filterValue = $('#table-filter').val();
+      
+      table.column(columnIndex).search(filterValue).draw();
+    });
   });
 </script>
 {% endblock %}

@@ -1,0 +1,191 @@
+[
+  {
+    "id": "alert_20250904_110119_0",
+    "message": "High temperature alert: 28.9\u00b0C",
+    "type": "warning",
+    "icon": "fas fa-thermometer-full",
+    "timestamp": "11:00 AM",
+    "datetime_created": "2025-09-04T11:01:27.296600",
+    "age_minutes": 40,
+    "status": "resolved",
+    "severity": "medium",
+    "category": "temperature",
+    "sensor_value": "28.9",
+    "resolution_time": "2025-09-04T11:43:55.748224",
+    "notes": [
+      {
+        "timestamp": "2025-09-04T11:43:55.749263",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250904_125232_1",
+    "message": "High temperature alert: 29.4\u00b0C",
+    "type": "warning",
+    "icon": "fas fa-thermometer-full",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-04T12:52:32.443658",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "medium",
+    "category": "temperature",
+    "sensor_value": "29.4",
+    "resolution_time": "2025-09-04T12:54:03.837827",
+    "notes": [
+      {
+        "timestamp": "2025-09-04T12:54:03.838141",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250904_125409_2",
+    "message": "High temperature alert: 29.4\u00b0C",
+    "type": "warning",
+    "icon": "fas fa-thermometer-full",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-04T12:54:12.892670",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "medium",
+    "category": "temperature",
+    "sensor_value": "29.4",
+    "resolution_time": "2025-09-04T12:54:56.805268",
+    "notes": [
+      {
+        "timestamp": "2025-09-04T12:54:56.805485",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250905_151336_3",
+    "message": "Low light conditions: 11 Lux",
+    "type": "info",
+    "icon": "fas fa-sun",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-05T15:13:36.043569",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "low",
+    "category": "lighting",
+    "sensor_value": "11",
+    "resolution_time": "2025-09-05T15:14:48.137431",
+    "notes": [
+      {
+        "timestamp": "2025-09-05T15:14:48.137664",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250905_151455_4",
+    "message": "Low light conditions: 11 Lux",
+    "type": "info",
+    "icon": "fas fa-sun",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-05T15:15:01.080386",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "low",
+    "category": "lighting",
+    "sensor_value": "11",
+    "resolution_time": "2025-09-05T15:15:41.384468",
+    "notes": [
+      {
+        "timestamp": "2025-09-05T15:15:41.384670",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250905_151543_5",
+    "message": "Low light conditions: 11 Lux",
+    "type": "info",
+    "icon": "fas fa-sun",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-05T15:15:47.999936",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "low",
+    "category": "lighting",
+    "sensor_value": "11",
+    "resolution_time": "2025-09-05T15:15:58.032395",
+    "notes": [
+      {
+        "timestamp": "2025-09-05T15:15:58.032531",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250905_151607_6",
+    "message": "Low light conditions: 11 Lux",
+    "type": "info",
+    "icon": "fas fa-sun",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-05T15:16:20.787346",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "low",
+    "category": "lighting",
+    "sensor_value": "41",
+    "resolution_time": "2025-09-05T15:17:02.318941",
+    "notes": [
+      {
+        "timestamp": "2025-09-05T15:17:02.319260",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250905_152002_7",
+    "message": "Low light conditions: 41 Lux",
+    "type": "info",
+    "icon": "fas fa-sun",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-05T15:20:02.831021",
+    "age_minutes": 1,
+    "status": "resolved",
+    "severity": "low",
+    "category": "lighting",
+    "sensor_value": "41",
+    "resolution_time": "2025-09-05T15:22:12.415530",
+    "notes": [
+      {
+        "timestamp": "2025-09-05T15:22:12.415821",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20250905_152127_8",
+    "message": "High temperature alert: 29.4\u00b0C",
+    "type": "warning",
+    "icon": "fas fa-thermometer-full",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-09-05T15:21:45.684510",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "medium",
+    "category": "temperature",
+    "sensor_value": "29.4",
+    "resolution_time": "2025-09-05T15:22:13.515428",
+    "notes": [
+      {
+        "timestamp": "2025-09-05T15:22:13.515647",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  }
+]

@@ -1,14 +1,14 @@
+<!-- base.html - Enhanced navigation -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">My Website</title>
+    <title data-i18n="title">Strawberry Sensor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     {% block styles %}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='language_switcher.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -44,12 +44,19 @@
                             <span data-i18n="nav-analysis">Analysis</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ url_for('home.alert_history') }}">
+                            <i class="fas fa-history"></i>
+                            <span data-i18n="nav-alert-history">Alert History</span>
+                        </a>
+                    </li>   
                     <div class="language-selector">
                         <select id="language-select">
                             <option value="en">English</option>
                             <option value="ja">日本語</option>
                         </select>
-                    </div>
+                    </div> 
+    
                     <button id="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
                 </ul>
             </nav>
@@ -61,7 +68,13 @@
     </main>
 
     <footer>
-        <p data-i18n="footer">Footer content</p>
+            <div class="footer-content">
+              <p>© 2025 Strawberry sensor. Powered by kuas capstne.</p>
+              <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.7;">
+                <i class="fas fa-envelope"></i> support@strawberryisensor.com | 
+                <i class="fas fa-phone"></i> 1-800-BERRY-Nicholas
+              </p>
+            </div>
     </footer>
 
     {% block scripts %}

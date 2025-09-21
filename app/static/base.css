@@ -138,12 +138,19 @@ main {
 }
 
 /* Footer Styles */
+
 footer {
     background: rgba(0, 0, 0, 0.6);
     color: var(--white);
-    padding: 30px 5%;
     text-align: center;
-}
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
 /* Responsive Design */
 @media (max-width: 768px) {

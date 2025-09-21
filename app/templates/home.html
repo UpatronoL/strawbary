@@ -1,103 +1,953 @@
 {% extends 'base.html' %}
 
-{% block title %}<span data-i18n="title">My Website</span>{% endblock %}
+{% block title %}<span data-i18n="dashboard-title">Strawberry Monitoring Dashboard</span>{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
 {% endblock %}
 
 {% block content %}
-<main class="main-content">
-    <section class="header-hero">
-        <h1 data-i18n="hero-title">Strawberry Farm Innovation</h1>
-        <p data-i18n="hero-subtitle">Revolutionizing premium strawberry cultivation through smart environmental sensing technology</p>
-    </section>
+<div class="refresh-indicator" id="refreshIndicator">
+  <i class="fas fa-sync-alt fa-spin"></i>
+  <span data-i18n="refresh-now">Refreshing data...</span>
+</div>
 
-    <section class="content-section">
-        <h2 class="section-title" data-i18n="about-title">About the Project</h2>
-        <p class="lead-text" data-i18n="about-text">MIGAKI-ICHIGO represents the pinnacle of strawberry cultivation, and our project aims to push the boundaries further with cutting-edge monitoring technology.</p>
+<div class="dashboard-container">
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <h1 class="dashboard-title" data-i18n="dashboard-title">Strawberry Monitoring Dashboard</h1>
+    <p class="dashboard-subtitle" data-i18n="dashboard-subtitle">Real-time environmental monitoring and analytics</p>
+  </div>
+  
+  <!-- Clock -->
+  <div class="current-time-container">
+    <div class="current-time" id="currentTime">
+      <span>Loading current time...</span>
+      <div class="refresh-info">
+        <span data-i18n="next-refresh">Next refresh in:</span>
+        <span class="refresh-countdown" id="refreshCountdown">--</span>
+      </div>
+    </div>
+    <div class="update-frequency-note">
+      <span data-i18n="sensor-data-updates">Sensor data updates automatically every 5 minutes</span>
+      <span class="data-freshness" id="dataFreshness">
+        {% if sensor_data.data_freshness_minutes <= 5 %}
+          <span class="data-fresh" data-i18n="data-fresh">Data is fresh ({{ sensor_data.data_freshness_minutes }} min ago)</span>
+        {% elif sensor_data.data_freshness_minutes <= 10 %}
+          <span class="data-stale" data-i18n="data-stale">Data is {{ sensor_data.data_freshness_minutes }} minutes old</span>
+        {% else %}
+          <span class="data-very-stale">Data is stale ({{ sensor_data.data_freshness_minutes }} min ago)</span>
+        {% endif %}
+      </span>
+    </div>
+  </div>
+
+  <!-- System Status Banner -->
+  <div class="status-banner {{ 'offline' if sensor_data.system_status == 'offline' else ('warning' if sensor_data.alerts else 'online') }}">
+    <i class="fas {{ 'fa-exclamation-triangle' if sensor_data.system_status == 'offline' else ('fa-exclamation-circle' if sensor_data.alerts else 'fa-check-circle') }}"></i>
+    <span>
+      {% if sensor_data.system_status == 'offline' %}
+        <span data-i18n="system-offline">System Offline - No Recent Data</span>
+      {% elif sensor_data.alerts %}
+        {{ sensor_data.alerts|length }} <span data-i18n="attention-required">Active Alert{{ 's' if sensor_data.alerts|length > 1 else '' }} - Attention Required</span>
+      {% else %}
+        <span data-i18n="system-online">All Systems Operational</span>
+      {% endif %}
+    </span>
+    <span class="pulse">
+      <i class="fas fa-circle" style="font-size: 0.75rem; margin-left: 0.5rem;"></i>
+    </span>
+  </div>
+
+  <!-- Alert Statistics Overview -->
+  <div class="alert-stats-overview">
+    <div class="stat-card">
+      <div class="stat-icon danger">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{ alert_stats.total_alerts_24h }}</div>
+        <div class="stat-label" data-i18n="alerts-24h">Alerts (24h)</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon warning">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{ alert_stats.active_alerts }}</div>
+        <div class="stat-label" data-i18n="active-alerts-count">Active Alerts</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon success">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{ alert_stats.resolved_alerts_24h }}</div>
+        <div class="stat-label" data-i18n="resolved-24h">Resolved (24h)</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon info">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{ alert_stats.avg_resolution_time }}</div>
+        <div class="stat-label" data-i18n="avg-resolution">Avg Resolution</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="main-grid">
+    <!-- Left Column -->
+    <div class="left-column">
+      <!-- Current Sensor Readings -->
+      <div class="current-readings">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">
+              <div class="card-icon">
+                <i class="fas fa-thermometer-half"></i>
+              </div>
+              <span data-i18n="current-conditions">Current Environmental Conditions</span>
+            </h2>
+            <div class="last-updated">
+              <i class="fas fa-clock"></i>
+              <span data-i18n="last-updated">Last updated:</span> {{ sensor_data.last_updated }}
+            </div>
+          </div>
+        </div>
+
+        <div class="readings-grid">
+          <div class="reading-item">
+            <i class="fas fa-thermometer-half reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.temperature }}</span>
+            <div class="reading-label" data-i18n="air-temperature">Air Temperature</div>
+          </div>
+
+          <div class="reading-item">
+            <i class="fas fa-tint reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.humidity }}</span>
+            <div class="reading-label" data-i18n="air-humidity">Air Humidity</div>
+          </div>
+
+          <div class="reading-item">
+            <i class="fas fa-seedling reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.soil_moisture }}</span>
+            <div class="reading-label" data-i18n="soil-moisture">Soil Moisture</div>
+          </div>
+
+          <div class="reading-item">
+            <i class="fas fa-sun reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.light_intensity }}</span>
+            <div class="reading-label" data-i18n="light-intensity">Light Intensity</div>
+          </div>
+
+          <div class="reading-item">
+            <i class="fas fa-mountain reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.ground_temperature }}</span>
+            <div class="reading-label" data-i18n="ground-temp">Ground Temp</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Alerts Section -->
+      <div class="alerts-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--warning), #d97706);">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <span data-i18n="active-alerts">Active Alerts</span>
+            {% if sensor_data.alerts %}
+            <span style="background: var(--danger); color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.875rem; margin-left: 1rem;">{{ sensor_data.alerts|length }}</span>
+            {% endif %}
+          </h2>
+        </div>
+
+        {% if sensor_data.alerts %}
+          {% for alert in sensor_data.alerts %}
+          <div class="alert-item {{ alert.type }}" data-alert-id="{{ alert.get('id', '') }}">
+            <i class="{{ alert.icon }} alert-icon"></i>
+            <div class="alert-content">
+              <div class="alert-message">{{ alert.message }}</div>
+              <div class="alert-timestamp">
+                <i class="fas fa-clock"></i>
+                <span>Alert generated at {{ alert.timestamp }}</span>
+                <span class="alert-age {% if alert.age_minutes <= 5 %}fresh{% elif alert.age_minutes <= 15 %}stale{% endif %}">
+                  {{ alert.age_minutes }} min ago
+                </span>
+              </div>
+            </div>
+            <div class="alert-actions">
+              <button class="resolve-btn" onclick="resolveAlert('{{ alert.get('id', '') }}')" 
+                      title="Mark as resolved" {% if not alert.get('id') %}disabled{% endif %}>
+                <i class="fas fa-check"></i>
+                <span data-i18n="alert-resolved">Resolve</span>
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="no-alerts">
+            <i class="fas fa-check-circle" style="color: var(--success); font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p data-i18n="no-alerts">No active alerts. All systems operating normally.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Alert History Preview -->
+      <div class="alert-history-preview">
+        <div class="card-header">
+          <h2 class="card-title">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--info), #0891b2);">
+              <i class="fas fa-history"></i>
+            </div>
+            <span data-i18n="recent-alert-history">Recent Alert History</span>
+          </h2>
+          <a href="{{ url_for('home.alert_history') }}" class="view-all-btn">
+            <i class="fas fa-external-link-alt"></i>
+            <span data-i18n="view-full-history">View Full History</span>
+          </a>
+        </div>
+
+        <div class="alert-history-timeline">
+          {% if recent_alert_history %}
+            {% for alert in recent_alert_history[:5] %}
+            <div class="timeline-item severity-{{ alert.get('severity', 'medium') }}">
+              <div class="timeline-marker">
+                <i class="{{ alert.get('icon', 'fas fa-bell') }}"></i>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-message">{{ alert.get('message', 'Alert message not available') }}</div>
+                <div class="timeline-meta">
+                  <span class="timeline-time">
+                    {% if alert.get('datetime_created') %}
+                      {% set alert_datetime = alert.datetime_created %}
+                      {% if alert_datetime %}
+                        {% set dt_obj = moment(alert_datetime) if moment else alert_datetime %}
+                        {{ dt_obj.strftime('%b %d, %I:%M %p') if dt_obj.strftime else alert_datetime }}
+                      {% endif %}
+                    {% else %}
+                      <span data-i18n="loading">Unknown time</span>
+                    {% endif %}
+                  </span>
+                  <span class="timeline-status status-{{ alert.get('status', 'active') }}">
+                    {{ alert.get('status', 'active').title() }}
+                  </span>
+                  <span class="timeline-category">{{ alert.get('category', 'general').title() }}</span>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            
+            {% if recent_alert_history|length > 5 %}
+            <div class="timeline-more">
+              <a href="{{ url_for('home.alert_history') }}">
+                <i class="fas fa-ellipsis-h"></i>
+                View {{ recent_alert_history|length - 5 }} more alerts
+              </a>
+            </div>
+            {% endif %}
+          {% else %}
+            <div class="no-history">
+              <i class="fas fa-clipboard-check" style="color: var(--success); font-size: 2rem; margin-bottom: 1rem;"></i>
+              <p>No recent alert history. System has been stable.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-column">
+      <!-- Today's Statistics -->
+      <div class="stats-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--info), #0891b2);">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <span data-i18n="todays-summary">Today's Summary</span>
+          </h2>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.temp_min }}</div>
+            <div class="stat-label" data-i18n="min-air-temp">Min Air Temp</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.temp_max }}</div>
+            <div class="stat-label" data-i18n="max-air-temp">Max Air Temp</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.humidity_min }}</div>
+            <div class="stat-label" data-i18n="min-humidity">Min Humidity</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.humidity_max }}</div>
+            <div class="stat-label" data-i18n="max-humidity">Max Humidity</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.light_min }}</div>
+            <div class="stat-label" data-i18n="min-light">Min Light</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.light_max }}</div>
+            <div class="stat-label" data-i18n="max-light">Max Light</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.ground_temp_min }}</div>
+            <div class="stat-label" data-i18n="min-ground-temp">Min Ground Temp</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.ground_temp_max }}</div>
+            <div class="stat-label" data-i18n="max-ground-temp">Max Ground Temp</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.soil_moisture_min }}</div>
+            <div class="stat-label" data-i18n="min-soil-moisture">Min Soil Moisture</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.soil_moisture_max }}</div>
+            <div class="stat-label" data-i18n="max-soil-moisture">Max Soil Moisture</div>
+          </div>
+        </div>
+
+        <button class="toggle-stats-btn" id="toggleStatsBtn">
+          <i class="fas fa-chevron-down"></i>
+          <span data-i18n="show-more">Show More</span>
+        </button>
+
+        <div style="margin-top: 1.5rem; text-align: center; color: var(--gray-600); font-size: 0.875rem;">
+          <i class="fas fa-database"></i>
+          {{ sensor_data.total_readings_today }} <span data-i18n="readings-collected">readings collected today</span>
+        </div>
+      </div>
+
+      <!-- Alert Analytics Card -->
+      <div class="alert-analytics-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--warning), #f59e0b);">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <span data-i18n="alert-analytics">Alert Analytics</span>
+          </h2>
+        </div>
+
+        <div class="analytics-grid">
+          <div class="analytic-item">
+            <div class="analytic-label" data-i18n="most-common-issue">Most Common Issue</div>
+            <div class="analytic-value">{{ alert_stats.most_common_category }}</div>
+          </div>
+          
+          <div class="analytic-item">
+            <div class="analytic-label" data-i18n="critical-alerts-24h">Critical Alerts (24h)</div>
+            <div class="analytic-value {{ 'text-danger' if alert_stats.critical_alerts > 0 else 'text-success' }}">
+              {{ alert_stats.critical_alerts }}
+            </div>
+          </div>
+          
+          <div class="analytic-item">
+            <div class="analytic-label" data-i18n="system-reliability">System Reliability</div>
+            <div class="analytic-value">
+              {% set reliability = ((alert_stats.resolved_alerts_24h / (alert_stats.total_alerts_24h or 1)) * 100) if alert_stats.total_alerts_24h > 0 else 100 %}
+              {{ "%.0f"|format(reliability) }}%
+            </div>
+          </div>
+          
+          <div class="analytic-item">
+            <div class="analytic-label" data-i18n="response-time">Response Time</div>
+            <div class="analytic-value">{{ alert_stats.avg_resolution_time }}</div>
+          </div>
+        </div>
+
+        <div class="quick-insights">
+          {% if alert_stats.critical_alerts > 0 %}
+            <div class="insight-item danger">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>{{ alert_stats.critical_alerts }} <span data-i18n="critical-alerts-24h">critical alerts require immediate attention</span></span>
+            </div>
+          {% endif %}
+          
+          {% if alert_stats.total_alerts_24h == 0 %}
+            <div class="insight-item success">
+              <i class="fas fa-check-circle"></i>
+              <span data-i18n="no-alerts">No alerts in the last 24 hours - excellent system performance</span>
+            </div>
+          {% elif alert_stats.total_alerts_24h < 5 %}
+            <div class="insight-item info">
+              <i class="fas fa-info-circle"></i>
+              <span>Low alert volume indicates stable system operation</span>
+            </div>
+          {% else %}
+            <div class="insight-item warning">
+              <i class="fas fa-chart-line"></i>
+              <span>Higher alert volume detected - monitor system closely</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="actions-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--success), #059669);">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <span data-i18n="quick-actions">Quick Actions</span>
+          </h2>
+        </div>
+
+        <div class="actions-grid">
+          <a href="{{ url_for('table.table') }}" class="action-btn">
+            <i class="fas fa-table"></i>
+            <span data-i18n="view-detailed-data">View Detailed Data</span>
+          </a>
+
+          <a href="{{ url_for('analysis.analysis') }}" class="action-btn secondary">
+            <i class="fas fa-chart-line"></i>
+            <span data-i18n="analytics-dashboard">Analytics Dashboard</span>
+          </a>
+
+          <a href="{{ url_for('home.alert_history') }}" class="action-btn info">
+            <i class="fas fa-history"></i>
+            <span data-i18n="alert-history-title">Alert History</span>
+          </a>
+
+          <a href="{{ url_for('home.download_report') }}" class="action-btn success">
+            <i class="fas fa-download"></i>
+            <span data-i18n="download-report">Download Report</span>
+          </a>
+
+          <button class="action-btn" onclick="forceRefresh()" style="border: none;">
+            <i class="fas fa-sync-alt"></i>
+            <span data-i18n="refresh-now">Refresh Now</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Smart Tips -->
+      <div class="tips-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--success), #059669);">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <span data-i18n="smart-tip">Smart Tip</span>
+          </h2>
+        </div>
+
+        <div class="tip-content">
+          <div class="tip-text">{{ current_tip }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let refreshInterval = null;
+let countdownInterval = null;
+let nextRefreshTime = null;
+
+// Existing JavaScript functions...
+function updateCurrentTime() {
+  const now = new Date();
+  const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone: 'Asia/Tokyo',
+    timeZoneName: 'short'
+  };
+  
+  const el = document.getElementById('currentTime');
+  if (el) {
+    const timeSpan = el.querySelector('span');
+    if (timeSpan) {
+      timeSpan.textContent = now.toLocaleDateString('en-US', options);
+    }
+  }
+}
+
+function calculateNextRefreshTime() {
+  const now = new Date();
+  const minutes = now.getMinutes();
+  const nextRefreshMinute = (Math.floor(minutes / 5) + 1) * 5;
+  
+  nextRefreshTime = new Date(now);
+  if (nextRefreshMinute >= 60) {
+    nextRefreshTime.setHours(now.getHours() + 1, 0, 0, 0);
+  } else {
+    nextRefreshTime.setMinutes(nextRefreshMinute, 0, 0);
+  }
+}
+
+function updateCountdown() {
+  const now = new Date();
+  const timeUntilRefresh = Math.max(0, nextRefreshTime - now);
+  
+  if (timeUntilRefresh <= 0) {
+    refreshPage();
+    return;
+  }
+  
+  const minutes = Math.floor(timeUntilRefresh / (1000 * 60));
+  const seconds = Math.floor((timeUntilRefresh % (1000 * 60)) / 1000);
+  
+  const countdownEl = document.getElementById('refreshCountdown');
+  if (countdownEl) {
+    countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+function showRefreshIndicator() {
+  const indicator = document.getElementById('refreshIndicator');
+  if (indicator) {
+    indicator.classList.add('show');
+    setTimeout(() => {
+      indicator.classList.remove('show');
+    }, 2000);
+  }
+}
+
+function refreshPage() {
+  showRefreshIndicator();
+  setTimeout(() => {
+    window.location.reload();
+  }, 500);
+}
+
+function forceRefresh() {
+  showRefreshIndicator();
+  setTimeout(() => {
+    window.location.reload();
+  }, 500);
+}
+
+function initializeAutoRefresh() {
+  calculateNextRefreshTime();
+  
+  // Update countdown every second
+  countdownInterval = setInterval(updateCountdown, 1000);
+  updateCountdown();
+  
+  // Refresh page when tab becomes visible (in case user was away)
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') {
+      const now = new Date();
+      if (now >= nextRefreshTime) {
+        refreshPage();
+      }
+    }
+  });
+}
+
+// Enhanced Alert Management Functions
+function resolveAlert(alertId) {
+  if (!alertId) {
+    console.warn('No alert ID provided for resolution');
+    showNotification('Cannot resolve alert - missing alert ID', 'error');
+    return;
+  }
+  
+  const resolveBtn = event.target.closest('.resolve-btn');
+  const alertItem = event.target.closest('.alert-item');
+  
+  if (!resolveBtn || !alertItem) {
+    console.warn('Could not find alert elements');
+    return;
+  }
+  
+  // Show loading state
+  const originalContent = resolveBtn.innerHTML;
+  resolveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  resolveBtn.disabled = true;
+  
+  // Make API call to resolve alert
+  fetch(`/home/resolve-alert/${alertId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: JSON.stringify({
+      note: 'Resolved from dashboard'
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      // Animate alert removal
+      alertItem.style.transition = 'all 0.3s ease';
+      alertItem.style.opacity = '0';
+      alertItem.style.transform = 'translateX(-20px)';
+      
+      setTimeout(() => {
+        alertItem.remove();
         
-        <div class="card-grid">
-            <div class="card">
-                <h3 data-i18n="challenge-title">The Challenge</h3>
-                <p data-i18n="challenge-text">Nursery greenhouses lack adequate monitoring systems, creating blind spots in the cultivation process that affect yield and quality.</p>
-            </div>
-            <div class="card">
-                <h3 data-i18n="solution-title">Our Solution</h3>
-                <p data-i18n="solution-text">Compact, wireless environmental sensors that provide real-time data on critical growth factors without disrupting operations.</p>
-            </div>
-            <div class="card">
-                <h3 data-i18n="impact-title">The Impact</h3>
-                <p data-i18n="impact-text">Increased yields, improved quality, and data-driven decision making for strawberry farmers.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="content-section">
-        <h2 class="section-title" data-i18n="tech-title">Technical Challenges</h2>
+        // Check if there are any remaining alerts
+        const remainingAlerts = document.querySelectorAll('.alert-item');
+        if (remainingAlerts.length === 0) {
+          // Show "no alerts" message
+          const alertsContainer = document.querySelector('.alerts-card');
+          const existingNoAlerts = alertsContainer.querySelector('.no-alerts');
+          
+          if (!existingNoAlerts) {
+            const noAlertsDiv = document.createElement('div');
+            noAlertsDiv.className = 'no-alerts';
+            noAlertsDiv.innerHTML = `
+              <i class="fas fa-check-circle" style="color: var(--success); font-size: 2rem; margin-bottom: 1rem;"></i>
+              <p>No active alerts. All systems operating normally.</p>
+            `;
+            alertsContainer.appendChild(noAlertsDiv);
+          }
+          
+          // Update status banner
+          const statusBanner = document.querySelector('.status-banner');
+          if (statusBanner) {
+            statusBanner.className = 'status-banner online';
+            statusBanner.innerHTML = `
+              <i class="fas fa-check-circle"></i>
+              <span>All Systems Operational</span>
+              <span class="pulse">
+                <i class="fas fa-circle" style="font-size: 0.75rem; margin-left: 0.5rem;"></i>
+              </span>
+            `;
+          }
+        }
         
-        <div class="card-grid">
-            <div class="card">
-                <i class="fas fa-wifi fa-3x" style="color: #3498db;"></i>
-                <h3 data-i18n="wireless-title">Wireless Communication</h3>
-                <p data-i18n="wireless-text">Overcoming steel structure interference to maintain reliable data transmission up to 2km.</p>
-            </div>
-            <div class="card">
-                <i class="fas fa-tint fa-3x" style="color: #3498db;"></i>
-                <h3 data-i18n="durability-title">Durability</h3>
-                <p data-i18n="durability-text">Creating waterproof housings that withstand harsh greenhouse conditions.</p>
-            </div>
-            <div class="card">
-                <i class="fas fa-database fa-3x" style="color: #3498db;"></i>
-                <h3 data-i18n="data-title">Data Integrity</h3>
-                <p data-i18n="data-text">Ensuring continuous monitoring with offline data retention capabilities.</p>
-            </div>
-        </div>
-    </section>
+        // Update alert count in header
+        updateAlertCounts();
+      }, 300);
+      
+      // Show success notification
+      showNotification('Alert resolved successfully', 'success');
+    } else {
+      throw new Error(data.message || 'Failed to resolve alert');
+    }
+  })
+  .catch(error => {
+    console.error('Error resolving alert:', error);
+    resolveBtn.innerHTML = originalContent;
+    resolveBtn.disabled = false;
+    showNotification(`Failed to resolve alert: ${error.message}`, 'error');
+  });
+}
 
-    <section class="content-section">
-        <div class="prototype-container">
-            <img src="{{ url_for('static', filename='project-pic.png') }}" alt="Strawberry Sensor Prototype" class="prototype-image">
-            <div class="prototype-text">
-                <h2 class="section-title" data-i18n="prototype-title">Our Prototype</h2>
-                <p data-i18n="prototype-text">The current iteration of our environmental sensing device blends seamlessly into strawberry seedling trays while collecting critical growth data.</p>
-                <ul class="feature-list">
-                    <li data-i18n="feature-1">Compact, unobtrusive design</li>
-                    <li data-i18n="feature-2">Multi-sensor array</li>
-                    <li data-i18n="feature-3">Long-range communication</li>
-                    <li data-i18n="feature-4">Weather-resistant housing</li>
-                </ul>
-            </div>
-        </div>
-    </section>
+function updateAlertCounts() {
+  // Update alert count badge
+  const alertCountBadge = document.querySelector('.card-title span[style*="background: var(--danger)"]');
+  const remainingAlerts = document.querySelectorAll('.alert-item');
+  
+  if (alertCountBadge) {
+    if (remainingAlerts.length === 0) {
+      alertCountBadge.remove();
+    } else {
+      alertCountBadge.textContent = remainingAlerts.length.toString();
+    }
+  }
+  
+  // Update status banner alert count
+  const statusBannerText = document.querySelector('.status-banner span');
+  if (statusBannerText && remainingAlerts.length > 0) {
+    statusBannerText.textContent = `${remainingAlerts.length} Active Alert${remainingAlerts.length > 1 ? 's' : ''} - Attention Required`;
+  }
+}
 
-    <section class="content-section">
-        <div class="highlight-box">
-            <h2 data-i18n="achievements-title">Expected Achievements</h2>
-            <p data-i18n="achievements-text">By implementing our solution, we aim to increase strawberry yields while improving quality consistency and reducing resource waste.</p>
-        </div>
-    </section>
+function showNotification(message, type = 'info') {
+  // Remove existing notifications
+  const existingNotifications = document.querySelectorAll('.notification');
+  existingNotifications.forEach(n => n.remove());
+  
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.innerHTML = `
+    <div class="notification-content">
+      <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+      <span>${message}</span>
+    </div>
+    <button class="notification-close" onclick="this.parentElement.remove()">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+  
+  // Add notification styles if not already present
+  if (!document.getElementById('notification-styles')) {
+    const styles = document.createElement('style');
+    styles.id = 'notification-styles';
+    styles.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 1000;
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        min-width: 300px;
+        max-width: 500px;
+        border-left: 4px solid #3b82f6;
+      }
+      .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      .notification-success { border-left-color: #10b981; }
+      .notification-error { border-left-color: #ef4444; }
+      .notification-warning { border-left-color: #f59e0b; }
+      .notification-info { border-left-color: #3b82f6; }
+      .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        word-wrap: break-word;
+      }
+      .notification-content i {
+        flex-shrink: 0;
+      }
+      .notification-close {
+        background: none;
+        border: none;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .notification-close:hover {
+        background: #f3f4f6;
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+  
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => notification.classList.add('show'), 10);
+  
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.classList.remove('show');
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 300);
+    }
+  }, 5000);
+}
 
-    <section class="content-section">
-        <h2 class="section-title" data-i18n="steps-title">Next Steps</h2>
-        <div class="next-steps">
-            <div class="next-step-item">
-                <h3 data-i18n="step1-title">Field Testing</h3>
-                <p data-i18n="step1-text">Real-world validation in nursery environments</p>
-            </div>
-            <div class="next-step-item">
-                <h3 data-i18n="step2-title">Algorithm Refinement</h3>
-                <p data-i18n="step2-text">Enhancing data analysis for actionable insights</p>
-            </div>
-            <div class="next-step-item">
-                <h3 data-i18n="step3-title">Farmer Interface</h3>
-                <p data-i18n="step3-text">Developing intuitive dashboards</p>
-            </div>
-            <div class="next-step-item">
-                <h3 data-i18n="step4-title">Communication Reliability</h3>
-                <p data-i18n="step4-text">Ensuring robust long-distance transmission</p>
-            </div>
-        </div>
-    </section>
-</main>
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize clock
+  updateCurrentTime();
+  setInterval(updateCurrentTime, 1000);
+  
+  // Initialize auto-refresh system
+  initializeAutoRefresh();
+  
+  // Toggle stats grid functionality
+  const statsGrid = document.getElementById('statsGrid');
+  const toggleBtn = document.getElementById('toggleStatsBtn');
+  
+  if (toggleBtn && statsGrid) {
+    const toggleIcon = toggleBtn.querySelector('i');
+    const toggleText = toggleBtn.querySelector('span');
+    
+    let isCollapsed = true;
+    statsGrid.classList.add('collapsed');
+    
+    toggleBtn.addEventListener('click', function() {
+      isCollapsed = !isCollapsed;
+      
+      if (isCollapsed) {
+        statsGrid.classList.add('collapsed');
+        toggleIcon.className = 'fas fa-chevron-down';
+        toggleText.textContent = 'Show More';
+      } else {
+        statsGrid.classList.remove('collapsed');
+        toggleIcon.className = 'fas fa-chevron-up';
+        toggleText.textContent = 'Show Less';
+      }
+    });
+  }
+
+  // Button animation
+  document.querySelectorAll('.action-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      if (this.onclick !== forceRefresh && !this.href) return;
+      this.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 150);
+    });
+  });
+
+  // Reading items animation
+  const readingItems = document.querySelectorAll('.reading-item');
+  readingItems.forEach((item, index) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      item.style.transition = 'all 0.6s ease';
+      item.style.opacity = '1';
+      item.style.transform = 'translateY(0)';
+    }, index * 100);
+  });
+
+  // Alert items animation
+  const alertItems = document.querySelectorAll('.alert-item');
+  alertItems.forEach((item, index) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateX(-20px)';
+    setTimeout(() => {
+      item.style.transition = 'all 0.4s ease';
+      item.style.opacity = '1';
+      item.style.transform = 'translateX(0)';
+    }, (index * 150) + 300);
+  });
+
+  // Alert stats overview animation
+  const statCards = document.querySelectorAll('.stat-card');
+  statCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      card.style.transition = 'all 0.5s ease';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, index * 100 + 500);
+  });
+
+  // Timeline items animation
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  timelineItems.forEach((item, index) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateX(-15px)';
+    setTimeout(() => {
+      item.style.transition = 'all 0.4s ease';
+      item.style.opacity = '1';
+      item.style.transform = 'translateX(0)';
+    }, (index * 100) + 800);
+  });
+
+  // Hover effects for interactive elements
+  document.querySelectorAll('.timeline-item').forEach(item => {
+    item.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateX(5px)';
+    });
+    
+    item.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateX(0)';
+    });
+  });
+
+  // Enhanced tooltips for resolve buttons
+  document.querySelectorAll('.resolve-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', function() {
+      if (this.disabled) return;
+      
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = 'Mark as resolved';
+      tooltip.style.cssText = `
+        position: absolute;
+        background: #1f2937;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        z-index: 1000;
+        pointer-events: none;
+        white-space: nowrap;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      `;
+      
+      document.body.appendChild(tooltip);
+      
+      const rect = btn.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      
+      tooltip.style.left = rect.left + rect.width / 2 - tooltipRect.width / 2 + 'px';
+      tooltip.style.top = rect.top - tooltipRect.height - 8 + 'px';
+      
+      btn._tooltip = tooltip;
+    });
+    
+    btn.addEventListener('mouseleave', function() {
+      if (btn._tooltip) {
+        btn._tooltip.remove();
+        btn._tooltip = null;
+      }
+    });
+  });
+
+  // Error handling for missing elements
+  const requiredElements = [
+    'currentTime', 
+    'refreshCountdown', 
+    'statsGrid', 
+    'toggleStatsBtn'
+  ];
+  
+  requiredElements.forEach(id => {
+    if (!document.getElementById(id)) {
+      console.warn(`Required element with ID '${id}' not found`);
+    }
+  });
+
+  // Initialize refresh countdown display
+  updateCountdown();
+});
+
+// Cleanup intervals when page unloads
+window.addEventListener('beforeunload', function() {
+  if (countdownInterval) clearInterval(countdownInterval);
+  if (refreshInterval) clearInterval(refreshInterval);
+});
+
+// Handle visibility change for better performance
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    // Resume updates when page becomes visible
+    updateCurrentTime();
+    if (!countdownInterval) {
+      initializeAutoRefresh();
+    }
+  } else {
+    // Pause non-critical updates when page is hidden
+    // Keep countdownInterval running for accuracy
+  }
+});
+</script>
+
 {% endblock %}

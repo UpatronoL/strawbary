@@ -1,0 +1,869 @@
+{% extends 'base.html' %}
+
+{% block title %}<span data-i18n="alert-history-title">Alert History</span> - Strawberry Monitoring Dashboard{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+<style>
+/* Additional styles specific to alert history page */
+.filter-controls {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filter-select, .filter-input {
+    padding: 10px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--text);
+    font-size: var(--font-size-base);
+    transition: var(--transition);
+}
+
+.filter-select:focus, .filter-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-btn.primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.filter-btn.secondary {
+    background: var(--gray-200);
+    color: var(--text);
+}
+
+.filter-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.alert-list {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.alert-list-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: var(--white);
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alert-list-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    margin: 0;
+}
+
+.alert-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.alert-history-item {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.alert-history-item:last-child {
+    border-bottom: none;
+}
+
+.alert-history-item:hover {
+    background: var(--gray-50);
+}
+
+.alert-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.alert-severity-indicator {
+    width: 8px;
+    height: 60px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.severity-critical { background: var(--danger); }
+.severity-high { background: var(--warning); }
+.severity-medium { background: var(--info); }
+.severity-low { background: var(--gray-600); }
+
+.alert-main-content {
+    flex: 1;
+}
+
+.alert-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.alert-id {
+    font-family: 'Monaco', 'Consolas', monospace;
+    background: var(--gray-100);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: var(--gray-700);
+}
+
+.alert-datetime {
+    font-size: var(--font-size-sm);
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.alert-message-text {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.alert-details {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.alert-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-type-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.badge-type-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.badge-type-info { background: rgba(6, 182, 212, 0.1); color: var(--info); }
+
+.badge-category {
+    background: rgba(44, 90, 160, 0.1);
+    color: var(--primary);
+}
+
+.badge-status-active { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.badge-status-resolved { background: rgba(72, 187, 120, 0.1); color: var(--success); }
+.badge-status-acknowledged { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+.resolution-info {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #bbf7d0;
+    border-radius: var(--border-radius);
+    padding: 10px 15px;
+    margin-top: 10px;
+    font-size: var(--font-size-sm);
+    color: var(--success-green);
+}
+
+.pagination {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    padding: 20px 25px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pagination-info {
+    color: var(--text-light);
+    font-size: var(--font-size-sm);
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--border-color);
+    background: var(--white);
+    color: var(--text);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.pagination-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+.pagination-btn.current {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .filter-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-actions {
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .alert-meta-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .alert-details {
+        justify-content: flex-start;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title" data-i18n="alert-history-title">Alert History</h1>
+        <p class="dashboard-subtitle" data-i18n="alert-history-subtitle">Comprehensive alert tracking and analysis</p>
+    </div>
+
+    <!-- Alert Statistics Overview -->
+    <div class="alert-stats-overview">
+        <div class="stat-card">
+            <div class="stat-icon danger">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ alert_stats.total_alerts_24h }}</div>
+                <div class="stat-label" data-i18n="total-24h">Total (24h)</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon warning">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ alert_stats.active_alerts }}</div>
+                <div class="stat-label" data-i18n="active-alerts-count">Active Alerts</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ alert_stats.resolved_alerts_24h }}</div>
+                <div class="stat-label" data-i18n="resolved-24h-label">Resolved (24h)</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon info">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ alert_stats.avg_resolution_time }}</div>
+                <div class="stat-label" data-i18n="avg-resolution-label">Avg Resolution</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="filter-controls">
+        <form method="GET" action="{{ url_for('home.alert_history') }}">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label" data-i18n="alert-type">Alert Type</label>
+                    <select name="type" class="filter-select">
+                        <option value="all" {% if current_filters.type == 'all' %}selected{% endif %} data-i18n="all-types">All Types</option>
+                        {% for type in filter_options.types %}
+                        <option value="{{ type }}" {% if current_filters.type == type %}selected{% endif %}>
+                            {{ type.title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" data-i18n="alert-category">Category</label>
+                    <select name="category" class="filter-select">
+                        <option value="all" {% if current_filters.category == 'all' %}selected{% endif %} data-i18n="all-categories">All Categories</option>
+                        {% for category in filter_options.categories %}
+                        <option value="{{ category }}" {% if current_filters.category == category %}selected{% endif %}>
+                            {{ category.title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" data-i18n="alert-severity">Severity</label>
+                    <select name="severity" class="filter-select">
+                        <option value="all" {% if current_filters.severity == 'all' %}selected{% endif %} data-i18n="all-severities">All Severities</option>
+                        {% for severity in filter_options.severities %}
+                        <option value="{{ severity }}" {% if current_filters.severity == severity %}selected{% endif %}>
+                            {{ severity.title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" data-i18n="alert-status">Status</label>
+                    <select name="status" class="filter-select">
+                        <option value="all" {% if current_filters.status == 'all' %}selected{% endif %} data-i18n="all-statuses">All Statuses</option>
+                        {% for status in filter_options.statuses %}
+                        <option value="{{ status }}" {% if current_filters.status == status %}selected{% endif %}>
+                            {{ status.title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" data-i18n="search-alerts">Search</label>
+                    <input type="text" name="search" class="filter-input" 
+                           data-i18n="search-alerts"
+                           placeholder="Search alerts..." 
+                           value="{{ current_filters.search }}">
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="filter-btn primary" data-i18n="apply-filters">
+                    <i class="fas fa-filter"></i>
+                    Apply Filters
+                </button>
+                <a href="{{ url_for('home.alert_history') }}" class="filter-btn secondary" data-i18n="clear-all">
+                    <i class="fas fa-times"></i>
+                    Clear All
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Alert List -->
+    <div class="alert-list">
+        <div class="alert-list-header">
+            <h2 class="alert-list-title" data-i18n="alert-history-title">Alert History</h2>
+            <div class="alert-count">{{ pagination.total_alerts }} <span data-i18n="alerts-count">alerts</span></div>
+        </div>
+
+        {% if alerts %}
+            {% for alert in alerts %}
+            <div class="alert-history-item">
+                <div class="alert-header">
+                    <div class="alert-severity-indicator severity-{{ alert.severity }}"></div>
+                    <div class="alert-main-content">
+                        <div class="alert-meta-row">
+                            <div class="alert-id">{{ alert.id }}</div>
+                            <div class="alert-datetime">
+                                <i class="fas fa-clock"></i>
+                                {% set alert_time = alert.datetime_created %}
+                                {% if alert_time %}
+                                    {% set created_dt = moment.fromisoformat(alert_time) if moment else alert_time %}
+                                    {{ created_dt }}
+                                {% else %}
+                                    <span data-i18n="loading">Unknown time</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="alert-message-text">{{ alert.message }}</div>
+
+                        <div class="alert-details">
+                            <span class="alert-badge badge-type-{{ alert.type }}">{{ alert.type }}</span>
+                            <span class="alert-badge badge-category">{{ alert.category }}</span>
+                            <span class="alert-badge badge-status-{{ alert.status }}">{{ alert.status }}</span>
+                            <span class="alert-badge">{{ alert.severity }} severity</span>
+                            
+                            {% if alert.age_minutes is defined %}
+                            <span class="alert-badge">{{ alert.age_minutes }} min ago</span>
+                            {% endif %}
+                        </div>
+
+                        {% if alert.status == 'resolved' and alert.resolution_time %}
+                        <div class="resolution-info">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="resolved-at">Resolved at</span> {{ alert.resolution_time }}
+                            {% if alert.notes %}
+                                {% for note in alert.notes %}
+                                    {% if note.type == 'resolution' %}
+                                    - {{ note.content }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <h3 data-i18n="no-alerts-found">No Alerts Found</h3>
+                <p data-i18n="no-alerts-message">No alerts match your current filters. Try adjusting your search criteria.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination.total_pages > 1 %}
+    <div class="pagination">
+        <div class="pagination-info">
+            <span data-i18n="showing-results">Showing</span> {{ ((pagination.page - 1) * pagination.per_page) + 1 }} - 
+            {{ [pagination.page * pagination.per_page, pagination.total_alerts] | min }} 
+            <span data-i18n="of-total">of</span> {{ pagination.total_alerts }} <span data-i18n="alerts-count">alerts</span>
+        </div>
+
+        <div class="pagination-controls">
+            <!-- Previous button -->
+            {% if pagination.page > 1 %}
+                <a href="{{ url_for('home.alert_history', page=pagination.page-1, 
+                          type=current_filters.type, category=current_filters.category, 
+                          severity=current_filters.severity, status=current_filters.status, 
+                          search=current_filters.search) }}" 
+                   class="pagination-btn" data-i18n="previous-page">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            {% else %}
+                <span class="pagination-btn disabled">
+                    <i class="fas fa-chevron-left"></i> <span data-i18n="previous-page">Previous</span>
+                </span>
+            {% endif %}
+
+            <!-- Page numbers -->
+            {% set start_page = [1, pagination.page - 2] | max %}
+            {% set end_page = [pagination.total_pages, pagination.page + 2] | min %}
+
+            {% if start_page > 1 %}
+                <a href="{{ url_for('home.alert_history', page=1, 
+                          type=current_filters.type, category=current_filters.category, 
+                          severity=current_filters.severity, status=current_filters.status, 
+                          search=current_filters.search) }}" 
+                   class="pagination-btn">1</a>
+                {% if start_page > 2 %}
+                    <span class="pagination-btn disabled">...</span>
+                {% endif %}
+            {% endif %}
+
+            {% for page_num in range(start_page, end_page + 1) %}
+                {% if page_num == pagination.page %}
+                    <span class="pagination-btn current">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('home.alert_history', page=page_num, 
+                              type=current_filters.type, category=current_filters.category, 
+                              severity=current_filters.severity, status=current_filters.status, 
+                              search=current_filters.search) }}" 
+                       class="pagination-btn">{{ page_num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if end_page < pagination.total_pages %}
+                {% if end_page < pagination.total_pages - 1 %}
+                    <span class="pagination-btn disabled">...</span>
+                {% endif %}
+                <a href="{{ url_for('home.alert_history', page=pagination.total_pages, 
+                          type=current_filters.type, category=current_filters.category, 
+                          severity=current_filters.severity, status=current_filters.status, 
+                          search=current_filters.search) }}" 
+                   class="pagination-btn">{{ pagination.total_pages }}</a>
+            {% endif %}
+
+            <!-- Next button -->
+            {% if pagination.page < pagination.total_pages %}
+                <a href="{{ url_for('home.alert_history', page=pagination.page+1, 
+                          type=current_filters.type, category=current_filters.category, 
+                          severity=current_filters.severity, status=current_filters.status, 
+                          search=current_filters.search) }}" 
+                   class="pagination-btn" data-i18n="next-page">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            {% else %}
+                <span class="pagination-btn disabled">
+                    <span data-i18n="next-page">Next</span> <i class="fas fa-chevron-right"></i>
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="actions-card" style="margin-top: 30px;">
+        <div class="card-header">
+            <h2 class="card-title">
+                <div class="card-icon" style="background: linear-gradient(135deg, var(--success), #059669);">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <span data-i18n="quick-actions">Quick Actions</span>
+            </h2>
+        </div>
+
+        <div class="actions-grid">
+            <a href="{{ url_for('home.home') }}" class="action-btn" data-i18n="back-to-dashboard">
+                <i class="fas fa-home"></i>
+                Back to Dashboard
+            </a>
+
+            <a href="{{ url_for('home.download_report') }}?lang={{ current_lang|default('en') }}" class="action-btn success" data-i18n="export-report">
+                <i class="fas fa-download"></i>
+                Export Report
+            </a>
+
+            <button class="action-btn secondary" onclick="refreshAlertHistory()" style="border: none;" data-i18n="refresh-data">
+                <i class="fas fa-sync-alt"></i>
+                Refresh Data
+            </button>
+
+            <button class="action-btn warning" onclick="bulkResolveAlerts()" style="border: none;" data-i18n="bulk-actions">
+                <i class="fas fa-check-double"></i>
+                Bulk Actions
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Alert History JavaScript Functions
+function refreshAlertHistory() {
+    const refreshBtn = event.target.closest('.action-btn');
+    const icon = refreshBtn.querySelector('i');
+    
+    // Show loading state
+    icon.className = 'fas fa-spinner fa-spin';
+    refreshBtn.disabled = true;
+    
+    // Reload page after short delay
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+}
+
+function bulkResolveAlerts() {
+    const activeAlerts = document.querySelectorAll('.alert-history-item');
+    const activeAlertIds = [];
+    
+    activeAlerts.forEach(alert => {
+        const statusBadge = alert.querySelector('.badge-status-active');
+        if (statusBadge) {
+            const alertId = alert.querySelector('.alert-id').textContent.trim();
+            activeAlertIds.push(alertId);
+        }
+    });
+    
+    if (activeAlertIds.length === 0) {
+        showNotification('No active alerts to resolve', 'info');
+        return;
+    }
+    
+    if (confirm(`Are you sure you want to resolve ${activeAlertIds.length} active alerts?`)) {
+        // Here you would implement bulk resolution logic
+        // For now, just show a notification
+        showNotification(`Bulk resolution of ${activeAlertIds.length} alerts initiated`, 'success');
+        
+        // Reload page after short delay
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    }
+}
+
+function resolveIndividualAlert(alertId) {
+    if (!alertId) {
+        console.warn('No alert ID provided for resolution');
+        return;
+    }
+    
+    const alertItem = event.target.closest('.alert-history-item');
+    const statusBadge = alertItem.querySelector('.badge-status-active');
+    
+    if (!statusBadge) {
+        showNotification('Alert is already resolved', 'info');
+        return;
+    }
+    
+    // Make API call to resolve alert
+    fetch(`/home/resolve-alert/${alertId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            note: 'Resolved from alert history page'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status badge
+            statusBadge.className = 'alert-badge badge-status-resolved';
+            statusBadge.textContent = 'resolved';
+            
+            // Add resolution info
+            const resolutionInfo = document.createElement('div');
+            resolutionInfo.className = 'resolution-info';
+            resolutionInfo.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                Resolved just now
+            `;
+            alertItem.querySelector('.alert-main-content').appendChild(resolutionInfo);
+            
+            showNotification('Alert resolved successfully', 'success');
+        } else {
+            throw new Error(data.message || 'Failed to resolve alert');
+        }
+    })
+    .catch(error => {
+        console.error('Error resolving alert:', error);
+        showNotification('Failed to resolve alert. Please try again.', 'error');
+    });
+}
+
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <span>${message}</span>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // Add notification styles if not already present
+    if (!document.getElementById('notification-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'notification-styles';
+        styles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                padding: 16px 20px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                z-index: 1000;
+                transform: translateX(400px);
+                opacity: 0;
+                transition: all 0.3s ease;
+                min-width: 300px;
+                border-left: 4px solid #3b82f6;
+            }
+            .notification.show {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            .notification-success { border-left-color: #10b981; }
+            .notification-error { border-left-color: #ef4444; }
+            .notification-warning { border-left-color: #f59e0b; }
+            .notification-content {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex: 1;
+            }
+            .notification-close {
+                background: none;
+                border: none;
+                color: #6b7280;
+                cursor: pointer;
+                padding: 4px;
+                border-radius: 4px;
+            }
+            .notification-close:hover {
+                background: #f3f4f6;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+// Add click handlers for resolve buttons when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Add resolve buttons to active alerts
+    const activeAlerts = document.querySelectorAll('.alert-history-item');
+    activeAlerts.forEach(alert => {
+        const statusBadge = alert.querySelector('.badge-status-active');
+        if (statusBadge) {
+            const alertId = alert.querySelector('.alert-id').textContent.trim();
+            
+            // Add resolve button
+            const resolveBtn = document.createElement('button');
+            resolveBtn.className = 'alert-badge resolve-alert-btn';
+            resolveBtn.style.cssText = 'background: #10b981; color: white; border: none; cursor: pointer;';
+            resolveBtn.innerHTML = '<i class="fas fa-check"></i> Resolve';
+            resolveBtn.onclick = () => resolveIndividualAlert(alertId);
+            
+            alert.querySelector('.alert-details').appendChild(resolveBtn);
+        }
+    });
+
+    // Animate alert items on load
+    const alertItems = document.querySelectorAll('.alert-history-item');
+    alertItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            item.style.transition = 'all 0.4s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        }, index * 50);
+    });
+});
+
+// Filter form enhancement
+document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.querySelector('.filter-controls form');
+    const filterInputs = filterForm.querySelectorAll('select, input');
+    
+    // Auto-submit form when filters change (optional)
+    filterInputs.forEach(input => {
+        if (input.type !== 'text') { // Don't auto-submit on text input
+            input.addEventListener('change', function() {
+                // Optional: Auto-submit on select changes
+                // filterForm.submit();
+            });
+        }
+    });
+    
+    // Enhanced search functionality
+    const searchInput = filterForm.querySelector('input[name="search"]');
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            // Optional: Auto-submit after user stops typing
+            searchTimeout = setTimeout(() => {
+                // filterForm.submit();
+            }, 1000);
+        });
+    }
+});
+</script>
+
+{% endblock %}

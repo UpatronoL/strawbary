@@ -172,4 +172,15 @@
     </table>
   </div>
 </div>
+
+<script>
+  // This ensures that the language is applied after page content is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    // Force language update on this page
+    const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+    if (window.setLanguage) {
+      window.setLanguage(savedLang);
+    }
+  });
+</script>
 {% endblock %}

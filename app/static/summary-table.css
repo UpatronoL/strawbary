@@ -1,72 +1,204 @@
+:root {
+    --primary: #2c5aa0;
+    --primary-light: #4a73b8;
+    --secondary: #34495e;
+    --accent: #27ae60;
+    --text: #2c3e50;
+    --text-light: #64748b;
+    --background: #f8fafc;
+    --white: #ffffff;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    --font-main: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    font-family: var(--font-main);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
 
 .container {
-    width: 95%;
-    margin: 20px auto;
-    font-family: var(--font-main, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif);
+    width: 98%;
+    max-width: 1600px;
+    margin: 40px auto;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .table-wrapper {
     overflow-x: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: white;
+    border-radius: 16px;
+    position: relative;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    white-space: nowrap;
+    font-size: 0.925rem;
+    background: var(--white);
 }
 
+/* Header Styling */
 thead {
-    background-color: #FF6F61;
-    color: white;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: var(--white);
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 10;
 }
 
-th, td {
-    padding: 12px 15px;
+th {
+    padding: 18px 16px;
+    font-weight: 700;
     text-align: center;
-    border: 1px solid #e0e0e0;
+    letter-spacing: 0.025em;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
 }
 
-#category-cell, #metric-header {
-    background-color: #FF6F61;
-    color: white;
-    font-weight: bold;
+th:last-child {
+    border-right: none;
+}
+
+/* Body Cell Styling */
+td {
+    padding: 14px 16px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgba(66, 153, 225, 0.02);
+}
+
+tbody tr:hover {
+    background-color: rgba(36, 121, 190, 0.06);
+}
+
+/* Category and Metric Columns */
+td[rowspan] {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: var(--secondary);
+    font-weight: 700;
+    text-align: center;
+    padding: 16px 20px;
     position: sticky;
     left: 0;
-    z-index: 2;
+    z-index: 5;
+    border-right: 2px solid var(--border-color);
 }
 
-#metric-header {
-    left: 150px;
-    z-index: 2;
-}
-
-#category {
-    background-color: #f2f2f2;
-    color: #333;
-    position: sticky;
-    left: 0;
-    font-weight: bold;
-    text-align: left;
-}
-
-[id^="metric-"] {
-    background-color: #f9f9f9;
+/* Metric labels */
+td:nth-child(2) {
+    background-color: #fafbfc;
+    color: var(--text);
+    font-weight: 600;
+    text-align: center;
+    padding-left: 20px;
     position: sticky;
     left: 150px;
-    text-align: left;
-    color: #444;
+    z-index: 4;
+    border-right: 2px solid var(--border-color);
+    min-width: 120px;
 }
 
-/* Styling for different metric types */
-#metric-max { color: #e74c3c; }
-#metric-min { color: #3498db; }
-#metric-daily-avg { color: #2c3e50; }
-#metric-daytime-avg { color: #f39c12; }
-#metric-nighttime-avg { color: #8e44ad; }
+/* Temperature section styling */
+tbody tr:nth-child(-n+5) {
+    border-left: 4px solid #dc2626;
+}
 
+/* Humidity section styling */
+tbody tr:nth-child(n+6):nth-child(-n+10) {
+    border-left: 4px solid #2563eb;
+}
+
+/* Light Intensity section styling */
+tbody tr:nth-child(n+11):nth-child(-n+12) {
+    border-left: 4px solid #7c3aed;
+}
+
+/* Ground Temperature section styling */
+tbody tr:nth-child(n+13):nth-child(-n+17) {
+    border-left: 4px solid #ea580c;
+}
+
+/* Ground Humidity section styling */
+tbody tr:nth-child(n+18) {
+    border-left: 4px solid #059669;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        width: 98%;
+        margin: 20px auto;
+    }
+    
+    td[rowspan] {
+        left: 0;
+        min-width: 140px;
+    }
+    
+    td:nth-child(2) {
+        left: 140px;
+        min-width: 110px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 15px auto;
+        border-radius: 12px;
+    }
+    
+    th, td {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+    }
+    
+    td[rowspan] {
+        min-width: 120px;
+        padding: 12px 15px;
+    }
+    
+    td:nth-child(2) {
+        left: 120px;
+        min-width: 100px;
+        padding: 12px 15px;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+tbody tr {
+    animation: fadeInUp 0.4s ease-out;
+    animation-delay: calc(var(--row-index, 0) * 0.03s);
+    animation-fill-mode: both;
+}
