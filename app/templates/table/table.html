@@ -20,7 +20,7 @@
       {% if selected_date %}
         <h2 class="table-title">
           <span data-i18n="measurementsFor">Measurements for</span> 
-          {{ selected_date.strftime('%B %d, %Y') }}
+          {{ selected_date.strftime('%B %d') }}
         </h2>
       {% else %}
         <h2 class="table-title" data-i18n="todayMeasurements">Today's Measurements</h2>
@@ -67,17 +67,17 @@
         <tr>
           <th data-i18n="headerDate">Date</th>
           <th data-i18n="headerTime">Time</th>
-          <th data-i18n="headerTemperature">Temperature (°C)</th>
-          <th data-i18n="headerHumidity">Humidity (%)</th>
-          <th data-i18n="headerLightIntensity">Light Intensity (Lux)</th>
-          <th data-i18n="headerGroundTemperature">Ground Temperature (°C)</th>
-          <th data-i18n="headerGroundHumidity">Ground Humidity (%)</th>
+          <th>Temp (°C)</th>
+          <th>Hum (%)</th>
+          <th>Light (Lux)</th>
+          <th>G. Temp (°C)</th>
+          <th>G. Hum (%)</th>
         </tr>
       </thead>
       <tbody>
         {% for row in measurements %}
         <tr>
-          <td>{{ row['Date'] or '' }}</td>
+          <td>{{ row['Date'].strftime('%b %d') if row['Date'] else '' }}</td>
           <td>{{ row['Time'] or '' }}</td>
           <td class="temperature-cell">{{ "%.1f"|format(row['Temperature']) if row['Temperature'] is not none else 'N/A' }}</td>
           <td class="humidity-cell">{{ "%.1f"|format(row['Humidity']) if row['Humidity'] is not none else 'N/A' }}</td>

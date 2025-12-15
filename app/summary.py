@@ -30,7 +30,7 @@ def summary_table():
 
         # Calculate statistics
         stats = {
-                'Date': date.strftime('%Y-%m-%d'),
+                'Date': date,
                 # Temperature
                 'Max Temp': group['Temperature'].max(),
                 'Min Temp': group['Temperature'].min(),

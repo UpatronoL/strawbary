@@ -1,0 +1,10 @@
+{
+  "temp_min": 18.0,
+  "temp_max": 28.0,
+  "soil_moisture_min": 25.0,
+  "soil_moisture_max": 70.0,
+  "light_min": 200.0,
+  "ground_temp_min": 13.9,
+  "ground_temp_max": 25.0,
+  "connection_timeout": 10
+}

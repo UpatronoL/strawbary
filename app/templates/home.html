@@ -4,6 +4,86 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+<style>
+  /* Alert Settings Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 100px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    z-index: 1100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  .modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  .settings-modal {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+  }
+  .modal-overlay.show .settings-modal {
+    transform: translateY(0);
+  }
+  .modal-header {
+    padding: 15px 25px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-title { font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0; }
+  .modal-close { background: none; border: none; font-size: 1.5rem; color: var(--text-light); cursor: pointer; }
+  .modal-body { padding: 15px 25px; }
+  .form-group { margin-bottom: 12px; }
+  .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 0.9rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .form-input { 
+    width: 100%; padding: 8px; border: 1px solid var(--border-color); 
+    box-sizing: border-box;
+    border-radius: var(--border-radius); font-size: 1rem; 
+  }
+  .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+  .modal-footer { padding: 15px 25px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; }
+  .btn { padding: 10px 20px; border-radius: var(--border-radius); font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-secondary { background: var(--gray-200); color: var(--text); }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn:hover { transform: translateY(-1px); }
+  .settings-btn {
+    background: none; border: none; color: var(--text-light); cursor: pointer;
+    padding: 8px; border-radius: 50%; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px;
+    font-size: 1.25rem;
+  }
+  .settings-btn:hover { background: var(--gray-200); color: var(--primary); }
+  .card-title {
+    display: flex;
+    align-items: center;
+  }
+  .settings-section { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+  .settings-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .section-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .section-title i { color: var(--primary); }
+  .btn-warning { background: var(--warning); color: white; border: none; }
+  .btn-warning:hover { background: #d97706; }
+  .hidden-alert { display: none; }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -62,16 +142,6 @@
   <!-- Alert Statistics Overview -->
   <div class="alert-stats-overview">
     <div class="stat-card">
-      <div class="stat-icon danger">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
-      <div class="stat-content">
-        <div class="stat-number">{{ alert_stats.total_alerts_24h }}</div>
-        <div class="stat-label" data-i18n="alerts-24h">Alerts (24h)</div>
-      </div>
-    </div>
-    
-    <div class="stat-card">
       <div class="stat-icon warning">
         <i class="fas fa-exclamation-circle"></i>
       </div>
@@ -88,16 +158,6 @@
       <div class="stat-content">
         <div class="stat-number">{{ alert_stats.resolved_alerts_24h }}</div>
         <div class="stat-label" data-i18n="resolved-24h">Resolved (24h)</div>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon info">
-        <i class="fas fa-clock"></i>
-      </div>
-      <div class="stat-content">
-        <div class="stat-number">{{ alert_stats.avg_resolution_time }}</div>
-        <div class="stat-label" data-i18n="avg-resolution">Avg Resolution</div>
       </div>
     </div>
   </div>
@@ -168,6 +228,9 @@
             <span style="background: var(--danger); color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.875rem; margin-left: 1rem;">{{ sensor_data.alerts|length }}</span>
             {% endif %}
           </h2>
+          <button class="settings-btn" onclick="openAlertSettings()" title="Configure Alert Thresholds">
+            <i class="fas fa-cog"></i>
+          </button>
         </div>
 
         {% if sensor_data.alerts %}
@@ -218,8 +281,8 @@
 
         <div class="alert-history-timeline">
           {% if recent_alert_history %}
-            {% for alert in recent_alert_history[:5] %}
-            <div class="timeline-item severity-{{ alert.get('severity', 'medium') }}">
+            {% for alert in recent_alert_history %}
+            <div class="timeline-item severity-{{ alert.get('severity', 'medium') }} {% if loop.index > 5 %}hidden-alert{% endif %}">
               <div class="timeline-marker">
                 <i class="{{ alert.get('icon', 'fas fa-bell') }}"></i>
               </div>
@@ -248,10 +311,10 @@
             
             {% if recent_alert_history|length > 5 %}
             <div class="timeline-more">
-              <a href="{{ url_for('home.alert_history') }}">
-                <i class="fas fa-ellipsis-h"></i>
-                View {{ recent_alert_history|length - 5 }} more alerts
-              </a>
+              <button onclick="toggleMoreAlerts(this)" class="btn btn-secondary" style="width: 100%; padding: 8px; font-size: 0.9rem;">
+                <i class="fas fa-chevron-down"></i>
+                <span data-i18n="show-more">Show More</span>
+              </button>
             </div>
             {% endif %}
           {% else %}
@@ -454,6 +517,79 @@
   </div>
 </div>
 
+<!-- Alert Settings Modal -->
+<div class="modal-overlay" id="alertSettingsModal">
+  <div class="settings-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Alert Threshold Settings</h3>
+      <button class="modal-close" onclick="closeAlertSettings()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="alertSettingsForm">
+        <!-- Air & Light Section -->
+        <div class="settings-section">
+          <h4 class="section-title"><i class="fas fa-wind"></i> Air & Light Conditions</h4>
+          <div class="form-group">
+            <label class="form-label">Air Temperature Range (°C)</label>
+            <div class="form-row">
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-light);">Min</label>
+                <input type="number" step="0.1" name="temp_min" class="form-input" value="{{ alert_settings.temp_min }}">
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-light);">Max</label>
+                <input type="number" step="0.1" name="temp_max" class="form-input" value="{{ alert_settings.temp_max }}">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Minimum Light Intensity (Lux)</label>
+            <input type="number" step="10" name="light_min" class="form-input" value="{{ alert_settings.light_min }}">
+          </div>
+        </div>
+        
+        <!-- Soil & Ground Section -->
+        <div class="settings-section">
+          <h4 class="section-title"><i class="fas fa-layer-group"></i> Soil & Ground Conditions</h4>
+          <div class="form-group">
+            <label class="form-label">Soil Moisture Range (%)</label>
+            <div class="form-row">
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-light);">Min</label>
+                <input type="number" step="1" name="soil_moisture_min" class="form-input" value="{{ alert_settings.soil_moisture_min }}">
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-light);">Max</label>
+                <input type="number" step="1" name="soil_moisture_max" class="form-input" value="{{ alert_settings.soil_moisture_max }}">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ground Temperature Range (°C)</label>
+            <div class="form-row">
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-light);">Min</label>
+                <input type="number" step="0.1" name="ground_temp_min" class="form-input" value="{{ alert_settings.ground_temp_min }}">
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-light);">Max</label>
+                <input type="number" step="0.1" name="ground_temp_max" class="form-input" value="{{ alert_settings.ground_temp_max }}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" onclick="resetToDefaults()" style="margin-right: auto;">
+        <i class="fas fa-undo"></i> Reset Defaults
+      </button>
+      <button class="btn btn-secondary" onclick="closeAlertSettings()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAlertSettings()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <script>
 let refreshInterval = null;
 let countdownInterval = null;
@@ -553,6 +689,94 @@ function initializeAutoRefresh() {
         refreshPage();
       }
     }
+  });
+}
+
+// Alert Settings Functions
+function openAlertSettings() {
+  const modal = document.getElementById('alertSettingsModal');
+  if (modal) {
+    modal.classList.add('show');
+  }
+}
+
+function closeAlertSettings() {
+  const modal = document.getElementById('alertSettingsModal');
+  if (modal) {
+    modal.classList.remove('show');
+  }
+}
+
+function resetToDefaults() {
+  if (!confirm('Are you sure you want to reset all alert thresholds to their default values?')) {
+    return;
+  }
+  
+  const defaults = {{ default_settings|tojson }};
+  const form = document.getElementById('alertSettingsForm');
+  
+  if (form && defaults) {
+    form.querySelector('[name="temp_min"]').value = defaults.temp_min;
+    form.querySelector('[name="temp_max"]').value = defaults.temp_max;
+    form.querySelector('[name="soil_moisture_min"]').value = defaults.soil_moisture_min;
+    form.querySelector('[name="soil_moisture_max"]').value = defaults.soil_moisture_max;
+    form.querySelector('[name="ground_temp_min"]').value = defaults.ground_temp_min;
+    form.querySelector('[name="ground_temp_max"]').value = defaults.ground_temp_max;
+    form.querySelector('[name="light_min"]').value = defaults.light_min;
+  }
+}
+
+function toggleMoreAlerts(btn) {
+  const hiddenAlerts = document.querySelectorAll('.hidden-alert');
+  const isShowing = btn.classList.contains('showing');
+  
+  if (isShowing) {
+    hiddenAlerts.forEach(el => el.style.display = 'none');
+    btn.classList.remove('showing');
+    btn.innerHTML = '<i class="fas fa-chevron-down"></i> <span data-i18n="show-more">Show More</span>';
+  } else {
+    hiddenAlerts.forEach(el => el.style.display = 'flex');
+    btn.classList.add('showing');
+    btn.innerHTML = '<i class="fas fa-chevron-up"></i> <span data-i18n="show-less">Show Less</span>';
+  }
+}
+
+function saveAlertSettings() {
+  const form = document.getElementById('alertSettingsForm');
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  
+  // Show loading state on save button
+  const saveBtn = document.querySelector('.modal-footer .btn-primary');
+  const originalText = saveBtn.textContent;
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  saveBtn.disabled = true;
+  
+  fetch('/home/save-alert-settings', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.success) {
+      showNotification('Settings saved successfully. Refreshing...', 'success');
+      closeAlertSettings();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } else {
+      showNotification('Failed to save settings: ' + result.message, 'error');
+      saveBtn.textContent = originalText;
+      saveBtn.disabled = false;
+    }
+  })
+  .catch(error => {
+    showNotification('Error saving settings', 'error');
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
   });
 }
 
@@ -922,6 +1146,13 @@ document.addEventListener('DOMContentLoaded', function() {
   requiredElements.forEach(id => {
     if (!document.getElementById(id)) {
       console.warn(`Required element with ID '${id}' not found`);
+    }
+  });
+
+  // Close modal when clicking outside
+  document.getElementById('alertSettingsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeAlertSettings();
     }
   });
 

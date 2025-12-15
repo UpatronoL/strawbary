@@ -330,16 +330,6 @@
     <!-- Alert Statistics Overview -->
     <div class="alert-stats-overview">
         <div class="stat-card">
-            <div class="stat-icon danger">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number">{{ alert_stats.total_alerts_24h }}</div>
-                <div class="stat-label" data-i18n="total-24h">Total (24h)</div>
-            </div>
-        </div>
-        
-        <div class="stat-card">
             <div class="stat-icon warning">
                 <i class="fas fa-exclamation-circle"></i>
             </div>
@@ -356,16 +346,6 @@
             <div class="stat-content">
                 <div class="stat-number">{{ alert_stats.resolved_alerts_24h }}</div>
                 <div class="stat-label" data-i18n="resolved-24h-label">Resolved (24h)</div>
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon info">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number">{{ alert_stats.avg_resolution_time }}</div>
-                <div class="stat-label" data-i18n="avg-resolution-label">Avg Resolution</div>
             </div>
         </div>
     </div>
@@ -482,6 +462,10 @@
                             {% if alert.age_minutes is defined %}
                             <span class="alert-badge">{{ alert.age_minutes }} min ago</span>
                             {% endif %}
+                            
+                            <button class="alert-badge" onclick="deleteAlert('{{ alert.id }}')" style="background: var(--danger); color: white; border: none; cursor: pointer; margin-left: auto;">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
                         </div>
 
                         {% if alert.status == 'resolved' and alert.resolution_time %}
@@ -669,6 +653,39 @@ function bulkResolveAlerts() {
             window.location.reload();
         }, 2000);
     }
+}
+
+function deleteAlert(alertId) {
+    if (!confirm('Are you sure you want to permanently delete this alert? This action cannot be undone.')) {
+        return;
+    }
+    
+    fetch(`/home/delete-alert/${alertId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Alert deleted successfully', 'success');
+            // Find and remove the alert element
+            const alertElements = document.querySelectorAll('.alert-history-item');
+            alertElements.forEach(el => {
+                if (el.querySelector('.alert-id').textContent.trim() === alertId) {
+                    el.remove();
+                }
+            });
+        } else {
+            showNotification(data.message || 'Failed to delete alert', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while deleting the alert', 'error');
+    });
 }
 
 function resolveIndividualAlert(alertId) {

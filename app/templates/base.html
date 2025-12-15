@@ -11,6 +11,68 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Professional Footer Styles */
+        footer {
+            background-color: var(--bg-card, #1f2937);
+            border-top: 1px solid var(--border-color, #374151);
+            padding: 40px 0 20px;
+            margin-top: auto;
+            color: var(--text, #e5e7eb);
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--primary, #3b82f6);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .footer-info-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-light, #9ca3af);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .footer-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text, #f3f4f6);
+        }
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border-color, #4b5563), transparent);
+            margin: 20px auto;
+            max-width: 600px;
+            opacity: 0.5;
+        }
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: var(--text-light, #9ca3af);
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body data-theme="dark">
     <header class="header-container">
@@ -69,11 +131,32 @@
 
     <footer>
             <div class="footer-content">
-              <p>© 2025 Strawberry sensor. Powered by kuas capstne.</p>
-              <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.7;">
-                <i class="fas fa-envelope"></i> support@strawberryisensor.com | 
-                <i class="fas fa-phone"></i> 1-800-BERRY-Nicholas
-              </p>
+              <div class="footer-title">Small Environmental Sensing Device for Strawberry Production</div>
+              
+              <div class="footer-info-row">
+                  <div class="footer-item">
+                      <span class="footer-label">Team ID</span>
+                      <span class="footer-value">25C10</span>
+                  </div>
+                  <div class="footer-item">
+                      <span class="footer-label">Company</span>
+                      <span class="footer-value">GRA Inc.</span>
+                  </div>
+                  <div class="footer-item">
+                      <span class="footer-label">Engineer</span>
+                      <span class="footer-value">KATSUBE Tatsuya</span>
+                  </div>
+                  <div class="footer-item">
+                      <span class="footer-label">Supervisor</span>
+                      <span class="footer-value">PIUMARTA Ian</span>
+                  </div>
+              </div>
+              
+              <div class="footer-divider"></div>
+              
+              <div class="footer-copyright">
+                  &copy; 2025 GRA Inc. All rights reserved.
+              </div>
             </div>
     </footer>
 

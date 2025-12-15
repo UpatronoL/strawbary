@@ -187,5 +187,89 @@
         "content": "Resolved from alert history page"
       }
     ]
+  },
+  {
+    "id": "alert_20250921_123755_9",
+    "message": "Sensor connection issue - last data received 22362 minutes ago",
+    "type": "warning",
+    "icon": "fas fa-wifi",
+    "timestamp": "06:50 PM",
+    "datetime_created": "2025-12-15T18:50:01.982476",
+    "age_minutes": 23,
+    "status": "resolved",
+    "severity": "critical",
+    "category": "system",
+    "sensor_value": null,
+    "resolution_time": "2025-12-15T19:16:03.717936",
+    "notes": [
+      {
+        "timestamp": "2025-12-15T19:16:03.718551",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20251215_191033_10",
+    "message": "Low ground temperature: 12.7\u00b0C",
+    "type": "warning",
+    "icon": "fas fa-thermometer-empty",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-12-15T19:13:38.059526",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "medium",
+    "category": "temperature",
+    "sensor_value": "14.9",
+    "resolution_time": "2025-12-15T19:16:09.542476",
+    "notes": [
+      {
+        "timestamp": "2025-12-15T19:16:09.542600",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20251215_191338_11",
+    "message": "Low soil moisture: 45.8%",
+    "type": "danger",
+    "icon": "fas fa-tint",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-12-15T19:13:38.060692",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "high",
+    "category": "moisture",
+    "sensor_value": "45.8",
+    "resolution_time": "2025-12-15T19:16:11.924163",
+    "notes": [
+      {
+        "timestamp": "2025-12-15T19:16:11.924285",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
+  },
+  {
+    "id": "alert_20251215_191918_13",
+    "message": "Low soil moisture: 45.8%",
+    "type": "danger",
+    "icon": "fas fa-tint",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-12-15T19:19:18.727440",
+    "age_minutes": 0,
+    "status": "resolved",
+    "severity": "high",
+    "category": "moisture",
+    "sensor_value": "45.8",
+    "resolution_time": "2025-12-15T19:20:56.435449",
+    "notes": [
+      {
+        "timestamp": "2025-12-15T19:20:56.435598",
+        "type": "resolution",
+        "content": "Resolved from alert history page"
+      }
+    ]
   }
 ]

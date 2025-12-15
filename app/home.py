@@ -7,6 +7,45 @@ import numpy as np
 
 bp = Blueprint('home', __name__, url_prefix='/home')
 
+DEFAULT_ALERT_SETTINGS = {
+    'temp_min': 18.0,
+    'temp_max': 28.0,
+    'soil_moisture_min': 25.0,
+    'soil_moisture_max': 70.0,
+    'light_min': 200.0,
+    'ground_temp_min': 15.0,
+    'ground_temp_max': 25.0,
+    'connection_timeout': 10
+}
+
+def load_alert_settings():
+    """Load alert settings from JSON file"""
+    settings_file = os.path.join(current_app.root_path, 'data', 'alert_settings.json')
+    
+    settings = DEFAULT_ALERT_SETTINGS.copy()
+    
+    if os.path.exists(settings_file):
+        try:
+            with open(settings_file, 'r') as f:
+                saved_settings = json.load(f)
+                settings.update(saved_settings)
+        except:
+            pass
+            
+    return settings
+
+def save_alert_settings_to_file(settings):
+    """Save alert settings to JSON file"""
+    settings_file = os.path.join(current_app.root_path, 'data', 'alert_settings.json')
+    os.makedirs(os.path.dirname(settings_file), exist_ok=True)
+    try:
+        with open(settings_file, 'w') as f:
+            json.dump(settings, f, indent=2)
+        return True
+    except Exception as e:
+        print(f"Error saving settings: {e}")
+        return False
+
 def load_alert_history():
     """Load alert history from JSON file"""
     alerts_file = os.path.join(current_app.root_path, 'data', 'alert_history.json')
@@ -280,6 +319,9 @@ def get_latest_sensor_data():
     
     if not os.path.exists(csv_file):
         return sensor_data
+        
+    # Load alert settings
+    settings = load_alert_settings()
     
     try:
         df = pd.read_csv(csv_file)
@@ -354,7 +396,7 @@ def get_latest_sensor_data():
             
             # Temperature alerts
             if pd.notna(latest_reading['Temperature']):
-                if latest_reading['Temperature'] > 28:
+                if latest_reading['Temperature'] > float(settings.get('temp_max', 28)):
                     current_alerts.append({
                         'id': f"temp_high_{int(current_time.timestamp())}",
                         'icon': 'fas fa-thermometer-full',
@@ -363,7 +405,7 @@ def get_latest_sensor_data():
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
                     })
-                elif latest_reading['Temperature'] < 18:
+                elif latest_reading['Temperature'] < float(settings.get('temp_min', 18)):
                     current_alerts.append({
                         'id': f"temp_low_{int(current_time.timestamp())}",
                         'icon': 'fas fa-thermometer-empty', 
@@ -373,9 +415,30 @@ def get_latest_sensor_data():
                         'age_minutes': sensor_data['data_freshness_minutes']
                     })
             
+            # Ground Temperature alerts
+            if pd.notna(latest_reading['Ground Temperature']):
+                if latest_reading['Ground Temperature'] > float(settings.get('ground_temp_max', 25)):
+                    current_alerts.append({
+                        'id': f"ground_temp_high_{int(current_time.timestamp())}",
+                        'icon': 'fas fa-thermometer-full',
+                        'message': f"High ground temperature: {latest_reading['Ground Temperature']:.1f}°C",
+                        'type': 'warning',
+                        'timestamp': alert_timestamp,
+                        'age_minutes': sensor_data['data_freshness_minutes']
+                    })
+                elif latest_reading['Ground Temperature'] < float(settings.get('ground_temp_min', 15)):
+                    current_alerts.append({
+                        'id': f"ground_temp_low_{int(current_time.timestamp())}",
+                        'icon': 'fas fa-thermometer-empty', 
+                        'message': f"Low ground temperature: {latest_reading['Ground Temperature']:.1f}°C",
+                        'type': 'warning',
+                        'timestamp': alert_timestamp,
+                        'age_minutes': sensor_data['data_freshness_minutes']
+                    })
+            
             # Soil moisture alerts
             if pd.notna(latest_reading['Ground Humidity']):
-                if latest_reading['Ground Humidity'] < 25:
+                if latest_reading['Ground Humidity'] < float(settings.get('soil_moisture_min', 25)):
                     current_alerts.append({
                         'id': f"moisture_low_{int(current_time.timestamp())}",
                         'icon': 'fas fa-tint',
@@ -384,7 +447,7 @@ def get_latest_sensor_data():
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
                     })
-                elif latest_reading['Ground Humidity'] > 70:
+                elif latest_reading['Ground Humidity'] > float(settings.get('soil_moisture_max', 70)):
                     current_alerts.append({
                         'id': f"moisture_high_{int(current_time.timestamp())}",
                         'icon': 'fas fa-tint',
@@ -396,7 +459,7 @@ def get_latest_sensor_data():
             
             # Light intensity alerts
             if pd.notna(latest_reading['Light Intensity']):
-                if latest_reading['Light Intensity'] < 200:
+                if latest_reading['Light Intensity'] < float(settings.get('light_min', 200)):
                     current_alerts.append({
                         'id': f"light_low_{int(current_time.timestamp())}",
                         'icon': 'fas fa-sun',
@@ -409,7 +472,8 @@ def get_latest_sensor_data():
         # Check data freshness - alert if data is old
         if latest_reading is not None:
             time_diff = datetime.now() - latest_reading['datetime']
-            if time_diff > timedelta(minutes=10):  # Alert if data is more than 10 minutes old
+            timeout_mins = int(settings.get('connection_timeout', 10))
+            if time_diff > timedelta(minutes=timeout_mins):
                 current_alerts.append({
                     'id': f"connection_{int(current_time.timestamp())}",
                     'icon': 'fas fa-wifi',
@@ -442,6 +506,9 @@ def home():
     
     # Get alert statistics
     alert_stats = get_alert_statistics(alert_history)
+    
+    # Load alert settings
+    alert_settings = load_alert_settings()
     
     # Get recent alert history (last 10 alerts for sidebar)
     recent_alerts = []
@@ -480,7 +547,9 @@ def home():
                          sensor_data=sensor_data,
                          current_tip=current_tip,
                          alert_stats=alert_stats,
-                         recent_alert_history=recent_alerts)
+                         recent_alert_history=recent_alerts,
+                         alert_settings=alert_settings,
+                         default_settings=DEFAULT_ALERT_SETTINGS)
 
 @bp.route('/alert-history')
 def alert_history():
@@ -600,6 +669,48 @@ def resolve_alert(alert_id):
     else:
         flash('Alert not found', 'error')
         return redirect(url_for('home.alert_history'))
+
+@bp.route('/delete-alert/<alert_id>', methods=['POST'])
+def delete_alert(alert_id):
+    """Permanently delete an alert"""
+    alerts = load_alert_history()
+    initial_len = len(alerts)
+    alerts = [a for a in alerts if a.get('id') != alert_id]
+    
+    if len(alerts) < initial_len:
+        save_alert_history(alerts)
+        if request.is_json:
+            return jsonify({'success': True, 'message': 'Alert deleted successfully'})
+        else:
+            flash('Alert deleted successfully', 'success')
+            return redirect(request.referrer or url_for('home.alert_history'))
+    
+    if request.is_json:
+        return jsonify({'success': False, 'message': 'Alert not found'}), 404
+    else:
+        flash('Alert not found', 'error')
+        return redirect(url_for('home.alert_history'))
+
+@bp.route('/save-alert-settings', methods=['POST'])
+def save_alert_settings():
+    """Save updated alert settings"""
+    try:
+        data = request.json
+        settings = {
+            'temp_min': float(data.get('temp_min', 18)),
+            'temp_max': float(data.get('temp_max', 28)),
+            'soil_moisture_min': float(data.get('soil_moisture_min', 25)),
+            'soil_moisture_max': float(data.get('soil_moisture_max', 70)),
+            'light_min': float(data.get('light_min', 200)),
+            'ground_temp_min': float(data.get('ground_temp_min', 15)),
+            'ground_temp_max': float(data.get('ground_temp_max', 25)),
+            'connection_timeout': int(data.get('connection_timeout', 10))
+        }
+        if save_alert_settings_to_file(settings):
+            return jsonify({'success': True, 'message': 'Settings saved successfully'})
+        return jsonify({'success': False, 'message': 'Failed to save settings file'}), 500
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
 
 @bp.route('/download-report')
 def download_report():
