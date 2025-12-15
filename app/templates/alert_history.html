@@ -155,7 +155,7 @@
 
 .alert-meta-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 8px;
     flex-wrap: wrap;
@@ -321,13 +321,11 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Page Header -->
     <div class="dashboard-header">
         <h1 class="dashboard-title" data-i18n="alert-history-title">Alert History</h1>
         <p class="dashboard-subtitle" data-i18n="alert-history-subtitle">Comprehensive alert tracking and analysis</p>
     </div>
 
-    <!-- Alert Statistics Overview -->
     <div class="alert-stats-overview">
         <div class="stat-card">
             <div class="stat-icon warning">
@@ -350,7 +348,6 @@
         </div>
     </div>
 
-    <!-- Filter Controls -->
     <div class="filter-controls">
         <form method="GET" action="{{ url_for('home.alert_history') }}">
             <div class="filter-row">
@@ -360,7 +357,7 @@
                         <option value="all" {% if current_filters.type == 'all' %}selected{% endif %} data-i18n="all-types">All Types</option>
                         {% for type in filter_options.types %}
                         <option value="{{ type }}" {% if current_filters.type == type %}selected{% endif %}>
-                            {{ type.title() }}
+                            <span data-i18n="{{ type.title() }}">{{ type.title() }}</span>
                         </option>
                         {% endfor %}
                     </select>
@@ -372,7 +369,7 @@
                         <option value="all" {% if current_filters.category == 'all' %}selected{% endif %} data-i18n="all-categories">All Categories</option>
                         {% for category in filter_options.categories %}
                         <option value="{{ category }}" {% if current_filters.category == category %}selected{% endif %}>
-                            {{ category.title() }}
+                            <span data-i18n="{{ category.title() }}">{{ category.title() }}</span>
                         </option>
                         {% endfor %}
                     </select>
@@ -384,7 +381,7 @@
                         <option value="all" {% if current_filters.severity == 'all' %}selected{% endif %} data-i18n="all-severities">All Severities</option>
                         {% for severity in filter_options.severities %}
                         <option value="{{ severity }}" {% if current_filters.severity == severity %}selected{% endif %}>
-                            {{ severity.title() }}
+                            <span data-i18n="{{ severity.title() }}">{{ severity.title() }}</span>
                         </option>
                         {% endfor %}
                     </select>
@@ -396,14 +393,14 @@
                         <option value="all" {% if current_filters.status == 'all' %}selected{% endif %} data-i18n="all-statuses">All Statuses</option>
                         {% for status in filter_options.statuses %}
                         <option value="{{ status }}" {% if current_filters.status == status %}selected{% endif %}>
-                            {{ status.title() }}
+                            <span data-i18n="{{ status.title() }}">{{ status.title() }}</span>
                         </option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label" data-i18n="search-alerts">Search</label>
+                    <label class="filter-label" data-i18n="search-label">Search</label>
                     <input type="text" name="search" class="filter-input" 
                            data-i18n="search-alerts"
                            placeholder="Search alerts..." 
@@ -424,7 +421,6 @@
         </form>
     </div>
 
-    <!-- Alert List -->
     <div class="alert-list">
         <div class="alert-list-header">
             <h2 class="alert-list-title" data-i18n="alert-history-title">Alert History</h2>
@@ -446,7 +442,7 @@
                                     {% set created_dt = moment.fromisoformat(alert_time) if moment else alert_time %}
                                     {{ created_dt }}
                                 {% else %}
-                                    <span data-i18n="loading">Unknown time</span>
+                                    <span data-i18n="unknown-time">Unknown time</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -454,17 +450,17 @@
                         <div class="alert-message-text">{{ alert.message }}</div>
 
                         <div class="alert-details">
-                            <span class="alert-badge badge-type-{{ alert.type }}">{{ alert.type }}</span>
-                            <span class="alert-badge badge-category">{{ alert.category }}</span>
-                            <span class="alert-badge badge-status-{{ alert.status }}">{{ alert.status }}</span>
-                            <span class="alert-badge">{{ alert.severity }} severity</span>
+                            <span class="alert-badge badge-type-{{ alert.type }}" data-i18n="{{ alert.type }}">{{ alert.type }}</span>
+                            <span class="alert-badge badge-category" data-i18n="{{ alert.category }}">{{ alert.category }}</span>
+                            <span class="alert-badge badge-status-{{ alert.status }}" data-i18n="{{ alert.status.title() }}">{{ alert.status }}</span>
+                            <span class="alert-badge" data-i18n="{{ alert.severity.title() }}">{{ alert.severity }} severity</span>
                             
                             {% if alert.age_minutes is defined %}
                             <span class="alert-badge">{{ alert.age_minutes }} min ago</span>
                             {% endif %}
                             
                             <button class="alert-badge" onclick="deleteAlert('{{ alert.id }}')" style="background: var(--danger); color: white; border: none; cursor: pointer; margin-left: auto;">
-                                <i class="fas fa-trash-alt"></i> Delete
+                                <i class="fas fa-trash-alt"></i> <span data-i18n="delete-btn">Delete</span>
                             </button>
                         </div>
 
@@ -494,7 +490,6 @@
         {% endif %}
     </div>
 
-    <!-- Pagination -->
     {% if pagination.total_pages > 1 %}
     <div class="pagination">
         <div class="pagination-info">
@@ -504,14 +499,13 @@
         </div>
 
         <div class="pagination-controls">
-            <!-- Previous button -->
             {% if pagination.page > 1 %}
                 <a href="{{ url_for('home.alert_history', page=pagination.page-1, 
                           type=current_filters.type, category=current_filters.category, 
                           severity=current_filters.severity, status=current_filters.status, 
                           search=current_filters.search) }}" 
-                   class="pagination-btn" data-i18n="previous-page">
-                    <i class="fas fa-chevron-left"></i> Previous
+                   class="pagination-btn">
+                    <i class="fas fa-chevron-left"></i> <span data-i18n="previous-page">Previous</span>
                 </a>
             {% else %}
                 <span class="pagination-btn disabled">
@@ -519,7 +513,6 @@
                 </span>
             {% endif %}
 
-            <!-- Page numbers -->
             {% set start_page = [1, pagination.page - 2] | max %}
             {% set end_page = [pagination.total_pages, pagination.page + 2] | min %}
 
@@ -557,14 +550,13 @@
                    class="pagination-btn">{{ pagination.total_pages }}</a>
             {% endif %}
 
-            <!-- Next button -->
             {% if pagination.page < pagination.total_pages %}
                 <a href="{{ url_for('home.alert_history', page=pagination.page+1, 
                           type=current_filters.type, category=current_filters.category, 
                           severity=current_filters.severity, status=current_filters.status, 
                           search=current_filters.search) }}" 
-                   class="pagination-btn" data-i18n="next-page">
-                    Next <i class="fas fa-chevron-right"></i>
+                   class="pagination-btn">
+                    <span data-i18n="next-page">Next</span> <i class="fas fa-chevron-right"></i>
                 </a>
             {% else %}
                 <span class="pagination-btn disabled">
@@ -575,7 +567,6 @@
     </div>
     {% endif %}
 
-    <!-- Quick Actions -->
     <div class="actions-card" style="margin-top: 30px;">
         <div class="card-header">
             <h2 class="card-title">
@@ -638,15 +629,22 @@ function bulkResolveAlerts() {
         }
     });
     
+    const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+    const dict = window.translations[currentLang] || window.translations.en;
+    
     if (activeAlertIds.length === 0) {
-        showNotification('No active alerts to resolve', 'info');
+        // Fallback to English if translation is missing
+        const noActiveAlerts = 'No active alerts to resolve'; 
+        showNotification(noActiveAlerts, 'info');
         return;
     }
     
-    if (confirm(`Are you sure you want to resolve ${activeAlertIds.length} active alerts?`)) {
+    const confirmationText = dict['are-you-sure'].replace('?', '') + ` ${dict['resolve-btn'].toLowerCase()} ${activeAlertIds.length} ${dict['alerts-total']}?`;
+    
+    if (confirm(confirmationText)) {
         // Here you would implement bulk resolution logic
-        // For now, just show a notification
-        showNotification(`Bulk resolution of ${activeAlertIds.length} alerts initiated`, 'success');
+        const resolutionText = `Bulk resolution of ${activeAlertIds.length} ${dict['alerts-total']} initiated`;
+        showNotification(resolutionText, 'success');
         
         // Reload page after short delay
         setTimeout(() => {
@@ -656,7 +654,11 @@ function bulkResolveAlerts() {
 }
 
 function deleteAlert(alertId) {
-    if (!confirm('Are you sure you want to permanently delete this alert? This action cannot be undone.')) {
+    const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+    const deleteBtnText = window.translations[currentLang]['delete-btn'];
+    const confirmText = `Are you sure you want to permanently ${deleteBtnText.toLowerCase()} this alert? This action cannot be undone.`;
+    
+    if (!confirm(confirmText)) {
         return;
     }
     
@@ -696,6 +698,10 @@ function resolveIndividualAlert(alertId) {
     
     const alertItem = event.target.closest('.alert-history-item');
     const statusBadge = alertItem.querySelector('.badge-status-active');
+    const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+    const dict = window.translations[currentLang] || window.translations.en;
+    const resolvedText = dict['Resolved'];
+    const resolveBtnText = dict['resolve-btn'];
     
     if (!statusBadge) {
         showNotification('Alert is already resolved', 'info');
@@ -718,17 +724,24 @@ function resolveIndividualAlert(alertId) {
         if (data.success) {
             // Update the status badge
             statusBadge.className = 'alert-badge badge-status-resolved';
-            statusBadge.textContent = 'resolved';
+            statusBadge.textContent = resolvedText;
+            statusBadge.setAttribute('data-i18n', 'Resolved');
+
+            // Remove the dynamically added resolve button
+            const resolveBtn = alertItem.querySelector('.resolve-alert-btn');
+            if (resolveBtn) resolveBtn.remove();
             
             // Add resolution info
             const resolutionInfo = document.createElement('div');
             resolutionInfo.className = 'resolution-info';
             resolutionInfo.innerHTML = `
                 <i class="fas fa-check-circle"></i>
-                Resolved just now
+                <span data-i18n="resolved-at">Resolved at</span> just now
             `;
             alertItem.querySelector('.alert-main-content').appendChild(resolutionInfo);
-            
+            // Re-run i18n on the newly injected element
+            if(window.setLanguage) window.setLanguage(currentLang, resolutionInfo);
+
             showNotification('Alert resolved successfully', 'success');
         } else {
             throw new Error(data.message || 'Failed to resolve alert');
@@ -776,6 +789,7 @@ function showNotification(message, type = 'info') {
                 z-index: 1000;
                 transform: translateX(400px);
                 opacity: 0;
+                visibility: hidden;
                 transition: all 0.3s ease;
                 min-width: 300px;
                 border-left: 4px solid #3b82f6;
@@ -783,6 +797,7 @@ function showNotification(message, type = 'info') {
             .notification.show {
                 transform: translateX(0);
                 opacity: 1;
+                visibility: visible;
             }
             .notification-success { border-left-color: #10b981; }
             .notification-error { border-left-color: #ef4444; }
@@ -822,6 +837,9 @@ function showNotification(message, type = 'info') {
 
 // Add click handlers for resolve buttons when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+    const resolveBtnText = window.translations[currentLang]['resolve-btn'];
+
     // Add resolve buttons to active alerts
     const activeAlerts = document.querySelectorAll('.alert-history-item');
     activeAlerts.forEach(alert => {
@@ -833,7 +851,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const resolveBtn = document.createElement('button');
             resolveBtn.className = 'alert-badge resolve-alert-btn';
             resolveBtn.style.cssText = 'background: #10b981; color: white; border: none; cursor: pointer;';
-            resolveBtn.innerHTML = '<i class="fas fa-check"></i> Resolve';
+            resolveBtn.innerHTML = `<i class="fas fa-check"></i> ${resolveBtnText}`;
             resolveBtn.onclick = () => resolveIndividualAlert(alertId);
             
             alert.querySelector('.alert-details').appendChild(resolveBtn);

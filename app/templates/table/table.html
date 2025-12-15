@@ -15,7 +15,6 @@
 {% block content %}
 <div class="container">
   <div class="table-container">
-    <!-- Header with current date info -->
     <div class="header-section">
       {% if selected_date %}
         <h2 class="table-title">
@@ -27,7 +26,6 @@
       {% endif %}
     </div>
 
-    <!-- Date filter -->
     <div class="filter-bar">
       <form id="date-filter-form" method="get" action="{{ url_for('table.table') }}">
         <div class="date-filter">
@@ -44,16 +42,16 @@
       </form>
     </div>
  
-    <!-- Column-specific filter -->
     <div class="datatable-filter">
+      <label data-i18n="filterByDate">Filter by date:</label>
       <select id="filter-column">
         <option value="0" data-i18n="headerDate">Date</option>
         <option value="1" data-i18n="headerTime">Time</option>
         <option value="2" data-i18n="headerTemperature">Temperature</option>
-        <option value="3" data-i18n="headerHumidity">Humidity</option>
-        <option value="4" data-i18n="headerLightIntensity">Light Intensity</option>
-        <option value="5" data-i18n="headerGroundTemperature">Ground Temperature</option>
-        <option value="6" data-i18n="headerGroundHumidity">Ground Humidity</option>
+        <option value="3" data-i18n="headerSoilTemperature">Soil Temp</option>
+        <option value="4" data-i18n="headerHumidity">Humidity</option>
+        <option value="5" data-i18n="headerSoilHumidity">Soil Humidity</option>
+        <option value="6" data-i18n="headerLightIntensity">Light Intensity</option>
       </select>
       <input type="text"
              id="table-filter"
@@ -61,17 +59,16 @@
              placeholder="Filter Value">
     </div>
  
-    <!-- Data Table -->
     <table id="measurements-table" class="display">
       <thead>
         <tr>
           <th data-i18n="headerDate">Date</th>
           <th data-i18n="headerTime">Time</th>
-          <th>Temp (°C)</th>
-          <th>Hum (%)</th>
-          <th>Light (Lux)</th>
-          <th>G. Temp (°C)</th>
-          <th>G. Hum (%)</th>
+          <th data-i18n="headerTemperature">Temperature</th>
+          <th data-i18n="headerSoilTemperature">Soil Temp</th>
+          <th data-i18n="headerHumidity">Humidity</th>
+          <th data-i18n="headerSoilHumidity">Soil Humidity</th>
+          <th data-i18n="headerLightIntensity">Light Intensity</th>
         </tr>
       </thead>
       <tbody>
@@ -80,10 +77,10 @@
           <td>{{ row['Date'].strftime('%b %d') if row['Date'] else '' }}</td>
           <td>{{ row['Time'] or '' }}</td>
           <td class="temperature-cell">{{ "%.1f"|format(row['Temperature']) if row['Temperature'] is not none else 'N/A' }}</td>
+          <td class="soil-temp-cell">{{ "%.1f"|format(row['Soil Temp']) if row['Soil Temp'] is not none else 'N/A' }}</td>
           <td class="humidity-cell">{{ "%.1f"|format(row['Humidity']) if row['Humidity'] is not none else 'N/A' }}</td>
+          <td class="soil-humidity-cell">{{ "%.1f"|format(row['Soil Humidity']) if row['Soil Humidity'] is not none else 'N/A' }}</td>
           <td class="light-cell">{{ "%.0f"|format(row['Light Intensity']) if row['Light Intensity'] is not none else 'N/A' }}</td>
-          <td class="ground-temp-cell">{{ "%.1f"|format(row['Ground Temperature']) if row['Ground Temperature'] is not none else 'N/A' }}</td>
-          <td class="ground-humidity-cell">{{ "%.1f"|format(row['Ground Humidity']) if row['Ground Humidity'] is not none else 'N/A' }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -93,9 +90,7 @@
   <div class="sticky-sidebar">
     <div class="download-container">
       <h2 data-i18n="downloadTitle">Export Data</h2>
-      <a href="{{ url_for('table.download_csv') }}"
-         class="download-button"
-         data-i18n="downloadBtn">
+      <a href="{{ url_for('home.download_report') }}" class="btn btn-secondary" data-i18n="downloadBtn">
         <i class="fas fa-download"></i> Download CSV
       </a>
     </div>
@@ -118,7 +113,6 @@
   </div>
 </div>
  
-<!-- DataTables initialization -->
 <script>
   $(document).ready(function() {
     $('#measurements-table').DataTable({

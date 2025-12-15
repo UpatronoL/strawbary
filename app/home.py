@@ -134,13 +134,12 @@ def get_alert_severity(alert_data):
     
     base_severity = severity_map.get(alert_data['type'], 'medium')
     
-
     message = alert_data['message'].lower()
-    if 'connection' in message or 'offline' in message:
+    if 'connection' in message or 'offline' in message or 'alert-connection' in message:
         return 'critical'
     elif any(word in message for word in ['extreme', 'critical', 'emergency']):
         return 'critical'
-    elif any(word in message for word in ['high', 'low']) and 'temperature' in message:
+    elif any(word in message for word in ['high', 'low']) and ('temperature' in message or 'temp' in message):
         temp_value = extract_sensor_value(alert_data['message'])
         if temp_value:
             try:
@@ -156,13 +155,13 @@ def get_alert_category(message):
     """Categorize alert based on message content"""
     message_lower = message.lower()
     
-    if 'temperature' in message_lower:
+    if 'temperature' in message_lower or 'alert-temp' in message_lower or 'ground-temp' in message_lower:
         return 'temperature'
-    elif 'humidity' in message_lower or 'moisture' in message_lower:
+    elif 'humidity' in message_lower or 'moisture' in message_lower or 'alert-soil-moisture' in message_lower:
         return 'moisture'
-    elif 'light' in message_lower:
+    elif 'light' in message_lower or 'alert-light' in message_lower:
         return 'lighting'
-    elif 'connection' in message_lower or 'sensor' in message_lower:
+    elif 'connection' in message_lower or 'sensor' in message_lower or 'alert-connection' in message_lower:
         return 'system'
     else:
         return 'general'
@@ -171,6 +170,12 @@ def extract_sensor_value(message):
     """Extract numerical sensor value from alert message"""
     import re
     
+    # Handle key|value format
+    if '|' in message:
+        try:
+            return message.split('|')[1]
+        except IndexError:
+            pass
   
     patterns = [
         r'(\d+\.?\d*)\s*°C',
@@ -276,7 +281,7 @@ def get_alert_statistics(alerts):
         'active_alerts': len(active_alerts),
         'resolved_alerts_24h': len(resolved_24h),
         'critical_alerts': len(critical_alerts),
-        'most_common_category': most_common.title(),
+        'most_common_category': most_common,
         'avg_resolution_time': avg_resolution_str
     }
 
@@ -288,26 +293,26 @@ def get_latest_sensor_data():
     sensor_data = {
         'current': {
             'temperature': 'N/A',
+            'ground_temperature': 'N/A',
             'humidity': 'N/A', 
             'soil_moisture': 'N/A',
-            'light_intensity': 'N/A',
-            'ground_temperature': 'N/A'
+            'light_intensity': 'N/A'
         },
         'today_stats': {
             'temp_min': 'N/A',
             'temp_max': 'N/A', 
             'temp_avg': 'N/A',
-            'humidity_min': 'N/A',
-            'humidity_max': 'N/A',
-            'light_min': 'N/A',
-            'light_max': 'N/A',
-            'light_avg': 'N/A',
             'ground_temp_min': 'N/A',
             'ground_temp_max': 'N/A',
             'ground_temp_avg': 'N/A',
+            'humidity_min': 'N/A',
+            'humidity_max': 'N/A',
             'soil_moisture_min': 'N/A',
             'soil_moisture_max': 'N/A',
-            'soil_moisture_avg': 'N/A'
+            'soil_moisture_avg': 'N/A',
+            'light_min': 'N/A',
+            'light_max': 'N/A',
+            'light_avg': 'N/A'
         },
         'alerts': [],
         'last_updated': 'No data available',
@@ -345,10 +350,10 @@ def get_latest_sensor_data():
         if latest_reading is not None:
             sensor_data['current'] = {
                 'temperature': f"{latest_reading['Temperature']:.1f}°C" if pd.notna(latest_reading['Temperature']) else 'N/A',
+                'ground_temperature': f"{latest_reading['Soil Temp']:.1f}°C" if pd.notna(latest_reading['Soil Temp']) else 'N/A',
                 'humidity': f"{latest_reading['Humidity']:.1f}%" if pd.notna(latest_reading['Humidity']) else 'N/A',
-                'soil_moisture': f"{latest_reading['Ground Humidity']:.1f}%" if pd.notna(latest_reading['Ground Humidity']) else 'N/A',
-                'light_intensity': f"{latest_reading['Light Intensity']:.0f} Lux" if pd.notna(latest_reading['Light Intensity']) else 'N/A',
-                'ground_temperature': f"{latest_reading['Ground Temperature']:.1f}°C" if pd.notna(latest_reading['Ground Temperature']) else 'N/A'
+                'soil_moisture': f"{latest_reading['Soil Humidity']:.1f}%" if pd.notna(latest_reading['Soil Humidity']) else 'N/A',
+                'light_intensity': f"{latest_reading['Light Intensity']:.0f} Lux" if pd.notna(latest_reading['Light Intensity']) else 'N/A'
             }
             sensor_data['last_updated'] = latest_reading['datetime'].strftime('%B %d, %I:%M %p')
             sensor_data['system_status'] = 'online'
@@ -369,22 +374,22 @@ def get_latest_sensor_data():
                 'temp_min': f"{today_data['Temperature'].min():.1f}°C" if pd.notna(today_data['Temperature'].min()) else 'N/A',
                 'temp_max': f"{today_data['Temperature'].max():.1f}°C" if pd.notna(today_data['Temperature'].max()) else 'N/A',
                 'temp_avg': f"{today_data['Temperature'].mean():.1f}°C" if pd.notna(today_data['Temperature'].mean()) else 'N/A',
+                # Ground temperature stats
+                'ground_temp_min': f"{today_data['Soil Temp'].min():.1f}°C" if pd.notna(today_data['Soil Temp'].min()) else 'N/A',
+                'ground_temp_max': f"{today_data['Soil Temp'].max():.1f}°C" if pd.notna(today_data['Soil Temp'].max()) else 'N/A',
+                'ground_temp_avg': f"{today_data['Soil Temp'].mean():.1f}°C" if pd.notna(today_data['Soil Temp'].mean()) else 'N/A',
                 # Humidity stats
                 'humidity_min': f"{today_data['Humidity'].min():.1f}%" if pd.notna(today_data['Humidity'].min()) else 'N/A',
                 'humidity_max': f"{today_data['Humidity'].max():.1f}%" if pd.notna(today_data['Humidity'].max()) else 'N/A',
                 'humidity_avg': f"{today_data['Humidity'].mean():.1f}%" if pd.notna(today_data['Humidity'].mean()) else 'N/A',
+                # Soil moisture stats (Ground Humidity)
+                'soil_moisture_min': f"{today_data['Soil Humidity'].min():.1f}%" if pd.notna(today_data['Soil Humidity'].min()) else 'N/A',
+                'soil_moisture_max': f"{today_data['Soil Humidity'].max():.1f}%" if pd.notna(today_data['Soil Humidity'].max()) else 'N/A',
+                'soil_moisture_avg': f"{today_data['Soil Humidity'].mean():.1f}%" if pd.notna(today_data['Soil Humidity'].mean()) else 'N/A',
                 # Light intensity stats
                 'light_min': f"{today_data['Light Intensity'].min():.0f} Lux" if pd.notna(today_data['Light Intensity'].min()) else 'N/A',
                 'light_max': f"{today_data['Light Intensity'].max():.0f} Lux" if pd.notna(today_data['Light Intensity'].max()) else 'N/A',
-                'light_avg': f"{today_data['Light Intensity'].mean():.0f} Lux" if pd.notna(today_data['Light Intensity'].mean()) else 'N/A',
-                # Ground temperature stats
-                'ground_temp_min': f"{today_data['Ground Temperature'].min():.1f}°C" if pd.notna(today_data['Ground Temperature'].min()) else 'N/A',
-                'ground_temp_max': f"{today_data['Ground Temperature'].max():.1f}°C" if pd.notna(today_data['Ground Temperature'].max()) else 'N/A',
-                'ground_temp_avg': f"{today_data['Ground Temperature'].mean():.1f}°C" if pd.notna(today_data['Ground Temperature'].mean()) else 'N/A',
-                # Soil moisture stats (Ground Humidity)
-                'soil_moisture_min': f"{today_data['Ground Humidity'].min():.1f}%" if pd.notna(today_data['Ground Humidity'].min()) else 'N/A',
-                'soil_moisture_max': f"{today_data['Ground Humidity'].max():.1f}%" if pd.notna(today_data['Ground Humidity'].max()) else 'N/A',
-                'soil_moisture_avg': f"{today_data['Ground Humidity'].mean():.1f}%" if pd.notna(today_data['Ground Humidity'].mean()) else 'N/A'
+                'light_avg': f"{today_data['Light Intensity'].mean():.0f} Lux" if pd.notna(today_data['Light Intensity'].mean()) else 'N/A'
             }
         
         # Generate intelligent alerts based on actual data with timestamps
@@ -400,7 +405,7 @@ def get_latest_sensor_data():
                     current_alerts.append({
                         'id': f"temp_high_{int(current_time.timestamp())}",
                         'icon': 'fas fa-thermometer-full',
-                        'message': f"High temperature alert: {latest_reading['Temperature']:.1f}°C",
+                        'message': f"alert-temp-high|{latest_reading['Temperature']:.1f}",
                         'type': 'warning',
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
@@ -409,49 +414,49 @@ def get_latest_sensor_data():
                     current_alerts.append({
                         'id': f"temp_low_{int(current_time.timestamp())}",
                         'icon': 'fas fa-thermometer-empty', 
-                        'message': f"Low temperature alert: {latest_reading['Temperature']:.1f}°C",
+                        'message': f"alert-temp-low|{latest_reading['Temperature']:.1f}",
                         'type': 'warning',
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
                     })
             
             # Ground Temperature alerts
-            if pd.notna(latest_reading['Ground Temperature']):
-                if latest_reading['Ground Temperature'] > float(settings.get('ground_temp_max', 25)):
+            if pd.notna(latest_reading['Soil Temp']):
+                if latest_reading['Soil Temp'] > float(settings.get('ground_temp_max', 25)):
                     current_alerts.append({
                         'id': f"ground_temp_high_{int(current_time.timestamp())}",
                         'icon': 'fas fa-thermometer-full',
-                        'message': f"High ground temperature: {latest_reading['Ground Temperature']:.1f}°C",
+                        'message': f"alert-ground-temp-high|{latest_reading['Soil Temp']:.1f}",
                         'type': 'warning',
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
                     })
-                elif latest_reading['Ground Temperature'] < float(settings.get('ground_temp_min', 15)):
+                elif latest_reading['Soil Temp'] < float(settings.get('ground_temp_min', 15)):
                     current_alerts.append({
                         'id': f"ground_temp_low_{int(current_time.timestamp())}",
                         'icon': 'fas fa-thermometer-empty', 
-                        'message': f"Low ground temperature: {latest_reading['Ground Temperature']:.1f}°C",
+                        'message': f"alert-ground-temp-low|{latest_reading['Soil Temp']:.1f}",
                         'type': 'warning',
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
                     })
             
             # Soil moisture alerts
-            if pd.notna(latest_reading['Ground Humidity']):
-                if latest_reading['Ground Humidity'] < float(settings.get('soil_moisture_min', 25)):
+            if pd.notna(latest_reading['Soil Humidity']):
+                if latest_reading['Soil Humidity'] < float(settings.get('soil_moisture_min', 25)):
                     current_alerts.append({
                         'id': f"moisture_low_{int(current_time.timestamp())}",
                         'icon': 'fas fa-tint',
-                        'message': f"Low soil moisture: {latest_reading['Ground Humidity']:.1f}%",
+                        'message': f"alert-soil-moisture-low|{latest_reading['Soil Humidity']:.1f}",
                         'type': 'danger',
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
                     })
-                elif latest_reading['Ground Humidity'] > float(settings.get('soil_moisture_max', 70)):
+                elif latest_reading['Soil Humidity'] > float(settings.get('soil_moisture_max', 70)):
                     current_alerts.append({
                         'id': f"moisture_high_{int(current_time.timestamp())}",
                         'icon': 'fas fa-tint',
-                        'message': f"High soil moisture: {latest_reading['Ground Humidity']:.1f}%", 
+                        'message': f"alert-soil-moisture-high|{latest_reading['Soil Humidity']:.1f}", 
                         'type': 'info',
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
@@ -463,7 +468,7 @@ def get_latest_sensor_data():
                     current_alerts.append({
                         'id': f"light_low_{int(current_time.timestamp())}",
                         'icon': 'fas fa-sun',
-                        'message': f"Low light conditions: {latest_reading['Light Intensity']:.0f} Lux",
+                        'message': f"alert-light-low|{latest_reading['Light Intensity']:.0f}",
                         'type': 'info',
                         'timestamp': alert_timestamp,
                         'age_minutes': sensor_data['data_freshness_minutes']
@@ -477,7 +482,7 @@ def get_latest_sensor_data():
                 current_alerts.append({
                     'id': f"connection_{int(current_time.timestamp())}",
                     'icon': 'fas fa-wifi',
-                    'message': f'Sensor connection issue - last data received {int(time_diff.total_seconds() / 60)} minutes ago',
+                    'message': f'alert-connection|{int(time_diff.total_seconds() / 60)}',
                     'type': 'warning',
                     'timestamp': current_time.strftime('%I:%M %p'),
                     'age_minutes': 0
@@ -524,11 +529,11 @@ def home():
     
     # Smart tips based on current conditions
     tips = [
-        "Water your strawberries early in the morning (6-8 AM) to minimize evaporation and prevent leaf burn during peak sun hours.",
-        "Maintain soil moisture between 30-70% for optimal strawberry growth.",
-        "Monitor temperature closely - strawberries prefer 18-24°C during the day.",
-        "Ensure adequate light exposure - strawberries need at least 6 hours of sunlight daily.",
-        "Check soil humidity regularly to prevent root rot and ensure proper nutrition uptake."
+        "tip-water-morning",
+        "tip-soil-moisture",
+        "tip-temp-monitor",
+        "tip-light-exposure",
+        "tip-check-humidity"
     ]
     
     # Select tip based on current conditions or random
@@ -720,6 +725,20 @@ def download_report():
     import csv
     from datetime import datetime
     
+    def format_alert_msg(msg):
+        """Helper to format alert keys back to English for CSV"""
+        if '|' in msg:
+            key, val = msg.split('|')
+            if 'temp-high' in key: return f"High temperature alert: {val}°C"
+            if 'temp-low' in key: return f"Low temperature alert: {val}°C"
+            if 'ground-temp-high' in key: return f"High Soil Temp: {val}°C"
+            if 'ground-temp-low' in key: return f"Low Soil Temp: {val}°C"
+            if 'soil-moisture-low' in key: return f"Low Soil Humidity: {val}%"
+            if 'soil-moisture-high' in key: return f"High Soil Humidity: {val}%"
+            if 'light-low' in key: return f"Low light conditions: {val} Lux"
+            if 'connection' in key: return f"Sensor connection issue - last data received {val} minutes ago"
+        return msg
+
     # Get current sensor data
     sensor_data = get_latest_sensor_data()
     
@@ -758,7 +777,7 @@ def download_report():
     writer.writerow(['Critical Alerts (24h):', alert_stats['critical_alerts']])
     writer.writerow(['Total Alerts (24h):', alert_stats['total_alerts_24h']])
     writer.writerow(['Resolved Alerts (24h):', alert_stats['resolved_alerts_24h']])
-    writer.writerow(['Most Common Alert Category:', alert_stats['most_common_category']])
+    writer.writerow(['Most Common Alert Category:', alert_stats['most_common_category'].title()])
     writer.writerow(['Average Resolution Time:', alert_stats['avg_resolution_time']])
     writer.writerow(['Data Collection Status:', 'ACTIVE' if sensor_data['total_readings_today'] > 0 else 'INACTIVE'])
     writer.writerow(['Total Readings Today:', sensor_data['total_readings_today']])
@@ -776,7 +795,7 @@ def download_report():
         if 'N/A' in value_str:
             return 'NO DATA'
         try:
-            if 'Temperature' in param_name:
+            if param_name == 'Temperature':
                 val = float(value_str.replace('°C', ''))
                 if 18 <= val <= 24:
                     return 'OPTIMAL'
@@ -784,7 +803,7 @@ def download_report():
                     return 'ACCEPTABLE'
                 else:
                     return 'SUBOPTIMAL'
-            elif 'Humidity' in param_name:
+            elif param_name == 'Humidity':
                 val = float(value_str.replace('%', ''))
                 if 60 <= val <= 70:
                     return 'OPTIMAL'
@@ -792,7 +811,7 @@ def download_report():
                     return 'ACCEPTABLE'
                 else:
                     return 'SUBOPTIMAL'
-            elif 'Soil Moisture' in param_name:
+            elif param_name == 'Soil Humidity':
                 val = float(value_str.replace('%', ''))
                 if 30 <= val <= 70:
                     return 'OPTIMAL'
@@ -800,7 +819,7 @@ def download_report():
                     return 'ACCEPTABLE'
                 else:
                     return 'SUBOPTIMAL'
-            elif 'Light' in param_name:
+            elif param_name == 'Light Intensity':
                 val = float(value_str.replace(' Lux', ''))
                 if 400 <= val <= 800:
                     return 'OPTIMAL'
@@ -808,20 +827,26 @@ def download_report():
                     return 'ACCEPTABLE'
                 else:
                     return 'SUBOPTIMAL'
+            elif param_name == 'Soil Temp':
+                val = float(value_str.replace('°C', ''))
+                if 15 <= val <= 25:
+                    return 'OPTIMAL'
+                else:
+                    return 'ACCEPTABLE'
         except:
             return 'UNKNOWN'
         return 'ACCEPTABLE'
     
-    writer.writerow(['Air Temperature', sensor_data['current']['temperature'].replace('°C', ''), '°C', 
+    writer.writerow(['Temperature', sensor_data['current']['temperature'].replace('°C', ''), '°C', 
                     get_parameter_status('Temperature', sensor_data['current']['temperature'])])
-    writer.writerow(['Air Humidity', sensor_data['current']['humidity'].replace('%', ''), '%', 
+    writer.writerow(['Soil Temp', sensor_data['current']['ground_temperature'].replace('°C', ''), '°C', 
+                    get_parameter_status('Soil Temp', sensor_data['current']['ground_temperature'])])
+    writer.writerow(['Humidity', sensor_data['current']['humidity'].replace('%', ''), '%', 
                     get_parameter_status('Humidity', sensor_data['current']['humidity'])])
-    writer.writerow(['Soil Moisture', sensor_data['current']['soil_moisture'].replace('%', ''), '%', 
-                    get_parameter_status('Soil Moisture', sensor_data['current']['soil_moisture'])])
+    writer.writerow(['Soil Humidity', sensor_data['current']['soil_moisture'].replace('%', ''), '%', 
+                    get_parameter_status('Soil Humidity', sensor_data['current']['soil_moisture'])])
     writer.writerow(['Light Intensity', sensor_data['current']['light_intensity'].replace(' Lux', ''), 'Lux', 
-                    get_parameter_status('Light', sensor_data['current']['light_intensity'])])
-    writer.writerow(['Ground Temperature', sensor_data['current']['ground_temperature'].replace('°C', ''), '°C', 
-                    get_parameter_status('Ground Temperature', sensor_data['current']['ground_temperature'])])
+                    get_parameter_status('Light Intensity', sensor_data['current']['light_intensity'])])
     writer.writerow([''])
     
     # Alert Analysis with Enhanced History Data
@@ -844,7 +869,7 @@ def download_report():
             else:
                 recommendation = 'Monitor conditions closely'
             
-            writer.writerow([priority, alert['message'], alert['timestamp'], 
+            writer.writerow([priority, format_alert_msg(alert['message']), alert['timestamp'], 
                            alert['age_minutes'], recommendation])
         writer.writerow([''])
     
@@ -977,7 +1002,7 @@ def download_report():
                 alert.get('type', 'info').title(),
                 alert.get('category', 'general').title(),
                 alert.get('severity', 'medium').title(),
-                alert.get('message', 'No message'),
+                format_alert_msg(alert.get('message', 'No message')),
                 alert.get('status', 'active').title(),
                 resolution_time
             ])

@@ -57,6 +57,12 @@ def table():
         # Sort by time for better display
         filtered_data = filtered_data.sort_values(['Date', 'Time'])
         
+        # Reorder columns to: Temp, Soil Temp, Humidity, Soil Humidity, Light Intensity
+        desired_order = ['Date', 'Time', 'Temperature', 'Soil Temp', 'Humidity', 'Soil Humidity', 'Light Intensity']
+        # Keep only columns that exist in the dataframe
+        cols_to_use = [c for c in desired_order if c in filtered_data.columns]
+        filtered_data = filtered_data[cols_to_use]
+        
         # Convert to list of dictionaries with proper formatting
         template_vars['measurements'] = filtered_data.to_dict(orient='records')
         

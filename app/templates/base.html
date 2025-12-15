@@ -1,4 +1,3 @@
-<!-- base.html - Enhanced navigation -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,6 +53,7 @@
             color: var(--text-light, #9ca3af);
             margin-bottom: 4px;
             font-weight: 600;
+            /* Added data-i18n-attr for title attribute translation in base.html */
         }
         .footer-value {
             font-size: 0.95rem;
@@ -131,30 +131,30 @@
 
     <footer>
             <div class="footer-content">
-              <div class="footer-title">Small Environmental Sensing Device for Strawberry Production</div>
+              <div class="footer-title" data-i18n="footer-device-name">Small Environmental Sensing Device for Strawberry Production</div>
               
               <div class="footer-info-row">
                   <div class="footer-item">
-                      <span class="footer-label">Team ID</span>
+                      <span class="footer-label" data-i18n="footer-team-id">Team ID</span>
                       <span class="footer-value">25C10</span>
                   </div>
                   <div class="footer-item">
-                      <span class="footer-label">Company</span>
+                      <span class="footer-label" data-i18n="footer-company">Company</span>
                       <span class="footer-value">GRA Inc.</span>
                   </div>
                   <div class="footer-item">
-                      <span class="footer-label">Engineer</span>
+                      <span class="footer-label" data-i18n="footer-engineer">Engineer</span>
                       <span class="footer-value">KATSUBE Tatsuya</span>
                   </div>
                   <div class="footer-item">
-                      <span class="footer-label">Supervisor</span>
+                      <span class="footer-label" data-i18n="footer-supervisor">Supervisor</span>
                       <span class="footer-value">PIUMARTA Ian</span>
                   </div>
               </div>
               
               <div class="footer-divider"></div>
               
-              <div class="footer-copyright">
+              <div class="footer-copyright" data-i18n="footer-copyright">
                   &copy; 2025 GRA Inc. All rights reserved.
               </div>
             </div>

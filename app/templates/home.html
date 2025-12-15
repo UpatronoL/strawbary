@@ -93,13 +93,11 @@
 </div>
 
 <div class="dashboard-container">
-  <!-- Dashboard Header -->
   <div class="dashboard-header">
     <h1 class="dashboard-title" data-i18n="dashboard-title">Strawberry Monitoring Dashboard</h1>
     <p class="dashboard-subtitle" data-i18n="dashboard-subtitle">Real-time environmental monitoring and analytics</p>
   </div>
   
-  <!-- Clock -->
   <div class="current-time-container">
     <div class="current-time" id="currentTime">
       <span>Loading current time...</span>
@@ -116,13 +114,12 @@
         {% elif sensor_data.data_freshness_minutes <= 10 %}
           <span class="data-stale" data-i18n="data-stale">Data is {{ sensor_data.data_freshness_minutes }} minutes old</span>
         {% else %}
-          <span class="data-very-stale">Data is stale ({{ sensor_data.data_freshness_minutes }} min ago)</span>
+          <span class="data-very-stale" data-i18n="data-stale">Data is stale ({{ sensor_data.data_freshness_minutes }} min ago)</span>
         {% endif %}
       </span>
     </div>
   </div>
 
-  <!-- System Status Banner -->
   <div class="status-banner {{ 'offline' if sensor_data.system_status == 'offline' else ('warning' if sensor_data.alerts else 'online') }}">
     <i class="fas {{ 'fa-exclamation-triangle' if sensor_data.system_status == 'offline' else ('fa-exclamation-circle' if sensor_data.alerts else 'fa-check-circle') }}"></i>
     <span>
@@ -139,7 +136,6 @@
     </span>
   </div>
 
-  <!-- Alert Statistics Overview -->
   <div class="alert-stats-overview">
     <div class="stat-card">
       <div class="stat-icon warning">
@@ -162,11 +158,8 @@
     </div>
   </div>
 
-  <!-- Main Content Grid -->
   <div class="main-grid">
-    <!-- Left Column -->
     <div class="left-column">
-      <!-- Current Sensor Readings -->
       <div class="current-readings">
         <div class="card-header">
           <div>
@@ -187,36 +180,35 @@
           <div class="reading-item">
             <i class="fas fa-thermometer-half reading-icon"></i>
             <span class="reading-value">{{ sensor_data.current.temperature }}</span>
-            <div class="reading-label" data-i18n="air-temperature">Air Temperature</div>
-          </div>
-
-          <div class="reading-item">
-            <i class="fas fa-tint reading-icon"></i>
-            <span class="reading-value">{{ sensor_data.current.humidity }}</span>
-            <div class="reading-label" data-i18n="air-humidity">Air Humidity</div>
-          </div>
-
-          <div class="reading-item">
-            <i class="fas fa-seedling reading-icon"></i>
-            <span class="reading-value">{{ sensor_data.current.soil_moisture }}</span>
-            <div class="reading-label" data-i18n="soil-moisture">Soil Moisture</div>
-          </div>
-
-          <div class="reading-item">
-            <i class="fas fa-sun reading-icon"></i>
-            <span class="reading-value">{{ sensor_data.current.light_intensity }}</span>
-            <div class="reading-label" data-i18n="light-intensity">Light Intensity</div>
+            <div class="reading-label" data-i18n="Temperature">Temperature</div>
           </div>
 
           <div class="reading-item">
             <i class="fas fa-mountain reading-icon"></i>
             <span class="reading-value">{{ sensor_data.current.ground_temperature }}</span>
-            <div class="reading-label" data-i18n="ground-temp">Ground Temp</div>
+            <div class="reading-label" data-i18n="Soil Temp">Soil Temp</div>
+          </div>
+
+          <div class="reading-item">
+            <i class="fas fa-tint reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.humidity }}</span>
+            <div class="reading-label" data-i18n="Humidity">Humidity</div>
+          </div>
+
+          <div class="reading-item">
+            <i class="fas fa-seedling reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.soil_moisture }}</span>
+            <div class="reading-label" data-i18n="Soil Humidity">Soil Humidity</div>
+          </div>
+
+          <div class="reading-item">
+            <i class="fas fa-sun reading-icon"></i>
+            <span class="reading-value">{{ sensor_data.current.light_intensity }}</span>
+            <div class="reading-label" data-i18n="Light Intensity">Light Intensity</div>
           </div>
         </div>
       </div>
 
-      <!-- Current Alerts Section -->
       <div class="alerts-card">
         <div class="card-header">
           <h2 class="card-title">
@@ -241,17 +233,21 @@
               <div class="alert-message">{{ alert.message }}</div>
               <div class="alert-timestamp">
                 <i class="fas fa-clock"></i>
-                <span>Alert generated at {{ alert.timestamp }}</span>
+                <span data-i18n="alert-generated-at">Alert generated at</span> {{ alert.timestamp }}
                 <span class="alert-age {% if alert.age_minutes <= 5 %}fresh{% elif alert.age_minutes <= 15 %}stale{% endif %}">
-                  {{ alert.age_minutes }} min ago
+                  {{ alert.age_minutes }} <span data-i18n="min-ago">min ago</span>
                 </span>
               </div>
             </div>
             <div class="alert-actions">
-              <button class="resolve-btn" onclick="resolveAlert('{{ alert.get('id', '') }}')" 
-                      title="Mark as resolved" {% if not alert.get('id') %}disabled{% endif %}>
+              <button class="resolve-btn" 
+                      onclick="resolveAlert('{{ alert.get('id', '') }}')" 
+                      title="Mark as resolved" 
+                      data-i18n-attr="title" 
+                      data-i18n="alert-resolved"
+                      {% if not alert.get('id') %}disabled{% endif %}>
                 <i class="fas fa-check"></i>
-                <span data-i18n="alert-resolved">Resolve</span>
+                <span data-i18n="resolve-btn">Resolve</span>
               </button>
             </div>
           </div>
@@ -264,7 +260,6 @@
         {% endif %}
       </div>
 
-      <!-- Alert History Preview -->
       <div class="alert-history-preview">
         <div class="card-header">
           <h2 class="card-title">
@@ -297,13 +292,15 @@
                         {{ dt_obj.strftime('%b %d, %I:%M %p') if dt_obj.strftime else alert_datetime }}
                       {% endif %}
                     {% else %}
-                      <span data-i18n="loading">Unknown time</span>
+                      <span data-i18n="unknown-time">Unknown time</span>
                     {% endif %}
                   </span>
-                  <span class="timeline-status status-{{ alert.get('status', 'active') }}">
+                  <span class="timeline-status status-{{ alert.get('status', 'active') }}" data-i18n="{{ alert.get('status', 'active').title() }}">
                     {{ alert.get('status', 'active').title() }}
                   </span>
-                  <span class="timeline-category">{{ alert.get('category', 'general').title() }}</span>
+                  <span class="timeline-category" data-i18n="{{ alert.get('category', 'general') }}">
+                      {{ alert.get('category', 'general').title() }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -320,16 +317,14 @@
           {% else %}
             <div class="no-history">
               <i class="fas fa-clipboard-check" style="color: var(--success); font-size: 2rem; margin-bottom: 1rem;"></i>
-              <p>No recent alert history. System has been stable.</p>
+              <p data-i18n="no-history">No recent alert history. System has been stable.</p>
             </div>
           {% endif %}
         </div>
       </div>
     </div>
 
-    <!-- Right Column -->
     <div class="right-column">
-      <!-- Today's Statistics -->
       <div class="stats-card">
         <div class="card-header">
           <h2 class="card-title">
@@ -343,43 +338,43 @@
         <div class="stats-grid" id="statsGrid">
           <div class="stat-item">
             <div class="stat-value">{{ sensor_data.today_stats.temp_min }}</div>
-            <div class="stat-label" data-i18n="min-air-temp">Min Air Temp</div>
+            <div class="stat-label" data-i18n="Min Temperature">Min Temperature</div>
           </div>
           <div class="stat-item">
             <div class="stat-value">{{ sensor_data.today_stats.temp_max }}</div>
-            <div class="stat-label" data-i18n="max-air-temp">Max Air Temp</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ sensor_data.today_stats.humidity_min }}</div>
-            <div class="stat-label" data-i18n="min-humidity">Min Humidity</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ sensor_data.today_stats.humidity_max }}</div>
-            <div class="stat-label" data-i18n="max-humidity">Max Humidity</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ sensor_data.today_stats.light_min }}</div>
-            <div class="stat-label" data-i18n="min-light">Min Light</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ sensor_data.today_stats.light_max }}</div>
-            <div class="stat-label" data-i18n="max-light">Max Light</div>
+            <div class="stat-label" data-i18n="Max Temperature">Max Temperature</div>
           </div>
           <div class="stat-item">
             <div class="stat-value">{{ sensor_data.today_stats.ground_temp_min }}</div>
-            <div class="stat-label" data-i18n="min-ground-temp">Min Ground Temp</div>
+            <div class="stat-label" data-i18n="Min Soil Temp">Min Soil Temp</div>
           </div>
           <div class="stat-item">
             <div class="stat-value">{{ sensor_data.today_stats.ground_temp_max }}</div>
-            <div class="stat-label" data-i18n="max-ground-temp">Max Ground Temp</div>
+            <div class="stat-label" data-i18n="Max Soil Temp">Max Soil Temp</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.humidity_min }}</div>
+            <div class="stat-label" data-i18n="Min Humidity">Min Humidity</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.humidity_max }}</div>
+            <div class="stat-label" data-i18n="Max Humidity">Max Humidity</div>
           </div>
           <div class="stat-item">
             <div class="stat-value">{{ sensor_data.today_stats.soil_moisture_min }}</div>
-            <div class="stat-label" data-i18n="min-soil-moisture">Min Soil Moisture</div>
+            <div class="stat-label" data-i18n="Min Soil Humidity">Min Soil Humidity</div>
           </div>
           <div class="stat-item">
             <div class="stat-value">{{ sensor_data.today_stats.soil_moisture_max }}</div>
-            <div class="stat-label" data-i18n="max-soil-moisture">Max Soil Moisture</div>
+            <div class="stat-label" data-i18n="Max Soil Humidity">Max Soil Humidity</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.light_min }}</div>
+            <div class="stat-label" data-i18n="Min Light Intensity">Min Light Intensity</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ sensor_data.today_stats.light_max }}</div>
+            <div class="stat-label" data-i18n="Max Light Intensity">Max Light Intensity</div>
           </div>
         </div>
 
@@ -394,7 +389,6 @@
         </div>
       </div>
 
-      <!-- Alert Analytics Card -->
       <div class="alert-analytics-card">
         <div class="card-header">
           <h2 class="card-title">
@@ -436,7 +430,7 @@
           {% if alert_stats.critical_alerts > 0 %}
             <div class="insight-item danger">
               <i class="fas fa-exclamation-triangle"></i>
-              <span>{{ alert_stats.critical_alerts }} <span data-i18n="critical-alerts-24h">critical alerts require immediate attention</span></span>
+              <span>{{ alert_stats.critical_alerts }} <span data-i18n="critical-immediate">critical alerts require immediate attention</span></span>
             </div>
           {% endif %}
           
@@ -448,18 +442,17 @@
           {% elif alert_stats.total_alerts_24h < 5 %}
             <div class="insight-item info">
               <i class="fas fa-info-circle"></i>
-              <span>Low alert volume indicates stable system operation</span>
+              <span data-i18n="low-alert-volume">Low alert volume indicates stable system operation</span>
             </div>
           {% else %}
             <div class="insight-item warning">
               <i class="fas fa-chart-line"></i>
-              <span>Higher alert volume detected - monitor system closely</span>
+              <span data-i18n="higher-alert-volume">Higher alert volume detected - monitor system closely</span>
             </div>
           {% endif %}
         </div>
       </div>
 
-      <!-- Quick Actions -->
       <div class="actions-card">
         <div class="card-header">
           <h2 class="card-title">
@@ -498,7 +491,6 @@
         </div>
       </div>
 
-      <!-- Smart Tips -->
       <div class="tips-card">
         <div class="card-header">
           <h2 class="card-title">
@@ -517,62 +509,59 @@
   </div>
 </div>
 
-<!-- Alert Settings Modal -->
 <div class="modal-overlay" id="alertSettingsModal">
   <div class="settings-modal">
     <div class="modal-header">
-      <h3 class="modal-title">Alert Threshold Settings</h3>
-      <button class="modal-close" onclick="closeAlertSettings()">&times;</button>
+      <h3 class="modal-title" data-i18n="settings-title">Alert Threshold Settings</h3>
+      <button class="modal-close" onclick="closeAlertSettings()" data-i18n="settings-close">&times;</button>
     </div>
     <div class="modal-body">
       <form id="alertSettingsForm">
-        <!-- Air & Light Section -->
         <div class="settings-section">
-          <h4 class="section-title"><i class="fas fa-wind"></i> Air & Light Conditions</h4>
+          <h4 class="section-title" data-i18n="settings-air-light"><i class="fas fa-wind"></i> Air & Light Conditions</h4>
           <div class="form-group">
-            <label class="form-label">Air Temperature Range (°C)</label>
+            <label class="form-label" data-i18n="settings-temp-range">Temperature Range (°C)</label>
             <div class="form-row">
               <div>
-                <label style="font-size: 0.8rem; color: var(--text-light);">Min</label>
+                <label style="font-size: 0.8rem; color: var(--text-light);" data-i18n="settings-min">Min</label>
                 <input type="number" step="0.1" name="temp_min" class="form-input" value="{{ alert_settings.temp_min }}">
               </div>
               <div>
-                <label style="font-size: 0.8rem; color: var(--text-light);">Max</label>
+                <label style="font-size: 0.8rem; color: var(--text-light);" data-i18n="settings-max">Max</label>
                 <input type="number" step="0.1" name="temp_max" class="form-input" value="{{ alert_settings.temp_max }}">
               </div>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Minimum Light Intensity (Lux)</label>
+            <label class="form-label" data-i18n="settings-light-min">Minimum Light Intensity (Lux)</label>
             <input type="number" step="10" name="light_min" class="form-input" value="{{ alert_settings.light_min }}">
           </div>
         </div>
         
-        <!-- Soil & Ground Section -->
         <div class="settings-section">
-          <h4 class="section-title"><i class="fas fa-layer-group"></i> Soil & Ground Conditions</h4>
+          <h4 class="section-title" data-i18n="settings-soil-ground"><i class="fas fa-layer-group"></i> Soil Conditions</h4>
           <div class="form-group">
-            <label class="form-label">Soil Moisture Range (%)</label>
+            <label class="form-label" data-i18n="settings-humidity-range">Soil Humidity Range (%)</label>
             <div class="form-row">
               <div>
-                <label style="font-size: 0.8rem; color: var(--text-light);">Min</label>
+                <label style="font-size: 0.8rem; color: var(--text-light);" data-i18n="settings-min">Min</label>
                 <input type="number" step="1" name="soil_moisture_min" class="form-input" value="{{ alert_settings.soil_moisture_min }}">
               </div>
               <div>
-                <label style="font-size: 0.8rem; color: var(--text-light);">Max</label>
+                <label style="font-size: 0.8rem; color: var(--text-light);" data-i18n="settings-max">Max</label>
                 <input type="number" step="1" name="soil_moisture_max" class="form-input" value="{{ alert_settings.soil_moisture_max }}">
               </div>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Ground Temperature Range (°C)</label>
+            <label class="form-label" data-i18n="settings-soil-temp-range">Soil Temp Range (°C)</label>
             <div class="form-row">
               <div>
-                <label style="font-size: 0.8rem; color: var(--text-light);">Min</label>
+                <label style="font-size: 0.8rem; color: var(--text-light);" data-i18n="settings-min">Min</label>
                 <input type="number" step="0.1" name="ground_temp_min" class="form-input" value="{{ alert_settings.ground_temp_min }}">
               </div>
               <div>
-                <label style="font-size: 0.8rem; color: var(--text-light);">Max</label>
+                <label style="font-size: 0.8rem; color: var(--text-light);" data-i18n="settings-max">Max</label>
                 <input type="number" step="0.1" name="ground_temp_max" class="form-input" value="{{ alert_settings.ground_temp_max }}">
               </div>
             </div>
@@ -581,11 +570,11 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-warning" onclick="resetToDefaults()" style="margin-right: auto;">
+      <button class="btn btn-warning" onclick="resetToDefaults()" style="margin-right: auto;" data-i18n="reset-defaults">
         <i class="fas fa-undo"></i> Reset Defaults
       </button>
-      <button class="btn btn-secondary" onclick="closeAlertSettings()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveAlertSettings()">Save Changes</button>
+      <button class="btn btn-secondary" onclick="closeAlertSettings()" data-i18n="cancel-btn">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAlertSettings()" data-i18n="save-changes">Save Changes</button>
     </div>
   </div>
 </div>
@@ -708,7 +697,9 @@ function closeAlertSettings() {
 }
 
 function resetToDefaults() {
-  if (!confirm('Are you sure you want to reset all alert thresholds to their default values?')) {
+  // Use translated string for confirmation box
+  const confirmMessage = window.translations[localStorage.getItem('preferredLanguage') || 'en']['are-you-sure'];
+  if (!confirm(`${confirmMessage}: Are you sure you want to reset all alert thresholds to their default values?`)) {
     return;
   }
   
@@ -733,11 +724,17 @@ function toggleMoreAlerts(btn) {
   if (isShowing) {
     hiddenAlerts.forEach(el => el.style.display = 'none');
     btn.classList.remove('showing');
-    btn.innerHTML = '<i class="fas fa-chevron-down"></i> <span data-i18n="show-more">Show More</span>';
+    // Use translated key for button text
+    btn.innerHTML = `<i class="fas fa-chevron-down"></i> <span data-i18n="show-more">Show More</span>`;
   } else {
     hiddenAlerts.forEach(el => el.style.display = 'flex');
     btn.classList.add('showing');
-    btn.innerHTML = '<i class="fas fa-chevron-up"></i> <span data-i18n="show-less">Show Less</span>';
+    // Use translated key for button text
+    btn.innerHTML = `<i class="fas fa-chevron-up"></i> <span data-i18n="show-less">Show Less</span>`;
+  }
+  // Re-run i18n on the button text after changing content
+  if (window.setLanguage) {
+      window.setLanguage(localStorage.getItem('preferredLanguage') || 'en', btn);
   }
 }
 
@@ -749,7 +746,9 @@ function saveAlertSettings() {
   // Show loading state on save button
   const saveBtn = document.querySelector('.modal-footer .btn-primary');
   const originalText = saveBtn.textContent;
-  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  const originalI18n = saveBtn.getAttribute('data-i18n');
+  saveBtn.removeAttribute('data-i18n');
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...'; // Using loading key translation
   saveBtn.disabled = true;
   
   fetch('/home/save-alert-settings', {
@@ -761,30 +760,41 @@ function saveAlertSettings() {
   })
   .then(response => response.json())
   .then(result => {
+    // Get translated success/error messages
+    const successMsg = window.translations[localStorage.getItem('preferredLanguage') || 'en']['success'];
+    const errorMsg = window.translations[localStorage.getItem('preferredLanguage') || 'en']['error'];
+    
     if (result.success) {
-      showNotification('Settings saved successfully. Refreshing...', 'success');
+      showNotification(`${successMsg}: Settings saved successfully. Refreshing...`, 'success');
       closeAlertSettings();
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     } else {
-      showNotification('Failed to save settings: ' + result.message, 'error');
-      saveBtn.textContent = originalText;
+      showNotification(`${errorMsg}: Failed to save settings: ${result.message}`, 'error');
+      saveBtn.innerHTML = originalText;
+      saveBtn.setAttribute('data-i18n', originalI18n);
       saveBtn.disabled = false;
+      if(window.setLanguage) window.setLanguage(localStorage.getItem('preferredLanguage') || 'en', saveBtn);
     }
   })
   .catch(error => {
-    showNotification('Error saving settings', 'error');
-    saveBtn.textContent = originalText;
+    const errorMsg = window.translations[localStorage.getItem('preferredLanguage') || 'en']['error'];
+    showNotification(`${errorMsg}: Error saving settings`, 'error');
+    saveBtn.innerHTML = originalText;
+    saveBtn.setAttribute('data-i18n', originalI18n);
     saveBtn.disabled = false;
+    if(window.setLanguage) window.setLanguage(localStorage.getItem('preferredLanguage') || 'en', saveBtn);
   });
 }
 
 // Enhanced Alert Management Functions
 function resolveAlert(alertId) {
+  const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+  
   if (!alertId) {
     console.warn('No alert ID provided for resolution');
-    showNotification('Cannot resolve alert - missing alert ID', 'error');
+    showNotification(window.translations[currentLang]['error'] + ': Cannot resolve alert - missing alert ID', 'error');
     return;
   }
   
@@ -796,9 +806,10 @@ function resolveAlert(alertId) {
     return;
   }
   
-  // Show loading state
+  // Show loading state (using translated key)
   const originalContent = resolveBtn.innerHTML;
-  resolveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  const loadingText = window.translations[currentLang]['loading'];
+  resolveBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${loadingText}...`;
   resolveBtn.disabled = true;
   
   // Make API call to resolve alert
@@ -809,7 +820,7 @@ function resolveAlert(alertId) {
       'X-Requested-With': 'XMLHttpRequest'
     },
     body: JSON.stringify({
-      note: 'Resolved from dashboard'
+      note: 'Resolved from dashboard' // Note translation is not strictly needed here
     })
   })
   .then(response => {
@@ -819,6 +830,10 @@ function resolveAlert(alertId) {
     return response.json();
   })
   .then(data => {
+    const successMsg = window.translations[currentLang]['success'];
+    const errorMsg = window.translations[currentLang]['error'];
+    const systemOnlineText = window.translations[currentLang]['system-online'];
+    
     if (data.success) {
       // Animate alert removal
       alertItem.style.transition = 'all 0.3s ease';
@@ -840,9 +855,10 @@ function resolveAlert(alertId) {
             noAlertsDiv.className = 'no-alerts';
             noAlertsDiv.innerHTML = `
               <i class="fas fa-check-circle" style="color: var(--success); font-size: 2rem; margin-bottom: 1rem;"></i>
-              <p>No active alerts. All systems operating normally.</p>
+              <p data-i18n="no-alerts">${window.translations['en']['no-alerts']}</p>
             `;
             alertsContainer.appendChild(noAlertsDiv);
+            if(window.setLanguage) window.setLanguage(currentLang, noAlertsDiv);
           }
           
           // Update status banner
@@ -851,11 +867,12 @@ function resolveAlert(alertId) {
             statusBanner.className = 'status-banner online';
             statusBanner.innerHTML = `
               <i class="fas fa-check-circle"></i>
-              <span>All Systems Operational</span>
+              <span data-i18n="system-online">${systemOnlineText}</span>
               <span class="pulse">
                 <i class="fas fa-circle" style="font-size: 0.75rem; margin-left: 0.5rem;"></i>
               </span>
             `;
+            if(window.setLanguage) window.setLanguage(currentLang, statusBanner);
           }
         }
         
@@ -864,7 +881,7 @@ function resolveAlert(alertId) {
       }, 300);
       
       // Show success notification
-      showNotification('Alert resolved successfully', 'success');
+      showNotification(`${successMsg}: Alert resolved successfully`, 'success');
     } else {
       throw new Error(data.message || 'Failed to resolve alert');
     }
@@ -873,7 +890,9 @@ function resolveAlert(alertId) {
     console.error('Error resolving alert:', error);
     resolveBtn.innerHTML = originalContent;
     resolveBtn.disabled = false;
-    showNotification(`Failed to resolve alert: ${error.message}`, 'error');
+    showNotification(`${errorMsg}: Failed to resolve alert: ${error.message}`, 'error');
+    // Note: Re-running setLanguage here is crucial for the button text to revert/re-translate
+    if(window.setLanguage) window.setLanguage(currentLang, resolveBtn);
   });
 }
 
@@ -881,6 +900,7 @@ function updateAlertCounts() {
   // Update alert count badge
   const alertCountBadge = document.querySelector('.card-title span[style*="background: var(--danger)"]');
   const remainingAlerts = document.querySelectorAll('.alert-item');
+  const currentLang = localStorage.getItem('preferredLanguage') || 'en';
   
   if (alertCountBadge) {
     if (remainingAlerts.length === 0) {
@@ -891,9 +911,12 @@ function updateAlertCounts() {
   }
   
   // Update status banner alert count
-  const statusBannerText = document.querySelector('.status-banner span');
-  if (statusBannerText && remainingAlerts.length > 0) {
-    statusBannerText.textContent = `${remainingAlerts.length} Active Alert${remainingAlerts.length > 1 ? 's' : ''} - Attention Required`;
+  const statusBannerSpan = document.querySelector('.status-banner span');
+  const attentionRequiredText = window.translations[currentLang]['attention-required'];
+  
+  if (statusBannerSpan && remainingAlerts.length > 0) {
+    statusBannerSpan.textContent = `${remainingAlerts.length} ${attentionRequiredText}`;
+    statusBannerSpan.setAttribute('data-i18n', `attention-required|${remainingAlerts.length}`);
   }
 }
 
@@ -1012,15 +1035,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     toggleBtn.addEventListener('click', function() {
       isCollapsed = !isCollapsed;
+      const currentLang = localStorage.getItem('preferredLanguage') || 'en';
       
       if (isCollapsed) {
         statsGrid.classList.add('collapsed');
         toggleIcon.className = 'fas fa-chevron-down';
-        toggleText.textContent = 'Show More';
+        // Use the actual translated text for consistency
+        const showMoreText = window.translations[currentLang]['show-more'];
+        toggleText.textContent = showMoreText;
+        toggleText.setAttribute('data-i18n', 'show-more');
       } else {
         statsGrid.classList.remove('collapsed');
         toggleIcon.className = 'fas fa-chevron-up';
-        toggleText.textContent = 'Show Less';
+        // Use the actual translated text for consistency
+        const showLessText = window.translations[currentLang]['show-less'];
+        toggleText.textContent = showLessText;
+        toggleText.setAttribute('data-i18n', 'show-less');
       }
     });
   }
@@ -1102,7 +1132,13 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const tooltip = document.createElement('div');
       tooltip.className = 'tooltip';
-      tooltip.textContent = 'Mark as resolved';
+      // The content is already set via data-i18n-attr="title" on the button, this JS tooltip is redundant
+      // and better handled via the button's native title attribute for i18n consistency.
+      // Keeping the original code structure but noting that the HTML attribute is now the source of truth.
+
+      const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+      tooltip.textContent = window.translations[currentLang]['alert-resolved']; // Using translation
+      
       tooltip.style.cssText = `
         position: absolute;
         background: #1f2937;
@@ -1114,6 +1150,8 @@ document.addEventListener('DOMContentLoaded', function() {
         pointer-events: none;
         white-space: nowrap;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        opacity: 0;
+        transition: opacity 0.2s ease;
       `;
       
       document.body.appendChild(tooltip);
@@ -1125,6 +1163,7 @@ document.addEventListener('DOMContentLoaded', function() {
       tooltip.style.top = rect.top - tooltipRect.height - 8 + 'px';
       
       btn._tooltip = tooltip;
+      setTimeout(() => tooltip.style.opacity = '1', 10);
     });
     
     btn.addEventListener('mouseleave', function() {

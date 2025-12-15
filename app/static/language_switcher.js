@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+  /**
+   * 🍓 Translation Data Object
+   * Contains all translations organized by language code (en, ja).
+   */
   const translations = {
     en: {
       // Base template translations
@@ -73,10 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
       headerDate: 'Date',
       headerTime: 'Time',
       headerTemperature: 'Temperature (°C)',
+      'headerSoilTemperature': 'Soil Temp', // NEW
       headerHumidity: 'Humidity (%)',
-      headerLightIntensity: 'Light Intensity (Lux)',
       headerGroundTemperature: 'Ground Temperature (°C)',
-      headerGroundHumidity: 'Ground Humidity (%)',
+      'headerSoilHumidity': 'Soil Humidity', // NEW
+      headerLightIntensity: 'Light Intensity (Lux)',
       downloadTitle: 'Export Data',
       downloadBtn: 'Download CSV',
       quickStats: 'Quick Stats',
@@ -85,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       searchPlaceholder: 'Search all columns...',
       lengthMenu: 'Show _MENU_ entries',
       info: 'Showing _START_ to _END_ of _TOTAL_ entries',
-
+      
       // Summary page translations
       category: 'Category',
       metric: 'Metric',
@@ -120,6 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
       'analysis-whole-avg-humidity': '24-Hour Humidity',
       'analysis-whole-avg-light': '24-Hour Light Intensity',
       
+      // Analysis Chart Titles (NEW)
+      'Temperature Analysis': 'Temperature Analysis',
+      'Soil Temperature Analysis': 'Soil Temperature Analysis',
+      'Humidity Analysis': 'Humidity Analysis',
+      'Soil Humidity Analysis': 'Soil Humidity Analysis',
+      'Light Intensity Analysis': 'Light Intensity Analysis',
+      'Hourly (Today)': 'Hourly (Today)',
+      'Daytime Avg (Weekly)': 'Daytime Avg (Weekly)',
+      'Nighttime Avg (Weekly)': 'Nighttime Avg (Weekly)',
+      '24-Hour Avg (Weekly)': '24-Hour Avg (Weekly)',
+      
       // Alert History page translations
       'alert-history-title': 'Alert History',
       'alert-history-subtitle': 'Comprehensive alert tracking and analysis',
@@ -148,6 +165,29 @@ document.addEventListener('DOMContentLoaded', () => {
       'alerts-total': 'alerts',
       previous: 'Previous',
       next: 'Next',
+      
+      // Alert/Home UI elements (NEW)
+      'settings-title': 'Alert Threshold Settings',
+      'settings-close': '×',
+      'settings-air-light': 'Air & Light Conditions',
+      'settings-temp-range': 'Temperature Range (°C)',
+      'settings-min': 'Min',
+      'settings-max': 'Max',
+      'settings-light-min': 'Minimum Light Intensity (Lux)',
+      'settings-soil-ground': 'Soil Conditions',
+      'settings-humidity-range': 'Soil Humidity Range (%)',
+      'settings-soil-temp-range': 'Soil Temp Range (°C)',
+      'reset-defaults': 'Reset Defaults',
+      'cancel-btn': 'Cancel',
+      'save-changes': 'Save Changes',
+      'alert-generated-at': 'Alert generated at',
+      'min-ago': 'min ago',
+      'unknown-time': 'Unknown time',
+      'no-history': 'No recent alert history. System has been stable.',
+      'resolve-btn': 'Resolve',
+      'critical-immediate': 'critical alerts require immediate attention',
+      'low-alert-volume': 'Low alert volume indicates stable system operation',
+      'higher-alert-volume': 'Higher alert volume detected - monitor system closely',
 
       // Alert statuses and types
       'alert-critical': 'Critical',
@@ -204,7 +244,126 @@ document.addEventListener('DOMContentLoaded', () => {
       'step3-title': 'Farmer Interface',
       'step3-text': 'Developing intuitive dashboards',
       'step4-title': 'Communication Reliability',
-      'step4-text': 'Ensuring robust long-distance transmission'
+      'step4-text': 'Ensuring robust long-distance transmission',
+
+      // Smart Tips
+      'tip-water-morning': 'Water your strawberries early in the morning (6-8 AM) to minimize evaporation and prevent leaf burn during peak sun hours.',
+      'tip-soil-moisture': 'Maintain soil moisture between 30-70% for optimal strawberry growth.',
+      'tip-temp-monitor': 'Monitor temperature closely - strawberries prefer 18-24°C during the day.',
+      'tip-light-exposure': 'Ensure adequate light exposure - strawberries need at least 6 hours of sunlight daily.',
+      'tip-check-humidity': 'Check soil humidity regularly to prevent root rot and ensure proper nutrition uptake.',
+
+      // Form Labels
+      'Start Date': 'Start Date',
+      'End Date': 'End Date',
+      'Submit': 'Submit',
+
+      // Summary Table Headers
+      'Max Temp': 'Max Temp',
+      'Min Temp': 'Min Temp',
+      'Daily Avg Temp': 'Daily Avg Temp',
+      'Daytime Avg Temp': 'Daytime Avg Temp',
+      'Nighttime Avg Temp': 'Nighttime Avg Temp',
+      'Max Soil Temp': 'Max Soil Temp',
+      'Min Soil Temp': 'Min Soil Temp',
+      'Daily Avg Soil Temp': 'Daily Avg Soil Temp',
+      'Daytime Avg Soil Temp': 'Daytime Avg Soil Temp',
+      'Nighttime Avg Soil Temp': 'Nighttime Avg Soil Temp',
+      'Max Humidity': 'Max Humidity',
+      'Min Humidity': 'Min Humidity',
+      'Daily Avg Humidity': 'Daily Avg Humidity',
+      'Daytime Avg Humidity': 'Daytime Avg Humidity',
+      'Nighttime Avg Humidity': 'Nighttime Avg Humidity',
+      'Max Soil Humidity': 'Max Soil Humidity',
+      'Min Soil Humidity': 'Min Soil Humidity',
+      'Daily Avg Soil Humidity': 'Daily Avg Soil Humidity',
+      'Daytime Avg Soil Humidity': 'Daytime Avg Soil Humidity',
+      'Nighttime Avg Soil Humidity': 'Nighttime Avg Soil Humidity',
+      'Max Light Intensity': 'Max Light Intensity',
+      'Daily Avg Light Intensity': 'Daily Avg Light Intensity',
+      
+      // Summary Labels (Home Page)
+      'Min Temperature': 'Min Temperature',
+      'Max Temperature': 'Max Temperature',
+      'Min Soil Temp': 'Min Soil Temp',
+      'Max Soil Temp': 'Max Soil Temp',
+      'Min Humidity': 'Min Humidity',
+      'Max Humidity': 'Max Humidity',
+      'Min Soil Humidity': 'Min Soil Humidity',
+      'Max Soil Humidity': 'Max Soil Humidity',
+      'Min Light Intensity': 'Min Light Intensity',
+      'Max Light Intensity': 'Max Light Intensity',
+      'Temperature': 'Temperature',
+      'Soil Temp': 'Soil Temp',
+      'Humidity': 'Humidity',
+      'Soil Humidity': 'Soil Humidity',
+      'Light Intensity': 'Light Intensity',
+
+      // Analysis Charts
+      'Temperature Analysis': 'Temperature Analysis',
+      'Soil Temperature Analysis': 'Soil Temperature Analysis',
+      'Humidity Analysis': 'Humidity Analysis',
+      'Soil Humidity Analysis': 'Soil Humidity Analysis',
+      'Light Intensity Analysis': 'Light Intensity Analysis',
+      'Hourly (Today)': 'Hourly (Today)',
+      'Daytime Avg (Weekly)': 'Daytime Avg (Weekly)',
+      'Nighttime Avg (Weekly)': 'Nighttime Avg (Weekly)',
+      '24-Hour Avg (Weekly)': '24-Hour Avg (Weekly)',
+      'Daytime Temperature': 'Daytime Temperature',
+      'Nighttime Temperature': 'Nighttime Temperature',
+      '24-Hour Temperature': '24-Hour Temperature',
+      'Daytime Soil Temp': 'Daytime Soil Temp',
+      'Nighttime Soil Temp': 'Nighttime Soil Temp',
+      '24-Hour Soil Temp': '24-Hour Soil Temp',
+      'Daytime Humidity': 'Daytime Humidity',
+      'Nighttime Humidity': 'Nighttime Humidity',
+      '24-Hour Humidity': '24-Hour Humidity',
+      'Daytime Soil Humidity': 'Daytime Soil Humidity',
+      'Nighttime Soil Humidity': 'Nighttime Soil Humidity',
+      '24-Hour Soil Humidity': '24-Hour Soil Humidity',
+      'Daytime Light Intensity': 'Daytime Light Intensity',
+      'Nighttime Light Intensity': 'Nighttime Light Intensity',
+      '24-Hour Light Intensity': '24-Hour Light Intensity',
+
+      // Footer
+      'footer-device-name': 'Small Environmental Sensing Device for Strawberry Production',
+      'footer-team-id': 'Team ID',
+      'footer-company': 'Company',
+      'footer-engineer': 'Engineer',
+      'footer-supervisor': 'Supervisor',
+      'footer-copyright': '© 2025 GRA Inc. All rights reserved.',
+
+      // Alert Messages
+      'alert-temp-high': 'High temperature alert: {0}°C',
+      'alert-temp-low': 'Low temperature alert: {0}°C',
+      'alert-ground-temp-high': 'High Soil Temp: {0}°C',
+      'alert-ground-temp-low': 'Low Soil Temp: {0}°C',
+      'alert-soil-moisture-low': 'Low Soil Humidity: {0}%',
+      'alert-soil-moisture-high': 'High Soil Humidity: {0}%',
+      'alert-light-low': 'Low light conditions: {0} Lux',
+      'alert-connection': 'Sensor connection issue - last data received {0} minutes ago',
+
+      // Categories & Status
+      'temperature': 'Temperature',
+      'moisture': 'Moisture',
+      'lighting': 'Lighting',
+      'system': 'System',
+      'general': 'General',
+      'online': 'Online',
+      'offline': 'Offline',
+      'N/A': 'N/A',
+      
+      // Title Case Variants (for UI display)
+      'Temperature': 'Temperature',
+      'Moisture': 'Moisture',
+      'Lighting': 'Lighting',
+      'System': 'System',
+      'General': 'General',
+      'Active': 'Active',
+      'Resolved': 'Resolved',
+      'Critical': 'Critical',
+      'Warning': 'Warning',
+      'Info': 'Info'
     },
     
     ja: {
@@ -280,10 +439,11 @@ document.addEventListener('DOMContentLoaded', () => {
       headerDate: '日付',
       headerTime: '時間',
       headerTemperature: '温度（°C）',
+      'headerSoilTemperature': '地温', // NEW
       headerHumidity: '湿度（%）',
-      headerLightIntensity: '光の強さ（Lux）',
       headerGroundTemperature: '地温（°C）',
-      headerGroundHumidity: '地中湿度（%）',
+      'headerSoilHumidity': '地中湿度', // NEW
+      headerLightIntensity: '光の強さ（Lux）',
       downloadTitle: 'データをエクスポート',
       downloadBtn: 'CSVをダウンロード',
       quickStats: 'クイック統計',
@@ -326,6 +486,17 @@ document.addEventListener('DOMContentLoaded', () => {
       'analysis-whole-avg-temp': '24時間温度',
       'analysis-whole-avg-humidity': '24時間湿度',
       'analysis-whole-avg-light': '24時間光強度',
+      
+      // Analysis Chart Titles (NEW)
+      'Temperature Analysis': '温度分析',
+      'Soil Temperature Analysis': '地温分析',
+      'Humidity Analysis': '湿度分析',
+      'Soil Humidity Analysis': '土壌湿度分析',
+      'Light Intensity Analysis': '光強度分析',
+      'Hourly (Today)': '1時間ごと (今日)',
+      'Daytime Avg (Weekly)': '日中平均 (週間)',
+      'Nighttime Avg (Weekly)': '夜間平均 (週間)',
+      '24-Hour Avg (Weekly)': '24時間平均 (週間)',
 
       // Alert History page translations
       'alert-history-title': 'アラート履歴',
@@ -355,6 +526,29 @@ document.addEventListener('DOMContentLoaded', () => {
       'alerts-total': 'アラート',
       previous: '前へ',
       next: '次へ',
+      
+      // Alert/Home UI elements (NEW)
+      'settings-title': 'アラートしきい値設定',
+      'settings-close': '×',
+      'settings-air-light': '気温と光の条件',
+      'settings-temp-range': '温度範囲（°C）',
+      'settings-min': '最小',
+      'settings-max': '最大',
+      'settings-light-min': '最低光強度（Lux）',
+      'settings-soil-ground': '土壌の状態',
+      'settings-humidity-range': '土壌湿度範囲（%）',
+      'settings-soil-temp-range': '地温範囲（°C）',
+      'reset-defaults': 'デフォルトに戻す',
+      'cancel-btn': 'キャンセル',
+      'save-changes': '変更を保存',
+      'alert-generated-at': 'アラート発生時刻',
+      'min-ago': '分前',
+      'unknown-time': '不明な時刻',
+      'no-history': '最近のアラート履歴はありません。システムは安定しています。',
+      'resolve-btn': '解決',
+      'critical-immediate': '件の重要アラートに直ちに注意が必要です',
+      'low-alert-volume': 'アラート量が少ないため、システムは安定しています',
+      'higher-alert-volume': 'アラート量が増加しています - システムを注意深く監視してください',
 
       // Alert statuses and types
       'alert-critical': '重要',
@@ -411,66 +605,277 @@ document.addEventListener('DOMContentLoaded', () => {
       'step3-title': '農家向けインターフェース',
       'step3-text': '直感的なダッシュボードの開発',
       'step4-title': '通信の信頼性',
-      'step4-text': '堅牢な長距離伝送の確保'
+      'step4-text': '堅牢な長距離伝送の確保',
+
+      // Smart Tips
+      'tip-water-morning': 'いちごへの水やりは、蒸発を最小限に抑え、日中のピーク時の葉焼けを防ぐために、早朝（午前6時〜8時）に行いましょう。',
+      'tip-soil-moisture': 'いちごの最適な成長のために、土壌水分を30〜70％の間に保ちましょう。',
+      'tip-temp-monitor': '温度を注意深く監視してください。いちごは日中18〜24°Cを好みます。',
+      'tip-light-exposure': '適切な光量を確保してください。いちごは毎日少なくとも6時間の日光を必要とします。',
+      'tip-check-humidity': '根腐れを防ぎ、適切な栄養吸収を確保するために、土壌湿度を定期的に確認してください。',
+
+      // Form Labels
+      'Start Date': '開始日',
+      'End Date': '終了日',
+      'Submit': '送信',
+
+      // Summary Table Headers
+      'Max Temp': '最高気温',
+      'Min Temp': '最低気温',
+      'Daily Avg Temp': '日平均気温',
+      'Daytime Avg Temp': '日中平均気温',
+      'Nighttime Avg Temp': '夜間平均気温',
+      'Max Soil Temp': '最高地温',
+      'Min Soil Temp': '最低地温',
+      'Daily Avg Soil Temp': '日平均地温',
+      'Daytime Avg Soil Temp': '日中平均地温',
+      'Nighttime Avg Soil Temp': '夜間平均地温',
+      'Max Humidity': '最高湿度',
+      'Min Humidity': '最低湿度',
+      'Daily Avg Humidity': '日平均湿度',
+      'Daytime Avg Humidity': '日中平均湿度',
+      'Nighttime Avg Humidity': '夜間平均湿度',
+      'Max Soil Humidity': '最高土壌湿度',
+      'Min Soil Humidity': '最低土壌湿度',
+      'Daily Avg Soil Humidity': '日平均土壌湿度',
+      'Daytime Avg Soil Humidity': '日中平均土壌湿度',
+      'Nighttime Avg Soil Humidity': '夜間平均土壌湿度',
+      'Max Light Intensity': '最高光強度',
+      'Daily Avg Light Intensity': '日平均光強度',
+      
+      // Summary Labels (Home Page)
+      'Min Temperature': '最低気温',
+      'Max Temperature': '最高気温',
+      'Min Soil Temp': '最低地温',
+      'Max Soil Temp': '最高地温',
+      'Min Humidity': '最低湿度',
+      'Max Humidity': '最高湿度',
+      'Min Soil Humidity': '最低土壌湿度',
+      'Max Soil Humidity': '最高土壌湿度',
+      'Min Light Intensity': '最低光強度',
+      'Max Light Intensity': '最高光強度',
+      'Temperature': '気温',
+      'Soil Temp': '地温',
+      'Humidity': '湿度',
+      'Soil Humidity': '土壌湿度',
+      'Light Intensity': '光強度',
+
+      // Analysis Charts
+      'Temperature Analysis': '温度分析',
+      'Soil Temperature Analysis': '地温分析',
+      'Humidity Analysis': '湿度分析',
+      'Soil Humidity Analysis': '土壌湿度分析',
+      'Light Intensity Analysis': '光強度分析',
+      'Hourly (Today)': '1時間ごと (今日)',
+      'Daytime Avg (Weekly)': '日中平均 (週間)',
+      'Nighttime Avg (Weekly)': '夜間平均 (週間)',
+      '24-Hour Avg (Weekly)': '24時間平均 (週間)',
+      'Daytime Temperature': '日中気温',
+      'Nighttime Temperature': '夜間気温',
+      '24-Hour Temperature': '24時間気温',
+      'Daytime Soil Temp': '日中地温',
+      'Nighttime Soil Temp': '夜間地温',
+      '24-Hour Soil Temp': '24時間地温',
+      'Daytime Humidity': '日中湿度',
+      'Nighttime Humidity': '夜間湿度',
+      '24-Hour Humidity': '24時間湿度',
+      'Daytime Soil Humidity': '日中土壌湿度',
+      'Nighttime Soil Humidity': '夜間土壌湿度',
+      '24-Hour Soil Humidity': '24時間土壌湿度',
+      'Daytime Light Intensity': '日中光強度',
+      'Nighttime Light Intensity': '夜間光強度',
+      '24-Hour Light Intensity': '24時間光強度',
+
+      // Footer
+      'footer-device-name': 'いちご生産用小型環境センシングデバイス',
+      'footer-team-id': 'チームID',
+      'footer-company': '会社名',
+      'footer-engineer': 'エンジニア',
+      'footer-supervisor': 'スーパーバイザー',
+      'footer-copyright': '© 2025 GRA Inc. All rights reserved.',
+
+      // Alert Messages
+      'alert-temp-high': '高温アラート: {0}°C',
+      'alert-temp-low': '低温アラート: {0}°C',
+      'alert-ground-temp-high': '地温高温: {0}°C',
+      'alert-ground-temp-low': '地温低温: {0}°C',
+      'alert-soil-moisture-low': '土壌低湿度: {0}%',
+      'alert-soil-moisture-high': '土壌高湿度: {0}%',
+      'alert-light-low': '低照度: {0} Lux',
+      'alert-connection': 'センサー接続エラー - 最後のデータ受信から {0} 分経過',
+
+      // Categories & Status
+      'temperature': '温度',
+      'moisture': '湿度',
+      'lighting': '照明',
+      'system': 'システム',
+      'general': '一般',
+      'online': 'オンライン',
+      'offline': 'オフライン',
+      'N/A': 'データなし',
+
+      // Title Case Variants (for UI display)
+      'Temperature': '温度',
+      'Moisture': '湿度',
+      'Lighting': '照明',
+      'System': 'システム',
+      'General': '一般',
+      'Active': 'アクティブ',
+      'Resolved': '解決済み',
+      'Critical': '重要',
+      'Warning': '警告',
+      'Info': '情報'
     }
   };
 
-  const languageSelect = document.getElementById('language-select') || document.querySelector('.language-selector select');
-  if (!languageSelect) return;
+  // --- Utility Functions ---
 
-  const savedLang = localStorage.getItem('preferredLanguage') || 'en';
-  languageSelect.value = savedLang;
-  setLanguage(savedLang);
-
-  languageSelect.addEventListener('change', e => {
-    const lang = e.target.value;
-    localStorage.setItem('preferredLanguage', lang);
-    setLanguage(lang);
-  });
-
-  function setLanguage(lang) {
-    document.documentElement.lang = lang;
-    const dict = translations[lang] || translations.en;
-
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      const value = getNestedValue(dict, key);
-      if (value !== undefined) updateElementContent(el, value);
-    });
-
-    updateDataTableUI(dict);
-  }
-
+  /**
+   * Safely retrieves a nested value from an object using a dot-separated key.
+   * @param {object} obj - The translation dictionary (e.g., translations.ja).
+   * @param {string} key - The dot-separated key (e.g., 'categories.temperature').
+   * @returns {*} The value, or undefined if not found.
+   */
   function getNestedValue(obj, key) {
-    return key.split('.').reduce((o, k) => (o || {})[k], obj);
+    // Avoids errors if obj or parts of the path are null/undefined
+    return key.split('.').reduce((o, k) => (o && o[k] !== undefined) ? o[k] : undefined, obj);
   }
 
-  function updateElementContent(el, value) {
-    if (el.tagName === 'INPUT' && el.type !== 'button' && el.type !== 'submit') {
-      el.placeholder = value;
+  /**
+   * Interpolates placeholder values ({0}, {1}, etc.) into a string.
+   * @param {string} template - The translated string with placeholders.
+   * @param {string[]} args - An array of arguments to substitute.
+   * @returns {string} The final, interpolated string.
+   */
+  function interpolate(template, args = []) {
+    return args.reduce((str, arg, i) => str.replace(new RegExp(`\\{${i}\\}`, 'g'), arg), template);
+  }
+
+  /**
+   * Updates the content or attribute of a single HTML element.
+   * @param {HTMLElement} el - The element to update.
+   * @param {string} value - The translated string.
+   * @param {string[]} args - Interpolation arguments.
+   */
+  function updateElementContent(el, value, args = []) {
+    let content = interpolate(value, args);
+
+    if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'search' || el.type === 'password' || el.type === 'date')) {
+      // Handles placeholder text for input fields
+      el.placeholder = content;
     } else if (el.tagName === 'IMG') {
-      el.alt = value;
+      // Handles alt text for images
+      el.alt = content;
     } else if (el.tagName === 'META' && el.getAttribute('name') === 'description') {
-      el.content = value;
+      // Handles meta tags
+      el.content = content;
+    } else if (el.dataset.i18nAttr) {
+        // Handle custom attributes specified via data-i18n-attr="title"
+        el.setAttribute(el.dataset.i18nAttr, content);
     } else {
-      el.textContent = value;
+      // Handles text content for all other elements (h1, span, p, button, etc.)
+      el.textContent = content;
     }
   }
 
+  /**
+   * Updates DataTables specific UI elements.
+   * NOTE: This requires DataTables to be initialized BEFORE this function runs.
+   * @param {object} dict - The current language dictionary.
+   */
   function updateDataTableUI(dict) {
-    if (!window.jQuery || !$.fn.DataTable) return;
+    // Use the global jQuery/DataTables object check
+    if (!window.jQuery || !$.fn.DataTable) {
+      // console.warn('DataTables library not found. Skipping UI update.');
+      return;
+    }
     
     const table = $('#measurements-table');
     if (!$.fn.DataTable.isDataTable(table)) return;
 
     try {
-      table.DataTable().language({
-        search: dict.searchPlaceholder,
-        lengthMenu: dict.lengthMenu,
-        info: dict.info
-      }).draw();
+      // Use the settings method to update language options on existing table
+      table.DataTable().settings()[0].oLanguage = {
+        sSearch: dict.searchPlaceholder, // Updated search label
+        sLengthMenu: dict.lengthMenu,   // Updated length menu text
+        sInfo: dict.info                // Updated info text
+      };
+      
+      // Redraw the table to apply changes (optional, but often needed)
+      table.DataTable().draw(); 
+
     } catch (e) {
-      console.error('DataTables update failed:', e);
+      console.error('DataTables language update failed:', e);
     }
   }
+
+
+  // --- Core Language Logic ---
+
+  /**
+   * Main function to set the language across the entire application UI.
+   * @param {string} lang - The language code (e.g., 'en', 'ja').
+   * @param {HTMLElement} [root=document] - The DOM element to start the search from (for partial updates).
+   */
+  window.setLanguage = function (lang, root = document) {
+    // Expose translations for use in other scripts (like home.html)
+    window.translations = translations; 
+    
+    const dict = translations[lang] || translations.en;
+    document.documentElement.lang = lang; // Update HTML lang attribute
+
+    // 1. Iterate through all translatable elements
+    root.querySelectorAll('[data-i18n]').forEach(el => {
+      let key = el.getAttribute('data-i18n');
+      let args = [];
+      
+      // Handle keys with arguments (e.g., "alert-temp-high|28.5")
+      if (key && key.includes('|')) {
+        const parts = key.split('|');
+        key = parts[0];
+        args = parts.slice(1);
+      }
+
+      let value = getNestedValue(dict, key);
+      
+      // Fallback to English if translation is missing (or use a placeholder)
+      if (value === undefined) {
+          const fallbackDict = translations.en;
+          value = getNestedValue(fallbackDict, key);
+      }
+      
+      if (value !== undefined) {
+        updateElementContent(el, value, args);
+      } else {
+          // console.warn(`Translation key not found: ${key} in language ${lang}`);
+      }
+    });
+
+    // 2. Update library-specific elements (like DataTables)
+    updateDataTableUI(dict);
+  }
+
+  // --- Initialization ---
+  
+  const languageSelect = document.getElementById('language-select') || document.querySelector('.language-selector select');
+
+  if (languageSelect) {
+    const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+    languageSelect.value = savedLang;
+    
+    // Initial translation on page load
+    window.setLanguage(savedLang);
+
+    // Event listener for language change
+    languageSelect.addEventListener('change', e => {
+      const lang = e.target.value;
+      localStorage.setItem('preferredLanguage', lang);
+      window.setLanguage(lang);
+    });
+  } else {
+      const defaultLang = localStorage.getItem('preferredLanguage') || 'en';
+      window.setLanguage(defaultLang);
+      // console.warn('Language selector element not found. Using default language settings.');
+  }
+
 });

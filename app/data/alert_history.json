@@ -1,7 +1,7 @@
 [
   {
     "id": "alert_20250904_110119_0",
-    "message": "High temperature alert: 28.9\u00b0C",
+    "message": "High Temperature alert: 28.9\u00b0C",
     "type": "warning",
     "icon": "fas fa-thermometer-full",
     "timestamp": "11:00 AM",
@@ -22,7 +22,7 @@
   },
   {
     "id": "alert_20250904_125232_1",
-    "message": "High temperature alert: 29.4\u00b0C",
+    "message": "High Temperature alert: 29.4\u00b0C",
     "type": "warning",
     "icon": "fas fa-thermometer-full",
     "timestamp": "11:55 PM",
@@ -43,7 +43,7 @@
   },
   {
     "id": "alert_20250904_125409_2",
-    "message": "High temperature alert: 29.4\u00b0C",
+    "message": "High Temperature alert: 29.4\u00b0C",
     "type": "warning",
     "icon": "fas fa-thermometer-full",
     "timestamp": "11:55 PM",
@@ -64,7 +64,7 @@
   },
   {
     "id": "alert_20250905_151336_3",
-    "message": "Low light conditions: 11 Lux",
+    "message": "Low Light Intensity: 11 Lux",
     "type": "info",
     "icon": "fas fa-sun",
     "timestamp": "11:55 PM",
@@ -85,7 +85,7 @@
   },
   {
     "id": "alert_20250905_151455_4",
-    "message": "Low light conditions: 11 Lux",
+    "message": "Low Light Intensity: 11 Lux",
     "type": "info",
     "icon": "fas fa-sun",
     "timestamp": "11:55 PM",
@@ -106,7 +106,7 @@
   },
   {
     "id": "alert_20250905_151543_5",
-    "message": "Low light conditions: 11 Lux",
+    "message": "Low Light Intensity: 11 Lux",
     "type": "info",
     "icon": "fas fa-sun",
     "timestamp": "11:55 PM",
@@ -127,7 +127,7 @@
   },
   {
     "id": "alert_20250905_151607_6",
-    "message": "Low light conditions: 11 Lux",
+    "message": "Low Light Intensity: 11 Lux",
     "type": "info",
     "icon": "fas fa-sun",
     "timestamp": "11:55 PM",
@@ -148,7 +148,7 @@
   },
   {
     "id": "alert_20250905_152002_7",
-    "message": "Low light conditions: 41 Lux",
+    "message": "Low Light Intensity: 41 Lux",
     "type": "info",
     "icon": "fas fa-sun",
     "timestamp": "11:55 PM",
@@ -169,7 +169,7 @@
   },
   {
     "id": "alert_20250905_152127_8",
-    "message": "High temperature alert: 29.4\u00b0C",
+    "message": "High Temperature alert: 29.4\u00b0C",
     "type": "warning",
     "icon": "fas fa-thermometer-full",
     "timestamp": "11:55 PM",
@@ -211,7 +211,7 @@
   },
   {
     "id": "alert_20251215_191033_10",
-    "message": "Low ground temperature: 12.7\u00b0C",
+    "message": "Low Soil Temp: 12.7\u00b0C",
     "type": "warning",
     "icon": "fas fa-thermometer-empty",
     "timestamp": "11:55 PM",
@@ -232,7 +232,7 @@
   },
   {
     "id": "alert_20251215_191338_11",
-    "message": "Low soil moisture: 45.8%",
+    "message": "Low Soil Humidity: 45.8%",
     "type": "danger",
     "icon": "fas fa-tint",
     "timestamp": "11:55 PM",
@@ -253,7 +253,7 @@
   },
   {
     "id": "alert_20251215_191918_13",
-    "message": "Low soil moisture: 45.8%",
+    "message": "Low Soil Humidity: 45.8%",
     "type": "danger",
     "icon": "fas fa-tint",
     "timestamp": "11:55 PM",
@@ -271,5 +271,50 @@
         "content": "Resolved from alert history page"
       }
     ]
+  },
+  {
+    "id": "alert_20251215_214916_13",
+    "message": "Low Soil Temp: 6.5\u00b0C",
+    "type": "warning",
+    "icon": "fas fa-thermometer-empty",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-12-16T01:26:28.484655",
+    "age_minutes": 0,
+    "status": "active",
+    "severity": "high",
+    "category": "temperature",
+    "sensor_value": "4.8",
+    "resolution_time": null,
+    "notes": []
+  },
+  {
+    "id": "alert_20251215_232000_14",
+    "message": "Low Soil Temp: 6.1\u00b0C",
+    "type": "warning",
+    "icon": "fas fa-thermometer-empty",
+    "timestamp": "11:55 PM",
+    "datetime_created": "2025-12-16T00:35:54.875934",
+    "age_minutes": 50,
+    "status": "active",
+    "severity": "medium",
+    "category": "general",
+    "sensor_value": "4.8",
+    "resolution_time": null,
+    "notes": []
+  },
+  {
+    "id": "alert_20251216_001540_15",
+    "message": "Sensor connection issue - last data received 20 minutes ago",
+    "type": "warning",
+    "icon": "fas fa-wifi",
+    "timestamp": "12:20 AM",
+    "datetime_created": "2025-12-16T00:20:53.072493",
+    "age_minutes": 65,
+    "status": "active",
+    "severity": "critical",
+    "category": "system",
+    "sensor_value": null,
+    "resolution_time": null,
+    "notes": []
   }
 ]

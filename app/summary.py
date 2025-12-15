@@ -37,27 +37,27 @@ def summary_table():
                 'Daily Avg Temp': group['Temperature'].mean(),
                 'Daytime Avg Temp': daytime['Temperature'].mean() if not daytime.empty else 0,
                 'Nighttime Avg Temp': nighttime['Temperature'].mean() if not nighttime.empty else 0,
+                # Soil Temp
+                'Max Soil Temp': group['Soil Temp'].max(),
+                'Min Soil Temp': group['Soil Temp'].min(),
+                'Daily Avg Soil Temp': group['Soil Temp'].mean(),
+                'Daytime Avg Soil Temp': daytime['Soil Temp'].mean() if not daytime.empty else 0,
+                'Nighttime Avg Soil Temp': nighttime['Soil Temp'].mean() if not nighttime.empty else 0,
                 # Humidity
                 'Max Humidity': group['Humidity'].max(),
                 'Min Humidity': group['Humidity'].min(),
                 'Daily Avg Humidity': group['Humidity'].mean(),
                 'Daytime Avg Humidity': daytime['Humidity'].mean() if not daytime.empty else 0,
                 'Nighttime Avg Humidity': nighttime['Humidity'].mean() if not nighttime.empty else 0,
+                # Soil Humidity
+                'Max Soil Humidity': group['Soil Humidity'].max(),
+                'Min Soil Humidity': group['Soil Humidity'].min(),
+                'Daily Avg Soil Humidity': group['Soil Humidity'].mean(),
+                'Daytime Avg Soil Humidity': daytime['Soil Humidity'].mean() if not daytime.empty else 0,
+                'Nighttime Avg Soil Humidity': nighttime['Soil Humidity'].mean() if not nighttime.empty else 0,
                 # Light Intensity
                 'Max Light Intensity': group['Light Intensity'].max(),
                 'Daily Avg Light Intensity': group['Light Intensity'].mean(),
-                # Ground Temperature
-                'Max Ground Temp': group['Ground Temperature'].max(),
-                'Min Ground Temp': group['Ground Temperature'].min(),
-                'Daily Avg Ground Temp': group['Ground Temperature'].mean(),
-                'Daytime Avg Ground Temp': daytime['Ground Temperature'].mean() if not daytime.empty else 0,
-                'Nighttime Avg Ground Temp': nighttime['Ground Temperature'].mean() if not nighttime.empty else 0,
-                # Ground Humidity
-                'Max Ground Humidity': group['Ground Humidity'].max(),
-                'Min Ground Humidity': group['Ground Humidity'].min(),
-                'Daily Avg Ground Humidity': group['Ground Humidity'].mean(),
-                'Daytime Avg Ground Humidity': daytime['Ground Humidity'].mean() if not daytime.empty else 0,
-                'Nighttime Avg Ground Humidity': nighttime['Ground Humidity'].mean() if not nighttime.empty else 0,
                 }
         summary.append(stats)
 

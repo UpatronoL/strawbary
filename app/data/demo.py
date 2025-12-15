@@ -25,7 +25,7 @@ with open(csv_filename, mode='w', newline='') as file:
     writer = csv.writer(file)
 
     
-    writer.writerow(["Date", "Time", "Temperature", "Humidity", "Light Intensity", "Ground Temperature", "Ground Humidity"])
+    writer.writerow(["Date", "Time", "Temperature", "Soil Temp", "Humidity", "Soil Humidity", "Light Intensity"])
 
     for i in range(num_readings):
         current_datetime = start_datetime + timedelta(minutes=i * interval_minutes)
@@ -40,6 +40,6 @@ with open(csv_filename, mode='w', newline='') as file:
         #  row to the CSV
         writer.writerow([current_datetime.strftime('%Y-%m-%d'),
                          current_datetime.strftime('%H:%M'),
-                         temperature, humidity, light_intensity, ground_temperature, ground_humidity])
+                         temperature, ground_temperature, humidity, ground_humidity, light_intensity])
 
 print(f"CSV file '{csv_filename}' created with {num_readings} readings every {interval_minutes} minutes.")
